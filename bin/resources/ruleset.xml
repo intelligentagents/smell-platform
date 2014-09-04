@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<ruleset name="Custom ruleset"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+
+  <description>
+  This ruleset checks my code for bad stuff
+  </description>
+
+  <!-- Now we'll customize a rule's property value -->
+  <!-- rule ref="rulesets/java/codesize.xml/ExcessiveMethodLength"/-->
+  <!-- rule ref="/home/hozano/git/badsmells-analyser/platform/src/resources/smells.xml/TccAndAtfdRule"/-->
+  <!-- rule ref="/home/hozano/git/badsmells-analyser/platform/src/resources/smells.xml/GodClassRule"/ -->
+  <!-- rule ref="/home/hozano/git/badsmells-analyser/platform/src/resources/smells.xml/MLOCRule"/ -->
+  <rule ref="/home/hozano/git/badsmells-analyser/platform/src/resources/smells.xml/NOPARAMRule"/>
+  <!-- rule ref="/home/hozano/git/badsmells-analyser/platform/src/resources/smells.xml/FeatureEnvyRule"/ -->
+
+</ruleset>

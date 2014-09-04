@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<ruleset name="My custom rules"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 http://pmd.sourceforge.net/ruleset_2_0_0.xsd">
+    
+    <rule name="TccAndAtfdRule"
+          message="WMC. TCC And ATFD Rule"
+          class="br.ufal.sapiens.refactoring.metrics.pmd.TccAndAtfdCalculator">
+      <description>
+      Avoid using 'while' statements without using curly braces
+      </description>
+        <priority>3</priority>
+
+      <example>
+<![CDATA[
+    public void doSomething() {
+      while (true)
+          x++;
+    }
+]]>
+      </example>
+    </rule>
+    
+    <rule name="MLOCRule"
+          message="MLOC Rule"
+          class="br.ufal.sapiens.refactoring.metrics.pmd.MLOCCalculator">
+      <description>
+      Avoid long methods
+      </description>
+        <priority>3</priority>
+    </rule>
+    
+    <rule name="NOPARAMRule"
+          message="NOPARAM Rule"
+          class="br.ufal.sapiens.refactoring.metrics.pmd.NOPARAMCalculator">
+      <description>
+      Avoid Excessive Parameters
+      </description>
+        <priority>3</priority>
+    </rule>
+    
+    <rule name="FeatureEnvyRule"
+          message="FeatureEnvyRule"
+          class="br.ufal.sapiens.refactoring.metrics.pmd.FeatureEnvyMetricsCalculator">
+      <description>
+      FDP Calculator
+      </description>
+        <priority>2</priority>
+    </rule>
+    
+</ruleset>
