@@ -2,26 +2,24 @@ package br.ufal.sapiens.refactoring.metrics.pmd;
 
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractStatisticalJavaRule;
-import net.sourceforge.pmd.lang.java.rule.design.ExcessiveNodeCountRule;
 import net.sourceforge.pmd.stat.DataPoint;
 import net.sourceforge.pmd.util.NumericConstants;
 
 public class NOPARAMCalculator extends AbstractStatisticalJavaRule {
-    private Class<?> nodeClass;
-    
-    public NOPARAMCalculator() {
-        this(ASTFormalParameters.class);
-        setProperty(MINIMUM_DESCRIPTOR, 0d);
-    }
+	private Class<?> nodeClass;
 
-    public NOPARAMCalculator(Class<?> nodeClass) {
-    	this.nodeClass = nodeClass;
-    }
+	public NOPARAMCalculator() {
+		this(ASTFormalParameters.class);
+		setProperty(MINIMUM_DESCRIPTOR, 0d);
+	}
 
-    @Override
+	public NOPARAMCalculator(Class<?> nodeClass) {
+		this.nodeClass = nodeClass;
+	}
+
+	@Override
 	public Object visit(JavaNode node, Object data) {
 		int numNodes = 0;
 
@@ -34,22 +32,17 @@ public class NOPARAMCalculator extends AbstractStatisticalJavaRule {
 		if (nodeClass.isInstance(node)) {
 			DataPoint point = new DataPoint();
 			point.setNode(node);
-			double score = 1.0 * numNodes;
-			point.setScore(score);
-			point.setMessage(" NOPARAM="+(int)score);
+			point.setScore(1.0 * numNodes);
+			point.setMessage("NOPARAM=" + (int)point.getScore());
 			addDataPoint(point);
 		}
 
 		return Integer.valueOf(numNodes);
 	}
 
+	// Count these nodes, but no others.
+	public Object visit(ASTFormalParameter node, Object data) {
+		return NumericConstants.ONE;
+	}
 
-
-    
- // Count these nodes, but no others.
-    public Object visit(ASTFormalParameter node, Object data) {
-        return NumericConstants.ONE;
-    }
-    
-} 
-
+}

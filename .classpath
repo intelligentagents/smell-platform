@@ -6,5 +6,9 @@
 	<classpathentry kind="lib" path="/home/hozano/git/smell-platform/lib/weka.jar"/>
 	<classpathentry kind="lib" path="/home/hozano/git/smell-platform/lib/weka-gp.jar"/>
 	<classpathentry kind="lib" path="/home/hozano/git/smell-platform/lib/pmd-5.1.2.jar"/>
+	<classpathentry kind="lib" path="/home/hozano/git/smell-platform/lib/jcommander-1.27.jar"/>
+	<classpathentry kind="lib" path="/home/hozano/git/smell-platform/lib/jaxen-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/home/hozano/git/smell-platform/lib/commons-io-2.2.jar"/>
+	<classpathentry kind="lib" path="/home/hozano/git/smell-platform/lib/asm-5.0_BETA.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

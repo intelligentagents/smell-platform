@@ -10,8 +10,7 @@ import javax.swing.JOptionPane;
 
 import br.ufal.sapiens.refactoring.analysis.StatementAnalysis;
 import br.ufal.sapiens.refactoring.classifier.ClassifierManager;
-import br.ufal.sapiens.refactoring.classifier.sniffer.FeatureEnvySniffer;
-import br.ufal.sapiens.refactoring.classifier.sniffer.LongMethodSniffer;
+import br.ufal.sapiens.refactoring.classifier.sniffer.GodClassSniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.NeighbourStatement;
 import br.ufal.sapiens.refactoring.classifier.sniffer.SniffedSmell;
 import br.ufal.sapiens.refactoring.classifier.sniffer.Sniffer;
@@ -96,9 +95,9 @@ public class SmellPlatform {
 		
 		
 		SmellPlatform platform = new SmellPlatform(project);
-		Sniffer sniffer = new FeatureEnvySniffer();
+		Sniffer sniffer = new GodClassSniffer();
 //		platform.run(sniffer);
-		platform.getRulesFromAnalysis(sniffer, "data/an-fe.csv");
+		platform.getRulesFromAnalysis(sniffer, "data/an-gc.csv");
 		
 	}
 }

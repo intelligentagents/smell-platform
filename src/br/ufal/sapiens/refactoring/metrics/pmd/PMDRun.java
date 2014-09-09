@@ -11,10 +11,10 @@ public class PMDRun {
 	public static void main(String[] args) throws FileNotFoundException {
 		String path = "/home/hozano/apps/ganttproject-2.0.10-src/ganttproject/src";
 //		String path = "/home/hozano/apps/ganttproject-2.0.10-src/ganttproject/src/net/sourceforge/ganttproject/GanttProject.java";
-		String[] argz = new String[]{"-R", "/home/hozano/git/badsmells-analyser/platform/src/resources/ruleset.xml",
+		String[] argz = new String[]{"-R", "/home/hozano/git/smell-platform/src/resources/ruleset.xml",
 				"-d", path};
 		
-		PrintStream out = new PrintStream(new FileOutputStream("gantt-lpl.txt"));
+		PrintStream out = new PrintStream(new FileOutputStream("data/gantt-lpl.txt"));
 		System.setOut(out);
 		PMD.main(argz);
 	}
