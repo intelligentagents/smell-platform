@@ -13,10 +13,9 @@ public class FeatureEnvySniffer extends Sniffer {
 
 	public FeatureEnvySniffer() {
 		super("FeatureEnvySniffer", Smell.FeatureEnvy());
-		this.reset();
 	}
 	
-	public void reset() {
+	public Rule getInitialRule() {
 		Rule rule = new Rule("Feature Envy Rule", Smell.FeatureEnvy());
 		Expression exp1 = new Expression("atfd", Operator.GreaterThan(), ATFD_FEW);
 		Expression exp2 = new Expression("laa", Operator.LessThan(), LAA_ONE_THIRD);
@@ -24,7 +23,7 @@ public class FeatureEnvySniffer extends Sniffer {
 		rule.getExpressions().add(exp1);
 		rule.getExpressions().add(exp2);
 		rule.getExpressions().add(exp3);
-		this.setRule(rule);
+		return rule;
 	}
 
 }

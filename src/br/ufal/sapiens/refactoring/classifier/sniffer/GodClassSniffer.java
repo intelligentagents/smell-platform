@@ -9,14 +9,14 @@ public class GodClassSniffer extends Sniffer {
 
 	private int WMC_VERY_HIGH = 47;
 	private int ATFD_FEW_THRESHOLD = 5;
-	private float TCC_ONE_THIRD_THRESHOLD = 1.0f / 3.0f;
-
+	private float TCC_ONE_THIRD_THRESHOLD = 1.0f/3.0f;
+	
 	public GodClassSniffer() {
 		super("GodClassSniffer", Smell.GodClass());
 		this.reset();
 	}
 	
-	public void reset() {
+	public Rule getInitialRule() {
 		Rule rule = new Rule("God Class - Lanza & Marinecu", Smell.GodClass());
 		Expression exp1 = new Expression("wmc", Operator.GreaterEqualThan(), WMC_VERY_HIGH*1.0f);
 		Expression exp2 = new Expression("atfd", Operator.GreaterThan(), ATFD_FEW_THRESHOLD*1.0f);
@@ -24,7 +24,7 @@ public class GodClassSniffer extends Sniffer {
 		rule.getExpressions().add(exp1);
 		rule.getExpressions().add(exp2);
 		rule.getExpressions().add(exp3);
-		this.setRule(rule);
+		return rule;
 	}
 
 }

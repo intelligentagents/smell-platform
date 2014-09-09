@@ -14,11 +14,11 @@ public class LongMethodSniffer extends Sniffer {
 		this.reset();
 	}
 	
-	public void reset() {
+	public Rule getInitialRule() {
 		Rule rule = new Rule("Long Method - MLOC", Smell.LongMethod());
 		Expression exp1 = new Expression("mloc", Operator.GreaterEqualThan(), MLOC_HIGH*1.0f);
 		rule.getExpressions().add(exp1);
-		this.setRule(rule);
+		return rule;
 	}
 
 }

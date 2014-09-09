@@ -14,11 +14,11 @@ public class LongParameterListSniffer extends Sniffer {
 		this.reset();
 	}
 	
-	public void reset() {
+	public Rule getInitialRule() {
 		Rule rule = new Rule("Long Parameter List - NPARAM", Smell.LongParameterList());
 		Expression exp1 = new Expression("nparam", Operator.GreaterEqualThan(), NPARAM_HIGH*1.0f);
 		rule.getExpressions().add(exp1);
-		this.setRule(rule);
+		return rule;
 	}
 
 

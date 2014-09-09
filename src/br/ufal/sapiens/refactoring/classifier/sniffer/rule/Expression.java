@@ -51,8 +51,14 @@ public class Expression {
 	public void updateExpression(StatementAnalysis analysis) {
 		if (analysis.isVerify() != this.verify(analysis.getStatement())) {
 			this.setValue(analysis.getStatement().getMetricValues().get(this.getMetricName()));
-			if (Operator.GreaterThan() == this.operator) this.operator = Operator.GreaterEqualThan();
-			if (Operator.LessThan() == this.operator) this.operator = Operator.LessEqualThan();
+			if (analysis.isVerify()) {
+				if (Operator.GreaterThan() == this.operator) this.operator = Operator.GreaterEqualThan();
+				if (Operator.LessThan() == this.operator) this.operator = Operator.LessEqualThan();
+			} else {
+				if (Operator.GreaterEqualThan() == this.operator) this.operator = Operator.GreaterThan();
+				if (Operator.LessEqualThan() == this.operator) this.operator = Operator.LessThan();
+			}
+			
 		}
 	}
 

@@ -14,13 +14,14 @@ import br.ufal.sapiens.refactoring.pr.Statement;
 public abstract class Sniffer {
 	private String name;
 	private Smell smell;
-	private Rule rule;
-	private List<StatementAnalysis> statementAnalysis = new ArrayList<StatementAnalysis>();
+	private List<Rule> rules;
+	private List<StatementAnalysis> statementAnalysis;
 	private List<SniffedSmell> sniffedSmells;
 	
 	public Sniffer(String name, Smell smell) {
 		this.name = name;
 		this.smell = smell;
+		this.reset();
 	}
 
 	public List<SniffedSmell> findSmells(Project project, Smell smell) {
@@ -39,7 +40,7 @@ public abstract class Sniffer {
 		List<Statement> statements = new ArrayList<Statement>(project.getStatements(smell.getType()).values());
 		List<Statement> filteredStatements = new ArrayList<Statement>();
 		for (Statement statement : statements) {
-			if (statement.getMetricNames().containsAll(this.rule.getMetricNames())) {
+			if (statement.getMetricNames().containsAll(this.getLastRule().getMetricNames())) {
 				filteredStatements.add(statement);
 			}
 		}
@@ -58,15 +59,23 @@ public abstract class Sniffer {
 		statements = this.removeAnalyzedStatements(statements);
 		
 		try {
-			return WekaUtil.getNeighbourStatements(statements, this.getRule(), maxNeighbours);
+			return WekaUtil.getNeighbourStatements(statements, this.getLastRule(), maxNeighbours);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return new ArrayList<NeighbourStatement>();
 	}
 	
-	public boolean updateRule() {
-		return this.getRule().updateRule(this.getStatementAnalysis());
+	public void updateRule() {
+		for (StatementAnalysis analysis : this.getStatementAnalysis()) {
+			if (analysis.isVerify() != this.getLastRule().verifyRule(analysis.getStatement())) {
+				Rule rule = this.getLastRule().update(analysis);
+				if (this.getEvaluation(rule) > this.getEvaluation(this.getBestRule())) {
+					rule.setName("R"+rules.size());
+					this.rules.add(rule);
+				}	
+			}
+		}
 	}
 
 	public String getName() {
@@ -85,12 +94,16 @@ public abstract class Sniffer {
 		this.smell = smell;
 	}
 
-	public Rule getRule() {
-		return rule;
+	public List<Rule> getRules() {
+		return rules;
 	}
 
-	public void setRule(Rule rule) {
-		this.rule = rule;
+	public void setRule(List<Rule> rules) {
+		this.rules = rules;
+	}
+	
+	public Rule getLastRule() {
+		return this.rules.get(this.rules.size() - 1);
 	}
 	
 	public List<StatementAnalysis> getStatementAnalysis() {
@@ -110,7 +123,11 @@ public abstract class Sniffer {
 	}
 
 	public boolean verify(Statement statement) {
-		return this.getRule().verifyRule(statement);
+		return this.getLastRule().verifyRule(statement);
+	}
+	
+	public boolean verify(Statement statement, Rule rule) {
+		return rule.verifyRule(statement);
 	}
 	
 	public List<Statement> getAnalyzedStatements() {
@@ -121,6 +138,41 @@ public abstract class Sniffer {
 		return statements;
 	}
 	
-	public abstract void reset();
+	public float getEvaluationFromInitialRule() {
+		return this.getEvaluation(this.getInitialRule());
+	}
+	
+	public float getEvaluation(Rule rule) {
+		int tp = 0;
+		for (StatementAnalysis analysis : this.statementAnalysis) {
+			if (this.verify(analysis.getStatement(), rule) == analysis.isVerify()) {
+				tp += 1;
+			}
+		}
+		int total = this.statementAnalysis.size();
+		float precision = 1.0f * tp / total;
+		return precision;
+	}
+	
+	public Rule getBestRule() {
+		float precision = getEvaluationFromInitialRule();
+		Rule bestRule = null;
+		for (Rule rule : this.rules) {
+			float rulePrecision = this.getEvaluation(rule);
+			if (rulePrecision > precision)
+				precision = rulePrecision;
+				bestRule = rule;
+		}
+		return bestRule;
+	}
+	
+	public abstract Rule getInitialRule();
+	
+	public void reset() {
+		this.statementAnalysis = new ArrayList<StatementAnalysis>();
+		this.rules = new ArrayList<Rule>(); 
+		this.rules.add(this.getInitialRule());
+		this.rules.get(0).setName("R0");
+	}
 	
 }

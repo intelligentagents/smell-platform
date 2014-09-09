@@ -18,6 +18,15 @@ public class Rule {
 		this.name = name;
 		this.smell = smell;
 	}
+	
+	public Rule(Rule rule) {
+		this.expressions = new ArrayList<Expression>();
+		this.name = rule.name;
+		this.smell = rule.smell;
+		for (Expression expression : rule.getExpressions()) {
+			this.expressions.add(new Expression(expression.getMetricName(), expression.getOperator(), expression.getValue()));
+		}
+	}
 
 	public String getName() {
 		return name;
@@ -42,7 +51,7 @@ public class Rule {
 	public void setSmell(Smell smell) {
 		this.smell = smell;
 	}
-
+	
 	public boolean verifyRule(Statement statement) {
 		for (Expression expression : this.getExpressions()) {
 			if (!expression.verify(statement)) {
@@ -70,37 +79,23 @@ public class Rule {
 	
 	@Override
 	public String toString() {
-		String result = "";
+		String result = this.name + ":";
+		int i = 0;
 		for (Expression expression : this.getExpressions()) {
-			if (!"".equals(result))
+			if (i != 0)
 				result += " ^ "; 
 			result += expression.toString();
+			i++;
 		}
 		return result;
 	}
 	
-	private void updateRule(StatementAnalysis anl) {
-		if (anl.isVerify()) {
-			System.out.println("updateExpression");
-			for (Expression expression : this.getExpressions()) {
-				expression.updateExpression(anl);
-			}
-		} else {
-			for (Expression expression : this.getExpressions()) {
-				expression.updateExpression(anl);
-			}
+	public Rule update(StatementAnalysis analysis) {
+		Rule newRule = new Rule(this);
+		for (Expression expression : newRule.getExpressions()) {
+			expression.updateExpression(analysis);
 		}
-	}
-	
-	public boolean updateRule(List<StatementAnalysis> analysis) {
-		boolean updated = false; 
-		for (StatementAnalysis anl : analysis) {
-			if (this.verifyRule(anl.getStatement()) != anl.isVerify()) {
-				this.updateRule(anl);
-				updated = true;
-			}
-		}
-		return updated;
+		return newRule;
 	}
 	
 }

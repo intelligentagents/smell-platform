@@ -22,18 +22,33 @@ public class NOPARAMCalculator extends AbstractStatisticalJavaRule {
     }
 
     @Override
-    public Object visit(JavaNode node, Object data) {
-	if (nodeClass.isInstance(node)) {
-	    DataPoint point = new DataPoint();
-	    point.setNode(node);
-	    ASTFormalParameters method = (ASTFormalParameters)node;
-	    double score = 1.0 * (node.getEndLine() - node.getBeginLine());
-	    point.setScore(score);
-	    point.setMessage(" NOPARAM="+(int)score);
-	    addDataPoint(point);
+	public Object visit(JavaNode node, Object data) {
+		int numNodes = 0;
+
+		for (int i = 0; i < node.jjtGetNumChildren(); i++) {
+			Integer treeSize = (Integer) ((JavaNode) node.jjtGetChild(i))
+					.jjtAccept(this, data);
+			numNodes += treeSize;
+		}
+
+		if (nodeClass.isInstance(node)) {
+			DataPoint point = new DataPoint();
+			point.setNode(node);
+			double score = 1.0 * numNodes;
+			point.setScore(score);
+			point.setMessage(" NOPARAM="+(int)score);
+			addDataPoint(point);
+		}
+
+		return Integer.valueOf(numNodes);
 	}
 
-	return node.childrenAccept(this, data);
+
+
+    
+ // Count these nodes, but no others.
+    public Object visit(ASTFormalParameter node, Object data) {
+        return NumericConstants.ONE;
     }
     
 } 
