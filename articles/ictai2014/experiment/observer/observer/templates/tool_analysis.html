@@ -1,0 +1,33 @@
+{% extends "base.html"%}
+
+{% block titulo %} Analyzing {{analysis.count}} Objects {% endblock %}
+
+{% block content %} 
+
+    <table class="table table-striped table-bordered table-hover" id="example">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Tool</th>
+          <th>Smell</th>
+          <th>Ref</th>
+          <th>Date</th>
+          <th>Verified</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        {% for anl in analysis %}
+        	<tr>
+        		<td>{{forloop.counter0}}</td>
+        		<td>{{anl.tool}}</td>
+        		<td>{{anl.smell}}</td>
+        		<td>{{anl.statement.ref}}</td>
+        		<td>{{anl.date}}</td>
+        		<td>{% if anl.verified %} <span class='badge badge-success'>Y</span>{% else %} <span class='badge badge-danger'>N</span> {% endif %}</td>
+			</tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    
+{% endblock %}

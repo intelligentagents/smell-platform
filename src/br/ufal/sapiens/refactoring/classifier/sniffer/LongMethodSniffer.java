@@ -11,7 +11,6 @@ public class LongMethodSniffer extends Sniffer {
 
 	public LongMethodSniffer() {
 		super("LongMethodSniffer", Smell.LongMethod());
-		this.reset();
 	}
 	
 	public Rule getInitialRule() {

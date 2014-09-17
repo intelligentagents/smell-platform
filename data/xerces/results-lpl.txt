@@ -1,0 +1,21 @@
+Training on Gantt
+=================
+Initial rule: Long Parameter List - NPARAM:nparam >= 10.0
+Dev 1 :Long Parameter List - NPARAM:nparam >= 10.0 - Precision: 1.0 - Before: 1.0
+Dev 2 :Long Parameter List - NPARAM:nparam >= 10.0 - Precision: 1.0 - Before: 1.0
+Dev 3 :R1:nparam >= 9.0 - Precision: 1.0 - Before: 0.0
+Dev 4 :R1:nparam >= 9.0 - Precision: 1.0 - Before: 0.0
+Dev 5 :R1:nparam >= 9.0 - Precision: 1.0 - Before: 0.0
+Dev 6 :R1:nparam >= 9.0 - Precision: 1.0 - Before: 0.0
+
+Testing on Xerces
+=================
+Initial rule: Long Parameter List - NPARAM:nparam >= 10.0
+Dev 1 :R0:nparam >= 10.0 - Precision: 0.75 - Before: 0.75
+Dev 2 :R0:nparam >= 10.0 - Precision: 0.25 - Before: 0.25
+Dev 3 :R0:nparam >= 9.0 - Precision: 0.2 - Before: 0.15
+Dev 4 :R0:nparam >= 9.0 - Precision: 0.2 - Before: 0.15
+Dev 5 :R0:nparam >= 9.0 - Precision: 0.6315789 - Before: 0.5263158
+Dev 6 :R0:nparam >= 9.0 - Precision: 0.2 - Before: 0.15
+
+

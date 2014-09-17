@@ -61,5 +61,22 @@ public class Expression {
 			
 		}
 	}
+	
+	public static Expression fromString(String rawExpression) {
+		String op = "";
+		if (rawExpression.contains(">="))
+			op = ">=";
+		else if (rawExpression.contains("<="))
+			op = "<=";
+		else if (rawExpression.contains(">"))
+			op = ">";
+		else if (rawExpression.contains("<"))
+			op = "<";
+		if (!"".equals(op)) {
+			String[] parts = rawExpression.split(op);
+			return new Expression(parts[0].trim(), new Operator(op), new Float(parts[1]));
+		}
+		return null;
+	}
 
 }

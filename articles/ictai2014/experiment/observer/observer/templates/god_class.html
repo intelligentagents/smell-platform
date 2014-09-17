@@ -1,0 +1,39 @@
+{% extends "base.html"%}
+
+{% block titulo %} Analyzing {{stats.count}} Objects {% endblock %}
+
+{% block content %} 
+
+    <table class="table table-striped table-bordered table-hover" id="example">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>ID</th>
+          <th>Ref</th>
+          <th>WMC2</th>
+          <th>ATFD</th>
+          <th>TCC</th>
+          <th>Lanza GC</th>
+          <th>inFusion</th>
+          <th>JDeodorant</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% load nucleo_tags %}
+        {% for statement in stats %}
+        	<tr>
+        		<td>{{forloop.counter0}}</td>
+        		<td>{{statement.id}}</td>
+        		<td title="{{statement.name}}">{{statement.ref}}</td>
+        		<td>{% get_measure_value statement.id "WMC2" %}</td>
+        		<td>{% get_measure_value statement.id "ATFD" %}</td>
+				<td>{% get_measure_value statement.id "TCC" %}</td>
+				<td>{% lm_god_class statement.id %}</td>        		
+        		<td>{% toolanalysis "inFusion" statement.id "God Class" %}</td>
+        		<td>{% toolanalysis "JDeodorant" statement.id "God Class" %}</td>
+			</tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    
+{% endblock %}

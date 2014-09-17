@@ -46,7 +46,7 @@ public class StatementAnalysis {
 	
 	@Override
 	public String toString() {
-		return this.smell.getShortName() + ":" + Boolean.compare(this.verify, true) + ":" + this.statement;
+		return this.smell.getShortName() + ":" + (this.verify ? 1 : 0) + ":" + this.statement;
 	}
 	
 }

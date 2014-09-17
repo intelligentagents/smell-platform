@@ -13,7 +13,6 @@ public class GodClassSniffer extends Sniffer {
 	
 	public GodClassSniffer() {
 		super("GodClassSniffer", Smell.GodClass());
-		this.reset();
 	}
 	
 	public Rule getInitialRule() {

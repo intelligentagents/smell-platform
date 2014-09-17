@@ -3,12 +3,11 @@ package br.ufal.sapiens.refactoring.classifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.ufal.sapiens.refactoring.analysis.StatementAnalysis;
-import br.ufal.sapiens.refactoring.classifier.smell.Smell;
 import br.ufal.sapiens.refactoring.classifier.sniffer.GodClassSniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.NeighbourStatement;
 import br.ufal.sapiens.refactoring.classifier.sniffer.SniffedSmell;
 import br.ufal.sapiens.refactoring.classifier.sniffer.Sniffer;
+import br.ufal.sapiens.refactoring.developer.Developer;
 import br.ufal.sapiens.refactoring.pr.Project;
 
 public class ClassifierManager {
@@ -27,14 +26,14 @@ public class ClassifierManager {
 		return instance;
 	}
 	
-	public List<SniffedSmell> findSmells(Project project, Sniffer sniffer) {
+	public List<SniffedSmell> findSmells(Project project, Developer developer, Sniffer sniffer) {
 		List<SniffedSmell> smells = new ArrayList<SniffedSmell>();
-		smells.addAll(sniffer.findSmells(project, sniffer.getSmell()));
+		smells.addAll(sniffer.findSmells(project, developer, sniffer.getSmell()));
 		return smells;
 	}
 	
-	public List<NeighbourStatement> getNeighbourStatements(Project project, Sniffer sniffer, int maxNeighbours) {
-		return sniffer.getNeighbourStatements(project, maxNeighbours);
+	public List<NeighbourStatement> getNeighbourStatements(Project project, Developer developer, Sniffer sniffer, int maxNeighbours) {
+		return sniffer.getNeighbourStatements(project, developer, maxNeighbours);
 	}
 
 	public List<Sniffer> getSniffers() {

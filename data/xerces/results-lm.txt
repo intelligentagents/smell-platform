@@ -1,0 +1,19 @@
+Training on Gantt
+=================
+Initial rule: Long Method - MLOC:mloc >= 100.0
+Dev 1 :R3:mloc >= 48.0 - Precision: 1.0 - Before: 0.7368421
+Dev 2 :R1:mloc >= 86.0 - Precision: 1.0 - Before: 0.9375
+Dev 3 :R1:mloc >= 34.0 - Precision: 0.85 - Before: 0.6
+Dev 4 :R1:mloc >= 38.0 - Precision: 0.7894737 - Before: 0.7368421
+Dev 5 :Long Method - MLOC:mloc >= 100.0 - Precision: 1.0 - Before: 1.0
+Dev 6 :R3:mloc >= 81.0 - Precision: 1.0 - Before: 0.85
+
+Testing on Xerces
+=================
+Initial rule: Long Method - MLOC:mloc >= 100.0
+Dev 1 :R0:mloc >= 48.0 - Precision: 0.68421054 - Before: 0.6315789
+Dev 2 :R0:mloc >= 86.0 - Precision: 0.4 - Before: 0.6
+Dev 3 :R0:mloc >= 34.0 - Precision: 0.35 - Before: 0.75
+Dev 4 :R0:mloc >= 38.0 - Precision: 0.2777778 - Before: 0.8888889
+Dev 5 :R0:mloc >= 100.0 - Precision: 0.7777778 - Before: 0.7777778
+Dev 6 :R0:mloc >= 81.0 - Precision: 0.95 - Before: 0.7

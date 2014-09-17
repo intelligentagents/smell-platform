@@ -12,7 +12,7 @@ public class NOPARAMCalculator extends AbstractStatisticalJavaRule {
 
 	public NOPARAMCalculator() {
 		this(ASTFormalParameters.class);
-		setProperty(MINIMUM_DESCRIPTOR, 0d);
+		setProperty(MINIMUM_DESCRIPTOR, 1d);
 	}
 
 	public NOPARAMCalculator(Class<?> nodeClass) {

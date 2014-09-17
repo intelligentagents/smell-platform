@@ -1,9 +1,13 @@
 package br.ufal.sapiens.refactoring.classifier.sniffer;
 
+import java.util.List;
+
+import br.ufal.sapiens.refactoring.analysis.StatementAnalysis;
 import br.ufal.sapiens.refactoring.classifier.smell.Smell;
 import br.ufal.sapiens.refactoring.classifier.sniffer.rule.Expression;
 import br.ufal.sapiens.refactoring.classifier.sniffer.rule.Operator;
 import br.ufal.sapiens.refactoring.classifier.sniffer.rule.Rule;
+import br.ufal.sapiens.refactoring.developer.Developer;
 
 public class FeatureEnvySniffer extends Sniffer {
 
@@ -24,6 +28,24 @@ public class FeatureEnvySniffer extends Sniffer {
 		rule.getExpressions().add(exp2);
 		rule.getExpressions().add(exp3);
 		return rule;
+	}
+	
+	public void updateRule(Developer developer) {
+		super.updateRule(developer);
+		Rule rule = developer.getLastRule(this.getSmell());
+		Expression atfdExpression = null;
+		Expression fdpExpression = null;
+		for (Expression expression : rule.getExpressions()) {
+			if (expression.getMetricName().equals("atfd")) {
+				atfdExpression = expression;
+			}
+			if (expression.getMetricName().equals("fdp")) {
+				fdpExpression = expression;
+			}
+		}
+		if (atfdExpression.getValue() < fdpExpression.getValue()) {
+			atfdExpression.setValue(fdpExpression.getValue()); //Garantindo que atfd >= fdp
+		}
 	}
 
 }

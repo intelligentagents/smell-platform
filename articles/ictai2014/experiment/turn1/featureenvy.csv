@@ -1,0 +1,122 @@
+1#net.sourceforge.ganttproject.chart.ChartModelImpl
+- setTuningOptions(net.sourceforge.ganttproject.chart.ChartModelImpl.TuningOptions):void
+2#net.sourceforge.ganttproject.chart.TaskRendererImpl
+- drawPreviousStateTask(net.sourceforge.ganttproject.GanttPreviousStateTask, int):void
+3#net.sourceforge.ganttproject.chart.GraphicPrimitiveContainer
+- bind(net.sourceforge.ganttproject.chart.GraphicPrimitiveContainer.GraphicPrimitive, java.lang.Object):void
+4#net.sourceforge.ganttproject.chart.TaskRendererImpl
+- processRegularActivity(net.sourceforge.ganttproject.task.TaskActivity):Rectangle
+5#net.sourceforge.ganttproject.TaskTreeImageGenerator
+- getPrintableNodes(net.sourceforge.ganttproject.GanttExportSettings):java.util.List
+6#net.sourceforge.ganttproject.chart.TaskRendererImpl
+- renderProgressBar(net.sourceforge.ganttproject.task.TaskActivity, Rectangle):void
+7#net.sourceforge.ganttproject.GanttProject
+- quitApplication():void
+8#net.sourceforge.ganttproject.GanttTree2
+- selectTreeRow(int):void
+9#net.sourceforge.ganttproject.GanttTreeTable
+- setDelay(net.sourceforge.ganttproject.task.TaskNode, net.sourceforge.ganttproject.delay.Delay):void
+10#net.sourceforge.ganttproject.GanttResourcePanel
+- sendMail(net.sourceforge.ganttproject.GanttProject):void
+11#net.sourceforge.ganttproject.GanttResourcePanel
+- newHuman(net.sourceforge.ganttproject.resource.HumanResource):void
+12#net.sourceforge.ganttproject.GanttResourcePanel
+- setActions():void
+13#net.sourceforge.ganttproject.GanttTree2
+- selectTask(net.sourceforge.ganttproject.task.Task, boolean):void
+14#net.sourceforge.ganttproject.GanttTree2
+- setActions():void
+15#net.sourceforge.ganttproject.GanttTree2
+- getSelectedNode():javax.swing.tree.DefaultMutableTreeNode
+16#net.sourceforge.ganttproject.GanttProject
+- changeWorkingDirectory(java.lang.String):void
+17#net.sourceforge.ganttproject.GanttProject
+- recalculateCriticalPath():void
+18#net.sourceforge.ganttproject.GanttProject
+- saveAsProject():boolean
+19#net.sourceforge.ganttproject.GanttTree2
+- restoreExpand(net.sourceforge.ganttproject.task.TaskNode):void
+20#net.sourceforge.ganttproject.GanttProject
+- printProject():void
+21#net.sourceforge.ganttproject.GanttTree2
+- expandRefresh(javax.swing.tree.DefaultMutableTreeNode):void
+22#net.sourceforge.ganttproject.chart.ChartModelImpl
+- getTaskActivityRectangles(net.sourceforge.ganttproject.task.Task):Rectangle[]
+23#net.sourceforge.ganttproject.ResourceTreeTable
+- newResourceColumn(int):net.sourceforge.ganttproject.resource.ResourceColumn
+24#net.sourceforge.ganttproject.GanttTree2
+- addBlankLine(javax.swing.tree.DefaultMutableTreeNode, int):void
+25#net.sourceforge.ganttproject.GanttProject
+- saveProject():void
+26#net.sourceforge.ganttproject.GanttResourcePanel
+- nbPeople():int
+27#net.sourceforge.ganttproject.calendar.GanttDaysOff
+- equals(net.sourceforge.ganttproject.calendar.GanttDaysOff):boolean
+28#net.sourceforge.ganttproject.calendar.GanttDaysOff
+- isADayOff(net.sourceforge.ganttproject.GanttCalendar):boolean
+29#net.sourceforge.ganttproject.calendar.GanttDaysOff
+- getDuration():int
+30#net.sourceforge.ganttproject.GanttTree2
+- getSelectedTaskNodes():net.sourceforge.ganttproject.task.TaskNode[]
+31#net.sourceforge.ganttproject.GanttProject
+- initIconList():javax.swing.DefaultListModel
+32#net.sourceforge.ganttproject.GanttProject
+- initDeletedIconList():javax.swing.DefaultListModel
+33#net.sourceforge.ganttproject.GanttTree2
+- createMenuAction(java.lang.String, java.lang.String):javax.swing.Action
+34#net.sourceforge.ganttproject.GanttTree2
+- getAllVisibleNodes():java.util.List
+35#net.sourceforge.ganttproject.chart.ChartHeaderImpl
+- renderTopUnits():void
+36#net.sourceforge.ganttproject.chart.ChartHeaderImpl
+- renderBottomUnits():void
+37#net.sourceforge.ganttproject.GanttGraphicArea
+- setPreviousStateTasks(java.util.ArrayList):void
+38#net.sourceforge.ganttproject.ResourceTreeTable
+- newResourceColumn():net.sourceforge.ganttproject.resource.ResourceColumn
+39#net.sourceforge.ganttproject.ResourceTreeTable
+- updateColumnOrders(int, int):void
+40#net.sourceforge.ganttproject.ResourceTreeTable
+- addMandatoryColumnResourceTreeTable(net.sourceforge.ganttproject.resource.ResourceColumn):void
+41#net.sourceforge.ganttproject.ResourceLoadGraphicArea
+- getHumanResourceManager():net.sourceforge.ganttproject.resource.HumanResourceManager
+42#net.sourceforge.ganttproject.GanttTree2
+- getSelectedTaskNode():javax.swing.tree.DefaultMutableTreeNode
+43#net.sourceforge.ganttproject.GanttTree2
+- getSelectedNodes():javax.swing.tree.DefaultMutableTreeNode[]
+44#net.sourceforge.ganttproject.ResourceTreeTable
+- deleteCustomColumn(java.lang.String):void
+45#net.sourceforge.ganttproject.chart.ChartHeaderImpl
+- createGreyRectangleWithNiceBorders():void
+46#net.sourceforge.ganttproject.UIFacadeImpl
+- createCancelAction(javax.swing.Action, javax.swing.JDialog, Commiter):javax.swing.Action
+47#net.sourceforge.ganttproject.TaskTreeImageGenerator
+- isVisible(net.sourceforge.ganttproject.task.Task):boolean
+48#net.sourceforge.ganttproject.GanttProject
+- addButtons():void
+49#net.sourceforge.ganttproject.chart.CachingOffsetCalculatorImpl
+- calculateOffsets(TimeFrame, TimeUnit, Date, TimeUnit, int):Offset[]
+50#net.sourceforge.ganttproject.GanttTreeTable
+- initColumnsAlignements() : void
+51#net.sourceforge.ganttproject.GanttTreeTable
+- getIdForName(String colName) : String
+52#net.sourceforge.ganttproject.GanttTreeTable
+- getNameForId(String id) : String
+53#net.sourceforge.ganttproject.GanttTreeTable$1
+- languageChanged(Event event) : void
+54#net.sourceforge.ganttproject.ResourceTreeTable
+- initColumnsAlignements() : void
+55#net.sourceforge.ganttproject.chart.StyledPainterImpl
+- paint(Text next) : void
+56#net.sourceforge.ganttproject.chart.StyledPainterImpl
+- paint(Rectangle next) : void
+57#net.sourceforge.ganttproject.chart.StyledPainterImpl$1
+- paint(Rectangle next) : void
+58#net.sourceforge.ganttproject.chart.ResourceLoadRenderer
+- buildTasksLoadsRectangles(List partition, int ypos) : void
+59#net.sourceforge.ganttproject.io.GanttCSVExport
+- writeTaskHeaders(OutputStreamWriter out) : void
+60#net.sourceforge.ganttproject.io.GanttCSVExport
+- writeResourceHeaders(OutputStreamWriter out) : void
+61#net.sourceforge.ganttproject.parser.TaskTagHandler
+- loadTask(Attributes attrs) : void

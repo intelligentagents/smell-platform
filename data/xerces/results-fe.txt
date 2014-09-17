@@ -1,0 +1,20 @@
+Training on Gantt
+=================
+Initial rule: Feature Envy Rule:atfd > 5.0 ^ laa < 0.33333334 ^ fdp <= 5.0
+Dev 1 :R2:atfd > 5.0 ^ laa < 0.6666667 ^ fdp <= 5.0 - Precision: 0.5 - Before: 0.45
+Dev 2 :R2:atfd > 3.0 ^ laa < 0.6 ^ fdp <= 3.0 - Precision: 0.65 - Before: 0.6
+Dev 3 :R1:atfd > 7.0 ^ laa < 0.3 ^ fdp <= 4.0 - Precision: 0.68421054 - Before: 0.6315789
+Dev 4 :R2:atfd > 11.0 ^ laa < 0.21428572 ^ fdp <= 2.0 - Precision: 0.95 - Before: 0.85
+Dev 5 :R3:atfd > 7.0 ^ laa < 0.42857143 ^ fdp <= 7.0 - Precision: 0.7 - Before: 0.6
+Dev 6 :R5:atfd > 6.0 ^ laa < 1.0 ^ fdp <= 6.0 - Precision: 0.35 - Before: 0.2
+
+
+Testing on Xerces
+=================
+Initial rule: Feature Envy Rule:atfd > 5.0 ^ laa < 0.33333334 ^ fdp <= 5.0
+Dev 1 :R0:atfd > 5.0 ^ laa < 0.6666667 ^ fdp <= 5.0 - Precision: 0.7 - Before: 0.5
+Dev 2 :R0:atfd > 3.0 ^ laa < 0.6 ^ fdp <= 3.0 - Precision: 0.55 - Before: 0.8
+Dev 3 :R0:atfd > 7.0 ^ laa < 0.3 ^ fdp <= 4.0 - Precision: 0.3 - Before: 0.35
+Dev 5 :R0:atfd > 7.0 ^ laa < 0.42857143 ^ fdp <= 7.0 - Precision: 0.4117647 - Before: 0.3529412
+Dev 6 :R0:atfd > 6.0 ^ laa < 1.0 ^ fdp <= 6.0 - Precision: 0.6666667 - Before: 0.33333334
+OBS: Developer 4 removed because results are wrong

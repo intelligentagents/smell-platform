@@ -1,0 +1,95 @@
+This is BibTeX, Version 0.99d (TeX Live 2013/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: ICTAI2014.aux
+The style file: IEEEtran.bst
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: ICTAI2014.bib
+Repeated entry---line 4624 of file ICTAI2014.bib
+ : @article{Using2013c
+ :                    ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 6040 of file ICTAI2014.bib
+ : @inproceedings{Kessentini2011q
+ :                               ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 6190 of file ICTAI2014.bib
+ : @inproceedings{Ouni2013h
+ :                         ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 7000 of file ICTAI2014.bib
+ : @article{Fontana2012c
+ :                      ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 7186 of file ICTAI2014.bib
+ : @inproceedings{Khomh2009c
+ :                          ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 7348 of file ICTAI2014.bib
+ : @article{Mens2004b
+ :                   ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 7438 of file ICTAI2014.bib
+ : @article{Marinescu2001c
+ :                        ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 8074 of file ICTAI2014.bib
+ : @inproceedings{Kessentini2010c
+ :                               ,
+I'm skipping whatever remains of this entry
+Repeated entry---line 8959 of file ICTAI2014.bib
+ : @article{Ouni2012f
+ :                   ,
+I'm skipping whatever remains of this entry
+-- IEEEtran.bst version 1.13 (2008/09/30) by Michael Shell.
+-- http://www.michaelshell.org/tex/ieeetran/bibtex/
+-- See the "IEEEtran_bst_HOWTO.pdf" manual for usage information.
+Warning--missing school in Opdyke:1992
+Warning--missing publisher in FowlerMartin2002
+
+Done.
+You've used 38 entries,
+            4039 wiz_defined-function locations,
+            1062 strings with 15399 characters,
+and the built_in function-call counts, 25618 in all, are:
+= -- 2029
+> -- 532
+< -- 176
++ -- 292
+- -- 90
+* -- 1212
+:= -- 3870
+add.period$ -- 87
+call.type$ -- 38
+change.case$ -- 45
+chr.to.int$ -- 423
+cite$ -- 40
+duplicate$ -- 1919
+empty$ -- 2278
+format.name$ -- 113
+if$ -- 5917
+int.to.chr$ -- 0
+int.to.str$ -- 38
+missing$ -- 350
+newline$ -- 163
+num.names$ -- 30
+pop$ -- 888
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 2
+skip$ -- 1975
+stack$ -- 0
+substring$ -- 1053
+swap$ -- 1436
+text.length$ -- 35
+text.prefix$ -- 0
+top$ -- 5
+type$ -- 38
+warning$ -- 2
+while$ -- 108
+width$ -- 40
+write$ -- 393
+(There were 9 error messages)

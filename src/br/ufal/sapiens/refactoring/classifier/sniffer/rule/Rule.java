@@ -52,7 +52,7 @@ public class Rule {
 		this.smell = smell;
 	}
 	
-	public boolean verifyRule(Statement statement) {
+	public boolean verify(Statement statement) {
 		for (Expression expression : this.getExpressions()) {
 			if (!expression.verify(statement)) {
 				return false;
@@ -96,6 +96,15 @@ public class Rule {
 			expression.updateExpression(analysis);
 		}
 		return newRule;
+	}
+	
+	public static Rule fromString(Smell smell, String rawRule) {
+		Rule rule = new Rule("R0", smell);
+		String[] parts = rawRule.split("\\^");
+		for (String part : parts) {
+			rule.getExpressions().add(Expression.fromString(part));
+		}
+		return rule;
 	}
 	
 }

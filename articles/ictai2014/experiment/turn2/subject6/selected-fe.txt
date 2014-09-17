@@ -1,0 +1,20 @@
+org.apache.xerces.impl.XMLEntityScanner::skipChar(int c) : boolean
+org.apache.xerces.impl.XML11EntityScanner::scanContent(XMLString content) : int
+org.apache.xerces.impl.XML11EntityScanner::skipString(String s) : boolean
+org.apache.xml.serialize.XMLSerializer::startElement(String namespaceURI, String localName, String rawName, Attributes attrs) : void
+org.apache.xerces.impl.xs.Schema4Annotations::createAnyLaxWildcardParticle() : XSParticleDecl
+org.apache.xerces.impl.XML11EntityScanner::skipChar(int c) : boolean
+org.apache.xerces.parsers.DOMParser::parse(InputSource inputSource) : void
+org.apache.xerces.impl.dv.xs.DurationDV::getDuration(DateTimeData date) : Duration
+org.apache.xerces.jaxp.JAXPValidatorComponent$2::resolveResource(String type, String ns, String publicId, String systemId, String baseUri) : LSInput
+org.apache.xerces.impl.XMLVersionDetector::fixupCurrentEntity(XMLEntityManager manager, char scannedChars, int length) : void
+org.apache.xerces.impl.XMLEntityScanner::skipSpaces() : boolean
+org.apache.xerces.impl.XML11EntityScanner::scanName() : String
+org.apache.xerces.impl.XML11EntityScanner::scanLiteral(int quote, XMLString content) : int
+org.apache.xerces.impl.XMLEntityScanner::scanContent(XMLString content) : int
+org.apache.xerces.impl.XMLEntityScanner::scanData(String delimiter, XMLStringBuffer buffer) : boolean
+org.apache.xerces.impl.XML11EntityScanner::scanNCName() : String
+org.apache.xerces.impl.dv.xs.DurationDV::dateToString(DateTimeData date) : String
+org.apache.xerces.impl.xs.XSConstraints::getNonUnaryGroup(XSParticleDecl p) : XSParticleDecl
+org.apache.xerces.impl.xs.opti.SchemaDOM::processElement(QName element, XMLAttributes attributes, ElementImpl node) : void
+org.apache.xml.serialize.HTMLSerializer::startElement(String tagName, AttributeList attrs) : void

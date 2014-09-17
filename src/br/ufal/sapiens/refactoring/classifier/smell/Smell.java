@@ -53,4 +53,30 @@ public class Smell {
 		return new Smell("Feature Envy", StatementType.MethodDefinition, "FE");
 	}
 	
+	public static Smell fromShortName(String shortName){
+		if ("FE".equals(shortName))
+			return FeatureEnvy();
+		else if ("GC".equals(shortName))
+			return GodClass();
+		else if ("LPL".equals(shortName))
+			return LongParameterList();
+		else if ("LM".equals(shortName))
+			return LongMethod();
+		else
+			return null;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		Smell aSmell = (Smell)obj;
+		if (aSmell.getName().equals(this.name) && aSmell.shortName.equals(this.shortName) && aSmell.type.equals(this.type))
+			return true;
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.name.hashCode() + this.shortName.hashCode() + this.type.hashCode();
+	}
+	
 }

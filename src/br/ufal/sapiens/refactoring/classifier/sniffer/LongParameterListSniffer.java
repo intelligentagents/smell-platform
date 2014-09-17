@@ -11,7 +11,6 @@ public class LongParameterListSniffer extends Sniffer {
 
 	public LongParameterListSniffer() {
 		super("LongParameterListSniffer", Smell.LongParameterList());
-		this.reset();
 	}
 	
 	public Rule getInitialRule() {

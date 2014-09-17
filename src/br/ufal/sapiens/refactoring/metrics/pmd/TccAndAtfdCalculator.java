@@ -10,6 +10,10 @@ import java.util.Set;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBody;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceBodyDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceType;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
@@ -94,10 +98,10 @@ public class TccAndAtfdCalculator extends AbstractJavaRule {
 //
             StringBuilder sb = new StringBuilder();
             sb.append(getMessage());
-            sb.append(" (")
-                .append("WMC=").append(wmcCounter).append(", ")
-                .append("ATFD=").append(atfdCounter).append(", ")
-                .append("TCC=").append(tcc).append(')');
+            sb.append("")
+                .append(wmcCounter).append(",")
+                .append(atfdCounter).append(",")
+                .append(tcc);
             
             RuleContext ctx = (RuleContext)data;
             ctx.getReport().addRuleViolation(new JavaRuleViolation(this, ctx, node, sb.toString()));
