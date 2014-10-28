@@ -1,4 +1,4 @@
-package br.ufal.sapiens.refactoring.classifier.sniffer.rule;
+package br.ufal.sapiens.refactoring.classifier.sniffer.simple;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,33 +7,22 @@ import java.util.Map;
 
 import br.ufal.sapiens.refactoring.analysis.NodeAnalysis;
 import br.ufal.sapiens.refactoring.classifier.smell.Smell;
+import br.ufal.sapiens.refactoring.classifier.sniffer.Classifier;
 import br.ufal.sapiens.refactoring.pr.Node;
 
-public class Rule {
-	private String name;
+public class Rule extends Classifier {
 	private List<Expression> expressions = new ArrayList<Expression>();
-	private Smell smell;
 	
 	public Rule(String name, Smell smell) {
-		this.name = name;
-		this.smell = smell;
+		super(name, smell);
 	}
 	
 	public Rule(Rule rule) {
+		this(rule.getName(), rule.getSmell());
 		this.expressions = new ArrayList<Expression>();
-		this.name = rule.name;
-		this.smell = rule.smell;
 		for (Expression expression : rule.getExpressions()) {
 			this.expressions.add(new Expression(expression.getMetricName(), expression.getOperator(), expression.getValue()));
 		}
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public List<Expression> getExpressions() {
@@ -42,14 +31,6 @@ public class Rule {
 
 	public void setExpressions(List<Expression> expressions) {
 		this.expressions = expressions;
-	}
-	
-	public Smell getSmell() {
-		return smell;
-	}
-
-	public void setSmell(Smell smell) {
-		this.smell = smell;
 	}
 	
 	public boolean verify(Node node) {
@@ -79,7 +60,7 @@ public class Rule {
 	
 	@Override
 	public String toString() {
-		String result = this.name + ":";
+		String result = this.getName() + ":";
 		int i = 0;
 		for (Expression expression : this.getExpressions()) {
 			if (i != 0)

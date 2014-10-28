@@ -1,4 +1,4 @@
-package br.ufal.sapiens.refactoring.classifier.sniffer.rule;
+package br.ufal.sapiens.refactoring.classifier.sniffer.simple;
 
 import br.ufal.sapiens.refactoring.analysis.NodeAnalysis;
 import br.ufal.sapiens.refactoring.pr.Node;

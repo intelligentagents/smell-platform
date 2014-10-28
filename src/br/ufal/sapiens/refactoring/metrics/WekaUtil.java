@@ -10,7 +10,7 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.neighboursearch.LinearNNSearch;
 import br.ufal.sapiens.refactoring.classifier.sniffer.NeighbourNode;
-import br.ufal.sapiens.refactoring.classifier.sniffer.rule.Rule;
+import br.ufal.sapiens.refactoring.classifier.sniffer.simple.Rule;
 import br.ufal.sapiens.refactoring.pr.Node;
 
 public class WekaUtil {

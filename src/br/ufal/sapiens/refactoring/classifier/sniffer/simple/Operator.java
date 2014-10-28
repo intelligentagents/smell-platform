@@ -1,4 +1,4 @@
-package br.ufal.sapiens.refactoring.classifier.sniffer.rule;
+package br.ufal.sapiens.refactoring.classifier.sniffer.simple;
 
 public class Operator {
 	

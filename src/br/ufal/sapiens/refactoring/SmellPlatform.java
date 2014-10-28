@@ -11,12 +11,12 @@ import br.ufal.sapiens.refactoring.classifier.smell.Smell;
 import br.ufal.sapiens.refactoring.classifier.sniffer.NeighbourNode;
 import br.ufal.sapiens.refactoring.classifier.sniffer.SniffedSmell;
 import br.ufal.sapiens.refactoring.classifier.sniffer.Sniffer;
-import br.ufal.sapiens.refactoring.classifier.sniffer.rule.Rule;
-import br.ufal.sapiens.refactoring.classifier.sniffer.rule.RuleEvaluator;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.FeatureEnvySniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.GodClassSniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.LongMethodSniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.LongParameterListSniffer;
+import br.ufal.sapiens.refactoring.classifier.sniffer.simple.Rule;
+import br.ufal.sapiens.refactoring.classifier.sniffer.simple.RuleEvaluator;
 import br.ufal.sapiens.refactoring.developer.Developer;
 import br.ufal.sapiens.refactoring.pr.Project;
 import br.ufal.sapiens.refactoring.pr.Node;
@@ -57,8 +57,8 @@ public class SmellPlatform {
 //		}
 //	}
 	
-	public void updateRule(Sniffer sniffer) throws IOException {
-		sniffer.updateRule(developer);
+	public void updateClassifier(Sniffer sniffer) throws IOException {
+		sniffer.updateClassifier(developer);
 	}
 	
 }

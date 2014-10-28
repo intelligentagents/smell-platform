@@ -8,10 +8,11 @@ import java.util.Map;
 import br.ufal.sapiens.refactoring.SmellPlatform;
 import br.ufal.sapiens.refactoring.analysis.NodeAnalysis;
 import br.ufal.sapiens.refactoring.classifier.smell.Smell;
+import br.ufal.sapiens.refactoring.classifier.sniffer.ClassifierEvaluator;
 import br.ufal.sapiens.refactoring.classifier.sniffer.Sniffer;
-import br.ufal.sapiens.refactoring.classifier.sniffer.rule.Rule;
-import br.ufal.sapiens.refactoring.classifier.sniffer.rule.RuleEvaluator;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.FeatureEnvySniffer;
+import br.ufal.sapiens.refactoring.classifier.sniffer.simple.Rule;
+import br.ufal.sapiens.refactoring.classifier.sniffer.simple.RuleEvaluator;
 import br.ufal.sapiens.refactoring.developer.Developer;
 import br.ufal.sapiens.refactoring.pr.Project;
 import br.ufal.sapiens.refactoring.pr.Node;
@@ -27,7 +28,7 @@ public class GanttAndXercesSimple {
 			Node node = project.getNodeFromName(data.get(i)[1]);
 			if (node == null) {
 				System.out.println("Node not found: " + data.get(i)[1]);
-			} else if (!node.getMetricNames().containsAll(developer.getLastRule(sniffer.getSmell()).getMetricNames())) {
+			} else if (!node.getMetricNames().containsAll(developer.getLastClassifier(sniffer.getSmell()).getMetricNames())) {
 				System.out.println("Node with insufficient metrics: " + node);
 			} else {
 				boolean verify = ("1".equals(data.get(i)[2])) ? true : false;
@@ -65,8 +66,8 @@ public class GanttAndXercesSimple {
 	}
 	
 	public static void testDeveloperPreferences(Project project, Sniffer sniffer, Developer developer) throws IOException {
-		float personalizedPR = RuleEvaluator.getEvaluation(developer.getBestRule(sniffer.getSmell()), developer.getAnalysis().get(sniffer.getSmell()));
-		float initialPR = RuleEvaluator.getEvaluation(sniffer.getInitialRule(), developer.getAnalysis().get(sniffer.getSmell()));
+		float personalizedPR = ClassifierEvaluator.getEvaluation(developer.getBestClassifier(sniffer.getSmell()), developer.getAnalysis().get(sniffer.getSmell()));
+		float initialPR = ClassifierEvaluator.getEvaluation(sniffer.getInitialRule(), developer.getAnalysis().get(sniffer.getSmell()));
 		System.out.println("Dev " + developer.getId() + " :" + 
 //				developer.getBestRule(sniffer.getSmell()).toString() + 
 				" - Personalized: " + personalizedPR + " - Initial: " + initialPR + 
@@ -104,12 +105,12 @@ public class GanttAndXercesSimple {
 			developer.addRule(sniffer.getInitialRule());
 			loadAnalysis(sniffer, analysisSource, project, developer);
 			SmellPlatform platform = new SmellPlatform(project, developer);
-			platform.updateRule(sniffer);
+			platform.updateClassifier(sniffer);
 			
-			float personalizedPR = RuleEvaluator.getEvaluation(developer.getBestRule(sniffer.getSmell()), developer.getAnalysis().get(sniffer.getSmell()));
-			float initialPR = RuleEvaluator.getEvaluation(sniffer.getInitialRule(), developer.getAnalysis().get(sniffer.getSmell()));
+			float personalizedPR = ClassifierEvaluator.getEvaluation(developer.getBestClassifier(sniffer.getSmell()), developer.getAnalysis().get(sniffer.getSmell()));
+			float initialPR = ClassifierEvaluator.getEvaluation(sniffer.getInitialRule(), developer.getAnalysis().get(sniffer.getSmell()));
 			System.out.println("Dev " + developer.getId() + 
-					" :" + developer.getBestRule(sniffer.getSmell()).toString() + 
+					" :" + developer.getBestClassifier(sniffer.getSmell()).toString() + 
 					" - Personalized: " + personalizedPR + 
 					" - Initial: " + initialPR + 
 					" - Analysis: " + developer.getAnalysis().get(sniffer.getSmell()).size());

@@ -1,6 +1,6 @@
 package br.ufal.sapiens.refactoring.classifier.sniffer;
 
-import br.ufal.sapiens.refactoring.classifier.sniffer.rule.Rule;
+import br.ufal.sapiens.refactoring.classifier.sniffer.simple.Rule;
 import br.ufal.sapiens.refactoring.pr.Node;
 
 public class NeighbourNode {

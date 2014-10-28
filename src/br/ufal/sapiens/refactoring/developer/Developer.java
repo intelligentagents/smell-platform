@@ -7,20 +7,22 @@ import java.util.Map;
 
 import br.ufal.sapiens.refactoring.analysis.NodeAnalysis;
 import br.ufal.sapiens.refactoring.classifier.smell.Smell;
-import br.ufal.sapiens.refactoring.classifier.sniffer.rule.Rule;
-import br.ufal.sapiens.refactoring.classifier.sniffer.rule.RuleEvaluator;
+import br.ufal.sapiens.refactoring.classifier.sniffer.Classifier;
+import br.ufal.sapiens.refactoring.classifier.sniffer.ClassifierEvaluator;
+import br.ufal.sapiens.refactoring.classifier.sniffer.simple.Rule;
+import br.ufal.sapiens.refactoring.classifier.sniffer.simple.RuleEvaluator;
 
 public class Developer {
 
 	private int id;
 	private String name;
-	private Map<Smell, List<Rule>> ruleMap;
+	private Map<Smell, List<Classifier>> classifierMap;
 	private Map<Smell, List<NodeAnalysis>> analysis;
 
 	public Developer(int id, String name) {
 		this.id = id;
 		this.name = name;
-		this.ruleMap = new HashMap<Smell, List<Rule>>();
+		this.classifierMap = new HashMap<Smell, List<Classifier>>();
 		this.analysis = new HashMap<Smell, List<NodeAnalysis>>();
 	}
 
@@ -40,12 +42,12 @@ public class Developer {
 		this.name = name;
 	}
 
-	public Map<Smell, List<Rule>> getRuleMap() {
-		return ruleMap;
+	public Map<Smell, List<Classifier>> getClassifierMap() {
+		return classifierMap;
 	}
 
-	public void setRuleMap(Map<Smell, List<Rule>> ruleMap) {
-		this.ruleMap = ruleMap;
+	public void setClassifierMap(Map<Smell, List<Classifier>> classifierMap) {
+		this.classifierMap = classifierMap;
 	}
 
 	public Map<Smell, List<NodeAnalysis>> getAnalysis() {
@@ -56,31 +58,31 @@ public class Developer {
 		this.analysis = analysis;
 	}
 	
-	public void addRule(Rule rule) {
-		if (!this.ruleMap.containsKey(rule.getSmell())) {
-			this.ruleMap.put(rule.getSmell(), new ArrayList<Rule>());
+	public void addRule(Classifier classifier) {
+		if (!this.classifierMap.containsKey(classifier.getSmell())) {
+			this.classifierMap.put(classifier.getSmell(), new ArrayList<Classifier>());
 		}
-		this.ruleMap.get(rule.getSmell()).add(rule);
+		this.classifierMap.get(classifier.getSmell()).add(classifier);
 	}
 	
-	public Rule getLastRule(Smell smell) {
-		List<Rule> rules = this.ruleMap.get(smell);
-		return rules.get(rules.size() - 1);
+	public Classifier getLastClassifier(Smell smell) {
+		List<Classifier> classifiers = this.classifierMap.get(smell);
+		return classifiers.get(classifiers.size() - 1);
 	}
 	
 	
-	public float getEvaluationFromInitialRule(Smell smell) {
-		return RuleEvaluator.getEvaluation(this.ruleMap.get(smell).get(0), this.getAnalysis().get(smell));
+	public float getEvaluationFromInitialClassifier(Smell smell) {
+		return ClassifierEvaluator.getEvaluation(this.classifierMap.get(smell).get(0), this.getAnalysis().get(smell));
 	}
 	
-	public Rule getBestRule(Smell smell) {
-		float bestEvaluation = this.getEvaluationFromInitialRule(smell);
-		Rule bestRule = this.ruleMap.get(smell).get(0);
-		for (Rule rule : this.ruleMap.get(smell)) {
-			float ruleEvaluation = RuleEvaluator.getEvaluation(rule, this.getAnalysis().get(smell));
+	public Classifier getBestClassifier(Smell smell) {
+		float bestEvaluation = this.getEvaluationFromInitialClassifier(smell);
+		Classifier bestRule = this.classifierMap.get(smell).get(0);
+		for (Classifier classifier : this.classifierMap.get(smell)) {
+			float ruleEvaluation = ClassifierEvaluator.getEvaluation(classifier, this.getAnalysis().get(smell));
 			if (ruleEvaluation > bestEvaluation) {
 				bestEvaluation = ruleEvaluation;
-				bestRule = rule;
+				bestRule = classifier;
 			}
 		}
 		return bestRule;

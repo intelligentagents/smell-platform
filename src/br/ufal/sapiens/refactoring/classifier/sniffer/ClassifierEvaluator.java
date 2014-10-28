@@ -1,22 +1,23 @@
-package br.ufal.sapiens.refactoring.classifier.sniffer.rule;
+package br.ufal.sapiens.refactoring.classifier.sniffer;
 
 import java.util.List;
 
 import br.ufal.sapiens.refactoring.analysis.NodeAnalysis;
+import br.ufal.sapiens.refactoring.classifier.sniffer.simple.Rule;
 
-public class RuleEvaluator {
+public class ClassifierEvaluator {
 	
-	public static float getEvaluation(Rule rule, List<NodeAnalysis> allAnalysis) {
-		return getAccuracy(rule, allAnalysis);
+	public static float getEvaluation(Classifier classifier, List<NodeAnalysis> allAnalysis) {
+		return getAccuracy(classifier, allAnalysis);
 	}
 	
-	public static float getAccuracy(Rule rule, List<NodeAnalysis> allAnalysis) {
+	public static float getAccuracy(Classifier classifier, List<NodeAnalysis> allAnalysis) {
 		int tp = 0;
 		int fp = 0;
 		int tn = 0;
 		int fn = 0;
 		for (NodeAnalysis analysis : allAnalysis) {
-			if (rule.verify(analysis.getNode())) {
+			if (classifier.verify(analysis.getNode())) {
 				if (analysis.isVerify()) tp += 1;
 				else fp += 1;
 			} else {
@@ -27,17 +28,17 @@ public class RuleEvaluator {
 		return (1.0f*(tp + tn)) / (tp + fp + tn + fn);
 	}
 	
-	public static String getPrecisionRecall(Rule rule, List<NodeAnalysis> allAnalysis) {
-		float precision = getPrecision(rule, allAnalysis);
-		float recall = getRecall(rule, allAnalysis);
+	public String getPrecisionRecall(Classifier classifer, List<NodeAnalysis> allAnalysis) {
+		float precision = this.getPrecision(classifer, allAnalysis);
+		float recall = this.getRecall(classifer, allAnalysis);
 		return "" + precision + " / " + recall;
 	}
 	
-	public static float getPrecision(Rule rule, List<NodeAnalysis> allAnalysis) {
+	public float getPrecision(Classifier classifer, List<NodeAnalysis> allAnalysis) {
 		int tp = 0;
 		int fp = 0;
 		for (NodeAnalysis analysis : allAnalysis) {
-			if (rule.verify(analysis.getNode())) {
+			if (classifer.verify(analysis.getNode())) {
 				if (analysis.isVerify()) tp += 1;
 				else fp += 1;
 			}
@@ -46,13 +47,13 @@ public class RuleEvaluator {
 		return precision;
 	}
 	
-	public static float getRecall(Rule rule, List<NodeAnalysis> allAnalysis) {
+	public float getRecall(Classifier classifer, List<NodeAnalysis> allAnalysis) {
 		int tp = 0;
 		int fp = 0;
 		int tn = 0;
 		int fn = 0;
 		for (NodeAnalysis analysis : allAnalysis) {
-			if (rule.verify(analysis.getNode())) {
+			if (classifer.verify(analysis.getNode())) {
 				if (analysis.isVerify()) tp += 1;
 				else fp += 1;
 			} else {
@@ -64,13 +65,13 @@ public class RuleEvaluator {
 		return recall;
 	}
 	
-	public static float getKappa(Rule rule, List<NodeAnalysis> allAnalysis) {
+	public float getKappa(Classifier classifer, List<NodeAnalysis> allAnalysis) {
 		int tp = 0;
 		int fp = 0;
 		int tn = 0;
 		int fn = 0;
 		for (NodeAnalysis analysis : allAnalysis) {
-			if (rule.verify(analysis.getNode())) {
+			if (classifer.verify(analysis.getNode())) {
 				if (analysis.isVerify()) tp += 1;
 				else fp += 1;
 			} else {
@@ -78,10 +79,10 @@ public class RuleEvaluator {
 				else fn += 1;
 			}
 		}
-		return calculateKappa(tn, fn, fp, tp);
+		return this.calculateKappa(tn, fn, fp, tp);
 	}
 	
-	private static float calculateKappa(int tn, int fn, int fp, int tp) {
+	private float calculateKappa(int tn, int fn, int fp, int tp) {
 		float prA = (1.0f*(tn+tp)) / (fn+tn+tp+fp);
 		float accA = (1.0f * (tp + fp)) / (fn+tn+tp+fp);
 		float accB = (1.0f * (tp + fn)) / (fn+tn+tp+fp);

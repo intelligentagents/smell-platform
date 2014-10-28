@@ -5,12 +5,9 @@ import java.util.List;
 import br.ufal.sapiens.refactoring.analysis.NodeAnalysis;
 import br.ufal.sapiens.refactoring.classifier.smell.Smell;
 import br.ufal.sapiens.refactoring.classifier.sniffer.Sniffer;
-import br.ufal.sapiens.refactoring.classifier.sniffer.rule.Expression;
-import br.ufal.sapiens.refactoring.classifier.sniffer.rule.Operator;
-import br.ufal.sapiens.refactoring.classifier.sniffer.rule.Rule;
 import br.ufal.sapiens.refactoring.developer.Developer;
 
-public class FeatureEnvySniffer extends Sniffer {
+public class FeatureEnvySniffer extends SimpleSniffer {
 
 	private float ATFD_FEW = 5f;
 	private float LAA_ONE_THIRD = 1.0f/3.0f;
@@ -32,8 +29,8 @@ public class FeatureEnvySniffer extends Sniffer {
 	}
 	
 	public void updateRule(Developer developer) {
-		super.updateRule(developer);
-		Rule rule = developer.getLastRule(this.getSmell());
+		this.updateRule(developer);
+		Rule rule = (Rule)developer.getLastClassifier(this.getSmell());
 		Expression atfdExpression = null;
 		Expression fdpExpression = null;
 		for (Expression expression : rule.getExpressions()) {
