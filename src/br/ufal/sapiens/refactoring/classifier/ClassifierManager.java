@@ -3,10 +3,10 @@ package br.ufal.sapiens.refactoring.classifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.ufal.sapiens.refactoring.classifier.sniffer.GodClassSniffer;
-import br.ufal.sapiens.refactoring.classifier.sniffer.NeighbourStatement;
+import br.ufal.sapiens.refactoring.classifier.sniffer.NeighbourNode;
 import br.ufal.sapiens.refactoring.classifier.sniffer.SniffedSmell;
 import br.ufal.sapiens.refactoring.classifier.sniffer.Sniffer;
+import br.ufal.sapiens.refactoring.classifier.sniffer.simple.GodClassSniffer;
 import br.ufal.sapiens.refactoring.developer.Developer;
 import br.ufal.sapiens.refactoring.pr.Project;
 
@@ -32,8 +32,8 @@ public class ClassifierManager {
 		return smells;
 	}
 	
-	public List<NeighbourStatement> getNeighbourStatements(Project project, Developer developer, Sniffer sniffer, int maxNeighbours) {
-		return sniffer.getNeighbourStatements(project, developer, maxNeighbours);
+	public List<NeighbourNode> getNeighbourNodes(Project project, Developer developer, Sniffer sniffer, int maxNeighbours) {
+		return sniffer.getNeighbourNodes(project, developer, maxNeighbours);
 	}
 
 	public List<Sniffer> getSniffers() {

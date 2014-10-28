@@ -1,19 +1,19 @@
 package br.ufal.sapiens.refactoring.classifier.sniffer;
 
 import br.ufal.sapiens.refactoring.classifier.smell.Smell;
-import br.ufal.sapiens.refactoring.pr.Statement;
+import br.ufal.sapiens.refactoring.pr.Node;
 
 public class SniffedSmell {
 	private Smell smell;
 	private Sniffer sniffer;
-	private Statement statement;
+	private Node node;
 	private int certaintyFactor = 100;
 
-	public SniffedSmell(Smell smell, Sniffer sniffer, Statement statement) {
+	public SniffedSmell(Smell smell, Sniffer sniffer, Node node) {
 		super();
 		this.smell = smell;
 		this.sniffer = sniffer;
-		this.statement = statement;
+		this.node = node;
 	}
 
 	public Smell getSmell() {
@@ -32,12 +32,12 @@ public class SniffedSmell {
 		this.sniffer = sniffer;
 	}
 
-	public Statement getStatement() {
-		return statement;
+	public Node getNode() {
+		return node;
 	}
 
-	public void setStatement(Statement statement) {
-		this.statement = statement;
+	public void setNode(Node node) {
+		this.node = node;
 	}
 
 	public int getCertaintyFactor() {

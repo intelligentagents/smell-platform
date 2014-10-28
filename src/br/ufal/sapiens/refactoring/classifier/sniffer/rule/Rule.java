@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import br.ufal.sapiens.refactoring.analysis.StatementAnalysis;
+import br.ufal.sapiens.refactoring.analysis.NodeAnalysis;
 import br.ufal.sapiens.refactoring.classifier.smell.Smell;
-import br.ufal.sapiens.refactoring.pr.Statement;
+import br.ufal.sapiens.refactoring.pr.Node;
 
 public class Rule {
 	private String name;
@@ -52,9 +52,9 @@ public class Rule {
 		this.smell = smell;
 	}
 	
-	public boolean verify(Statement statement) {
+	public boolean verify(Node node) {
 		for (Expression expression : this.getExpressions()) {
-			if (!expression.verify(statement)) {
+			if (!expression.verify(node)) {
 				return false;
 			}
 		}
@@ -90,7 +90,7 @@ public class Rule {
 		return result;
 	}
 	
-	public Rule update(StatementAnalysis analysis) {
+	public Rule update(NodeAnalysis analysis) {
 		Rule newRule = new Rule(this);
 		for (Expression expression : newRule.getExpressions()) {
 			expression.updateExpression(analysis);

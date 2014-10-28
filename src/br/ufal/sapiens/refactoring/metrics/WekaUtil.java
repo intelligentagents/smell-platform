@@ -9,61 +9,61 @@ import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.neighboursearch.LinearNNSearch;
-import br.ufal.sapiens.refactoring.classifier.sniffer.NeighbourStatement;
+import br.ufal.sapiens.refactoring.classifier.sniffer.NeighbourNode;
 import br.ufal.sapiens.refactoring.classifier.sniffer.rule.Rule;
-import br.ufal.sapiens.refactoring.pr.Statement;
+import br.ufal.sapiens.refactoring.pr.Node;
 
 public class WekaUtil {
 	
-	public static List<NeighbourStatement> getNeighbourStatements(List<Statement> statements, Rule rule, int kNeighbors) throws Exception {
-		Instances instances = createWekaInstances(new ArrayList<Statement>(statements), rule);
+	public static List<NeighbourNode> getNeighbourNodes(List<Node> nodes, Rule rule, int kNeighbors) throws Exception {
+		Instances instances = createWekaInstances(new ArrayList<Node>(nodes), rule);
 		Instance instance = createWekaInstance(null, rule, instances);
 		LinearNNSearch nns = new LinearNNSearch(instances);
 		Instances neighboursInstaces = nns.kNearestNeighbours(instance, kNeighbors);
 
-		List<Statement> selectedStatements = WekaUtil.neighboursFromInstances(statements, neighboursInstaces);
+		List<Node> selectedNodes = WekaUtil.neighboursFromInstances(nodes, neighboursInstaces);
 		
-		List<NeighbourStatement> nStatements = new ArrayList<NeighbourStatement>();
+		List<NeighbourNode> nNodes = new ArrayList<NeighbourNode>();
 		double distances[] = nns.getDistances();
-		for (int i = 0; i < selectedStatements.size(); i++) {
-			nStatements.add(new NeighbourStatement(selectedStatements.get(i), rule, distances[i]));
+		for (int i = 0; i < selectedNodes.size(); i++) {
+			nNodes.add(new NeighbourNode(selectedNodes.get(i), rule, distances[i]));
 		}
 		
-		return nStatements;
+		return nNodes;
 		
 	}
 	
-	private static Instances createWekaInstances(List<Statement> statements, Rule rule) {
+	private static Instances createWekaInstances(List<Node> nodes, Rule rule) {
 		FastVector fv = new FastVector();
 		fv.addElement(new Attribute("name", (FastVector) null));
 		for (String metricName : rule.getMetricNames()) {
 			fv.addElement(new Attribute(metricName));
 		}
-		Instances instances = new Instances("NNS", fv, statements.size());
+		Instances instances = new Instances("NNS", fv, nodes.size());
 		
-		for (Statement statement : statements) {
-			Instance instance = createWekaInstance(statement, rule, instances);
+		for (Node node : nodes) {
+			Instance instance = createWekaInstance(node, rule, instances);
 			if (instance != null)
-				instances.add(createWekaInstance(statement, rule, instances));
+				instances.add(createWekaInstance(node, rule, instances));
 		}
 		return instances;
 	}
 	
-	private static Instance createWekaInstance(Statement statement, Rule rule, Instances instances) {
+	private static Instance createWekaInstance(Node node, Rule rule, Instances instances) {
 		List<String> metricNames = rule.getMetricNames();
 		int columns = metricNames.size();
 		Instance instance = new Instance(columns + 1);
 		instance.setDataset(instances);
 		
-		if (null == statement) {
+		if (null == node) {
 			instance.setValue(0, "TARGET");
 			for (int i = 0; i < columns; i++) {
 				instance.setValue(i+1, rule.getMetricThresholds().get(metricNames.get(i)));
 			}
 		} else {
-			instance.setValue(0, statement.getName());
+			instance.setValue(0, node.getName());
 			for (int i = 0; i < columns; i++) {
-				Float value = statement.getMetricValues().get(metricNames.get(i));
+				Float value = node.getMetricValues().get(metricNames.get(i));
 				if (value != null)
 					instance.setValue(i+1, value);
 			}	
@@ -102,23 +102,23 @@ public class WekaUtil {
 //		
 //	}
 	
-	public static List<Statement> neighboursFromInstances(List<Statement> statements, Instances instances) {
-		List<Statement> neighbours = new ArrayList<Statement>();
+	public static List<Node> neighboursFromInstances(List<Node> nodes, Instances instances) {
+		List<Node> neighbours = new ArrayList<Node>();
 		int index = instances.numInstances();
 		for (int i = 0; i < index; i++) {
 			Instance instance = instances.instance(i);
 			String line = instance.toString();
-			Statement statement = getStatementFromName(line.split(",")[0], statements);
-			neighbours.add(statement);
+			Node node = getNodeFromName(line.split(",")[0], nodes);
+			neighbours.add(node);
 		}
 		
 		return neighbours;
 	}
 	
-	public static Statement getStatementFromName(String name, List<Statement> statements) {
-		for (Statement statement : statements) {
-			if (statement.getName().equals(name)) {
-				return statement;
+	public static Node getNodeFromName(String name, List<Node> nodes) {
+		for (Node node : nodes) {
+			if (node.getName().equals(name)) {
+				return node;
 			}
 		}
 		return null;

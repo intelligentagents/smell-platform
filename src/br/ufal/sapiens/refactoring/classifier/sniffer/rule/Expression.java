@@ -1,7 +1,7 @@
 package br.ufal.sapiens.refactoring.classifier.sniffer.rule;
 
-import br.ufal.sapiens.refactoring.analysis.StatementAnalysis;
-import br.ufal.sapiens.refactoring.pr.Statement;
+import br.ufal.sapiens.refactoring.analysis.NodeAnalysis;
+import br.ufal.sapiens.refactoring.pr.Node;
 
 public class Expression {
 	private String metricName;
@@ -38,8 +38,8 @@ public class Expression {
 		this.value = value;
 	}
 	
-	public boolean verify(Statement statement) {
-		Float value1 = statement.getMetricValues().get(this.metricName);
+	public boolean verify(Node node) {
+		Float value1 = node.getMetricValues().get(this.metricName);
 		return this.operator.verify(value1, this.value);
 	}
 	
@@ -48,9 +48,9 @@ public class Expression {
 		return this.metricName + " " + this.operator.toString() + " " + this.value.toString();
 	}
 	
-	public void updateExpression(StatementAnalysis analysis) {
-		if (analysis.isVerify() != this.verify(analysis.getStatement())) {
-			this.setValue(analysis.getStatement().getMetricValues().get(this.getMetricName()));
+	public void updateExpression(NodeAnalysis analysis) {
+		if (analysis.isVerify() != this.verify(analysis.getNode())) {
+			this.setValue(analysis.getNode().getMetricValues().get(this.getMetricName()));
 			if (analysis.isVerify()) {
 				if (Operator.GreaterThan() == this.operator) this.operator = Operator.GreaterEqualThan();
 				if (Operator.LessThan() == this.operator) this.operator = Operator.LessEqualThan();

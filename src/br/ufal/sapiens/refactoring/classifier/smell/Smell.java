@@ -1,13 +1,13 @@
 package br.ufal.sapiens.refactoring.classifier.smell;
 
-import br.ufal.sapiens.refactoring.pr.StatementType;
+import br.ufal.sapiens.refactoring.pr.NodeType;
 
 public class Smell {
 	private String name;
 	private String shortName;
-	private StatementType type;
+	private NodeType type;
 	
-	public Smell(String name, StatementType type, String shortName) {
+	public Smell(String name, NodeType type, String shortName) {
 		this.name = name;
 		this.shortName = shortName;
 		this.type = type;
@@ -21,11 +21,11 @@ public class Smell {
 		this.name = name;
 	}
 
-	public StatementType getType() {
+	public NodeType getType() {
 		return type;
 	}
 
-	public void setType(StatementType type) {
+	public void setType(NodeType type) {
 		this.type = type;
 	}
 	
@@ -38,19 +38,19 @@ public class Smell {
 	}
 
 	public static Smell GodClass() {
-		return new Smell("God Class", StatementType.ClassDefinition, "GC");
+		return new Smell("God Class", NodeType.ClassDefinition, "GC");
 	}
 	
 	public static Smell LongMethod() {
-		return new Smell("Long Method", StatementType.MethodDefinition, "LM");
+		return new Smell("Long Method", NodeType.MethodDefinition, "LM");
 	}
 	
 	public static Smell LongParameterList() {
-		return new Smell("Long Parameter List", StatementType.MethodDefinition, "LPL");
+		return new Smell("Long Parameter List", NodeType.MethodDefinition, "LPL");
 	}
 	
 	public static Smell FeatureEnvy() {
-		return new Smell("Feature Envy", StatementType.MethodDefinition, "FE");
+		return new Smell("Feature Envy", NodeType.MethodDefinition, "FE");
 	}
 	
 	public static Smell fromShortName(String shortName){

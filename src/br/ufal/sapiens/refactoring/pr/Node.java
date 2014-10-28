@@ -5,15 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Statement {
+public class Node {
 
 	private String name;
-	private StatementType type;
+	private NodeType type;
 	private Project project;
 	private List<String> metricNames;
 	private Map<String, Float> metricValues;
 
-	public Statement(String name, StatementType type) {
+	public Node(String name, NodeType type) {
 		this.name = name;
 		this.type = type;
 		this.metricValues = new HashMap<String, Float>();
@@ -28,11 +28,11 @@ public class Statement {
 		this.name = name;
 	}
 
-	public StatementType getType() {
+	public NodeType getType() {
 		return type;
 	}
 
-	public void setType(StatementType type) {
+	public void setType(NodeType type) {
 		this.type = type;
 	}
 
@@ -78,7 +78,7 @@ public class Statement {
 	
 	@Override
 	public boolean equals(Object obj) {
-		return this.name.equals(((Statement)obj).getName());
+		return this.name.equals(((Node)obj).getName());
 	}
 	
 	@Override

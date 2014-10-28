@@ -49,4 +49,13 @@
         <priority>2</priority>
     </rule>
     
+    <rule name="GodClassRule"
+          message="GodClassRule"
+          class="br.ufal.sapiens.refactoring.metrics.pmd.GodClassRule">
+      <description>
+      God Class Calculator
+      </description>
+        <priority>2</priority>
+    </rule>
+    
 </ruleset>

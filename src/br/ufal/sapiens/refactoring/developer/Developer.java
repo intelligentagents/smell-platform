@@ -5,22 +5,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import br.ufal.sapiens.refactoring.analysis.StatementAnalysis;
+import br.ufal.sapiens.refactoring.analysis.NodeAnalysis;
 import br.ufal.sapiens.refactoring.classifier.smell.Smell;
 import br.ufal.sapiens.refactoring.classifier.sniffer.rule.Rule;
+import br.ufal.sapiens.refactoring.classifier.sniffer.rule.RuleEvaluator;
 
 public class Developer {
 
 	private int id;
 	private String name;
 	private Map<Smell, List<Rule>> ruleMap;
-	private Map<Smell, List<StatementAnalysis>> analysis;
+	private Map<Smell, List<NodeAnalysis>> analysis;
 
 	public Developer(int id, String name) {
 		this.id = id;
 		this.name = name;
 		this.ruleMap = new HashMap<Smell, List<Rule>>();
-		this.analysis = new HashMap<Smell, List<StatementAnalysis>>();
+		this.analysis = new HashMap<Smell, List<NodeAnalysis>>();
 	}
 
 	public int getId() {
@@ -47,11 +48,11 @@ public class Developer {
 		this.ruleMap = ruleMap;
 	}
 
-	public Map<Smell, List<StatementAnalysis>> getAnalysis() {
+	public Map<Smell, List<NodeAnalysis>> getAnalysis() {
 		return analysis;
 	}
 
-	public void setAnalysis(Map<Smell, List<StatementAnalysis>> analysis) {
+	public void setAnalysis(Map<Smell, List<NodeAnalysis>> analysis) {
 		this.analysis = analysis;
 	}
 	
@@ -67,40 +68,29 @@ public class Developer {
 		return rules.get(rules.size() - 1);
 	}
 	
-	public float getEvaluation(Rule rule) {
-		int tp = 0;
-		List<StatementAnalysis> allAnalysis = this.getAnalysis().get(rule.getSmell());
-		for (StatementAnalysis analysis : allAnalysis) {
-			if (rule.verify(analysis.getStatement()) == analysis.isVerify()) {
-				tp += 1;
-			}
-		}
-		int total = allAnalysis.size();
-		float precision = 1.0f * tp / total;
-		return precision;
-	}
 	
 	public float getEvaluationFromInitialRule(Smell smell) {
-		return this.getEvaluation(this.ruleMap.get(smell).get(0));
+		return RuleEvaluator.getEvaluation(this.ruleMap.get(smell).get(0), this.getAnalysis().get(smell));
 	}
 	
 	public Rule getBestRule(Smell smell) {
-		float precision = this.getEvaluationFromInitialRule(smell);
-		Rule bestRule = null;
+		float bestEvaluation = this.getEvaluationFromInitialRule(smell);
+		Rule bestRule = this.ruleMap.get(smell).get(0);
 		for (Rule rule : this.ruleMap.get(smell)) {
-			float rulePrecision = this.getEvaluation(rule);
-			if (rulePrecision > precision)
-				precision = rulePrecision;
+			float ruleEvaluation = RuleEvaluator.getEvaluation(rule, this.getAnalysis().get(smell));
+			if (ruleEvaluation > bestEvaluation) {
+				bestEvaluation = ruleEvaluation;
 				bestRule = rule;
+			}
 		}
 		return bestRule;
 	}
 
-	public void addAnalysis(StatementAnalysis statementAnalysis) {
-		if (!this.analysis.containsKey(statementAnalysis.getSmell())) {
-			this.analysis.put(statementAnalysis.getSmell(), new ArrayList<StatementAnalysis>());
+	public void addAnalysis(NodeAnalysis nodeAnalysis) {
+		if (!this.analysis.containsKey(nodeAnalysis.getSmell())) {
+			this.analysis.put(nodeAnalysis.getSmell(), new ArrayList<NodeAnalysis>());
 		}
-		this.analysis.get(statementAnalysis.getSmell()).add(statementAnalysis);
+		this.analysis.get(nodeAnalysis.getSmell()).add(nodeAnalysis);
 	}
 
 }

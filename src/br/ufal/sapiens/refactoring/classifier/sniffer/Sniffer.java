@@ -3,13 +3,14 @@ package br.ufal.sapiens.refactoring.classifier.sniffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.ufal.sapiens.refactoring.analysis.StatementAnalysis;
+import br.ufal.sapiens.refactoring.analysis.NodeAnalysis;
 import br.ufal.sapiens.refactoring.classifier.smell.Smell;
 import br.ufal.sapiens.refactoring.classifier.sniffer.rule.Rule;
+import br.ufal.sapiens.refactoring.classifier.sniffer.rule.RuleEvaluator;
 import br.ufal.sapiens.refactoring.developer.Developer;
 import br.ufal.sapiens.refactoring.metrics.WekaUtil;
 import br.ufal.sapiens.refactoring.pr.Project;
-import br.ufal.sapiens.refactoring.pr.Statement;
+import br.ufal.sapiens.refactoring.pr.Node;
 
 public abstract class Sniffer {
 	private String name;
@@ -22,52 +23,52 @@ public abstract class Sniffer {
 
 	public List<SniffedSmell> findSmells(Project project, Developer developer, Smell smell) {
 		List<SniffedSmell> sniffedSmells = new ArrayList<SniffedSmell>();
-		for (Statement statement : project.getStatements(smell.getType()).values()) {
-			if (this.verify(developer, statement)) {
+		for (Node node : project.getNodes(smell.getType()).values()) {
+			if (this.verify(developer, node)) {
 				sniffedSmells.add(new SniffedSmell(smell,
-						this, statement));
+						this, node));
 			}
 		}
 
 		return sniffedSmells;
 	}
 	
-	public List<Statement> filterStatementsWithMetrics(Project project, Developer developer) {
-		List<Statement> statements = new ArrayList<Statement>(project.getStatements(smell.getType()).values());
-		List<Statement> filteredStatements = new ArrayList<Statement>();
-		for (Statement statement : statements) {
-			if (statement.getMetricNames().containsAll(developer.getLastRule(this.smell).getMetricNames())) {
-				filteredStatements.add(statement);
+	public List<Node> filterNodesWithMetrics(Project project, Developer developer) {
+		List<Node> nodes = new ArrayList<Node>(project.getNodes(smell.getType()).values());
+		List<Node> filteredNodes = new ArrayList<Node>();
+		for (Node node : nodes) {
+			if (node.getMetricNames().containsAll(developer.getLastRule(this.smell).getMetricNames())) {
+				filteredNodes.add(node);
 			}
 		}
-		return filteredStatements;
+		return filteredNodes;
 	}
 	
-	private List<Statement> removeAnalyzedStatements(Developer developer, List<Statement> statements) {
-		for (StatementAnalysis analysis : developer.getAnalysis().get(this.smell)) {
-			statements.remove(analysis.getStatement());
+	private List<Node> removeAnalyzedNodes(Developer developer, List<Node> nodes) {
+		for (NodeAnalysis analysis : developer.getAnalysis().get(this.smell)) {
+			nodes.remove(analysis.getNode());
 		}
-		return statements;
+		return nodes;
 	}
 	
-	public List<NeighbourStatement> getNeighbourStatements(Project project, Developer developer, int maxNeighbours) {
-		List<Statement> statements = this.filterStatementsWithMetrics(project, developer);
-		statements = this.removeAnalyzedStatements(developer, statements);
+	public List<NeighbourNode> getNeighbourNodes(Project project, Developer developer, int maxNeighbours) {
+		List<Node> nodes = this.filterNodesWithMetrics(project, developer);
+		nodes = this.removeAnalyzedNodes(developer, nodes);
 		
 		try {
-			return WekaUtil.getNeighbourStatements(statements, developer.getLastRule(smell), maxNeighbours);
+			return WekaUtil.getNeighbourNodes(nodes, developer.getLastRule(smell), maxNeighbours);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new ArrayList<NeighbourStatement>();
+		return new ArrayList<NeighbourNode>();
 	}
 	
 	public void updateRule(Developer developer) {
-		List<StatementAnalysis> allAnalysis = developer.getAnalysis().get(this.smell);
-		for (StatementAnalysis analysis : allAnalysis) {
-			if (analysis.isVerify() != developer.getLastRule(this.smell).verify(analysis.getStatement())) {
+		List<NodeAnalysis> allAnalysis = developer.getAnalysis().get(this.smell);
+		for (NodeAnalysis analysis : allAnalysis) {
+			if (analysis.isVerify() != developer.getLastRule(this.smell).verify(analysis.getNode())) {
 				Rule rule = developer.getLastRule(this.smell).update(analysis);
-				if (developer.getEvaluation(rule) > developer.getEvaluation(developer.getBestRule(this.smell))) {
+				if (RuleEvaluator.getEvaluation(rule, allAnalysis) > RuleEvaluator.getEvaluation(developer.getBestRule(this.smell), allAnalysis)) {
 					rule.setName("R"+developer.getRuleMap().get(this.smell).size());
 					developer.getRuleMap().get(this.smell).add(rule);
 				}	
@@ -91,12 +92,12 @@ public abstract class Sniffer {
 		this.smell = smell;
 	}
 
-	public boolean verify(Developer developer, Statement statement) {
-		return developer.getLastRule(this.smell).verify(statement);
+	public boolean verify(Developer developer, Node node) {
+		return developer.getLastRule(this.smell).verify(node);
 	}
 	
-	public boolean verify(Statement statement, Rule rule) {
-		return rule.verify(statement);
+	public boolean verify(Node node, Rule rule) {
+		return rule.verify(node);
 	}
 	
 	public abstract Rule getInitialRule();

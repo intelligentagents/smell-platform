@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import br.ufal.sapiens.refactoring.pr.Statement;
-import br.ufal.sapiens.refactoring.pr.StatementType;
+import br.ufal.sapiens.refactoring.pr.Node;
+import br.ufal.sapiens.refactoring.pr.NodeType;
 
 public class FileUtil {
 	

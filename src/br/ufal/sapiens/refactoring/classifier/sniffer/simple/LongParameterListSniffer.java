@@ -1,6 +1,7 @@
-package br.ufal.sapiens.refactoring.classifier.sniffer;
+package br.ufal.sapiens.refactoring.classifier.sniffer.simple;
 
 import br.ufal.sapiens.refactoring.classifier.smell.Smell;
+import br.ufal.sapiens.refactoring.classifier.sniffer.Sniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.rule.Expression;
 import br.ufal.sapiens.refactoring.classifier.sniffer.rule.Operator;
 import br.ufal.sapiens.refactoring.classifier.sniffer.rule.Rule;

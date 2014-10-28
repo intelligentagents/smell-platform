@@ -1,9 +1,10 @@
-package br.ufal.sapiens.refactoring.classifier.sniffer;
+package br.ufal.sapiens.refactoring.classifier.sniffer.simple;
 
 import java.util.List;
 
-import br.ufal.sapiens.refactoring.analysis.StatementAnalysis;
+import br.ufal.sapiens.refactoring.analysis.NodeAnalysis;
 import br.ufal.sapiens.refactoring.classifier.smell.Smell;
+import br.ufal.sapiens.refactoring.classifier.sniffer.Sniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.rule.Expression;
 import br.ufal.sapiens.refactoring.classifier.sniffer.rule.Operator;
 import br.ufal.sapiens.refactoring.classifier.sniffer.rule.Rule;
@@ -12,7 +13,7 @@ import br.ufal.sapiens.refactoring.developer.Developer;
 public class FeatureEnvySniffer extends Sniffer {
 
 	private float ATFD_FEW = 5f;
-	private float LAA_ONE_THIRD = 1.0f/3f;
+	private float LAA_ONE_THIRD = 1.0f/3.0f;
 	private float FDP_FEW = 5;
 
 	public FeatureEnvySniffer() {

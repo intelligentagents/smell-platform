@@ -15,14 +15,14 @@ public class Project {
 
 	private String name;
 	private String path;
-	private Map<String,Statement> classStatements;
-	private Map<String,Statement> methodStatements;
+	private Map<String,Node> classNodes;
+	private Map<String,Node> methodNodes;
 
 	public Project(String name, String path) {
 		this.name = name;
 		this.path = path;
-		this.classStatements = new HashMap<String,Statement>();
-		this.methodStatements = new HashMap<String,Statement>();
+		this.classNodes = new HashMap<String,Node>();
+		this.methodNodes = new HashMap<String,Node>();
 	}
 
 	public String getName() {
@@ -41,60 +41,60 @@ public class Project {
 		this.path = path;
 	}
 	
-	public Statement getStatementFromName(String name) {
-		if (this.classStatements.containsKey(name)) {
-			return classStatements.get(name);
-		} else if (this.methodStatements.containsKey(name)) {
-			return methodStatements.get(name);
+	public Node getNodeFromName(String name) {
+		if (this.classNodes.containsKey(name)) {
+			return classNodes.get(name);
+		} else if (this.methodNodes.containsKey(name)) {
+			return methodNodes.get(name);
 		}
 		return null;
 	}
 	
-	private Statement getOrCreateStatement(String name, StatementType statementType) {
-		Map<String,Statement> statements = getStatements(statementType);
-		if (statements.containsKey(name)) {
-			return statements.get(name);
+	private Node getOrCreateNode(String name, NodeType nodeType) {
+		Map<String,Node> nodes = getNodes(nodeType);
+		if (nodes.containsKey(name)) {
+			return nodes.get(name);
 		}
-		return new Statement(name, statementType);
+		return new Node(name, nodeType);
 	}
 	
-	public void addStatementsFromCSV(String file, StatementType statementType) throws IOException {
+	public void addNodesFromCSV(String file, NodeType nodeType) throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader(file));
 		String line;
 		String[] headers = null;
-		List<Statement> statements = new ArrayList<Statement>();
+		List<Node> nodes = new ArrayList<Node>();
 		while ((line = br.readLine()) != null) {
 			String[] cols = line.split(",");
 			if (cols[0].startsWith("name")) {
 				headers = cols;
 				continue;
 			}
-			Statement statement = this.getOrCreateStatement(cols[0], statementType);
-			statement.addMetricValues(Arrays.copyOfRange(headers, 1, headers.length), //removing first column 
+			Node node = this.getOrCreateNode(cols[0], nodeType);
+			node.addMetricValues(Arrays.copyOfRange(headers, 1, headers.length), //removing first column 
 									  Arrays.copyOfRange(cols, 1, cols.length)); //removing first column
-			statements.add(statement);
+			nodes.add(node);
 		}
 		br.close();
-		this.addStatements(statements, statementType);
+		this.addNodes(nodes, nodeType);
 	}
 
-	private void addStatements(List<Statement> statements, StatementType statementType) {
-		for (Statement statement : statements) {
-			this.addStatement(statement);
+	private void addNodes(List<Node> nodes, NodeType nodeType) {
+		for (Node node : nodes) {
+			this.addNode(node);
 		}
 	}
 
-	private void addStatement(Statement statement) {
-		statement.setProject(this);
-		Map<String,Statement> statements = getStatements(statement.getType());
-		statements.put(statement.getName(), statement);
+	private void addNode(Node node) {
+		node.setProject(this);
+		Map<String,Node> nodes = getNodes(node.getType());
+		nodes.put(node.getName(), node);
 	}
 
-	public Map<String,Statement> getStatements(StatementType statementType) {
-		if (statementType == StatementType.ClassDefinition) {
-			return this.classStatements;
-		} else if (statementType == StatementType.MethodDefinition) {
-			return this.methodStatements;
+	public Map<String,Node> getNodes(NodeType nodeType) {
+		if (nodeType == NodeType.ClassDefinition) {
+			return this.classNodes;
+		} else if (nodeType == NodeType.MethodDefinition) {
+			return this.methodNodes;
 		}
 		return null;
 	}

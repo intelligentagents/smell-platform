@@ -1,25 +1,25 @@
 package br.ufal.sapiens.refactoring.classifier.sniffer;
 
 import br.ufal.sapiens.refactoring.classifier.sniffer.rule.Rule;
-import br.ufal.sapiens.refactoring.pr.Statement;
+import br.ufal.sapiens.refactoring.pr.Node;
 
-public class NeighbourStatement {
-	private Statement statement;
+public class NeighbourNode {
+	private Node node;
 	private Rule rule;
 	private double distance;
 
-	public NeighbourStatement(Statement statement, Rule rule, double distance) {
-		this.statement = statement;
+	public NeighbourNode(Node node, Rule rule, double distance) {
+		this.node = node;
 		this.rule = rule;
 		this.distance = distance;
 	}
 
-	public Statement getStatement() {
-		return statement;
+	public Node getNode() {
+		return node;
 	}
 
-	public void setStatement(Statement statement) {
-		this.statement = statement;
+	public void setNode(Node node) {
+		this.node = node;
 	}
 
 	public double getDistance() {
@@ -40,7 +40,7 @@ public class NeighbourStatement {
 	
 	@Override
 	public String toString() {
-		return this.statement.toString() + " - Distance: " + this.distance;
+		return this.node.toString() + " - Distance: " + this.distance;
 	}
 
 }
