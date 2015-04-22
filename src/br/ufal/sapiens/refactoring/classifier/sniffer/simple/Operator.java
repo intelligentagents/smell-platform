@@ -42,4 +42,15 @@ public class Operator {
 		return this.type;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		Operator operator = (Operator)obj;
+		return this.toString().equals(operator.toString());
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.type.hashCode();
+	}
+	
 }

@@ -13,6 +13,7 @@ import br.ufal.sapiens.refactoring.classifier.sniffer.Sniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.FeatureEnvySniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.Rule;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.RuleEvaluator;
+import br.ufal.sapiens.refactoring.classifier.sniffer.simple.SimpleSniffer;
 import br.ufal.sapiens.refactoring.developer.Developer;
 import br.ufal.sapiens.refactoring.pr.Project;
 import br.ufal.sapiens.refactoring.pr.Node;
@@ -21,27 +22,35 @@ import br.ufal.sapiens.refactoring.util.FileUtil;
 
 public class GanttAndXercesSimple {
 	
-	public static void loadAnalysis(Sniffer sniffer, String analysisSource, Project project, Developer developer) throws IOException {
+	private Map<Developer, SimpleSniffer> snifferMap;
+	private Map<Integer,Developer> developers;
+	
+	public GanttAndXercesSimple() throws IOException { 
+		this.snifferMap = new HashMap<Developer,SimpleSniffer>();
+		this.loadDevelopers("data/xerces/developers.txt");
+	}
+	
+	public void loadAnalysis(Sniffer sniffer, String analysisSource, Project project, Developer developer) throws IOException {
 		List<String[]> data = FileUtil.getCSVData(analysisSource);
 //		System.out.println("Initial rule: " + sniffer.getInitialRule().toString());
 		for (int i = 0; i < data.size(); i++) {
 			Node node = project.getNodeFromName(data.get(i)[1]);
 			if (node == null) {
 				System.out.println("Node not found: " + data.get(i)[1]);
-			} else if (!node.getMetricNames().containsAll(developer.getLastClassifier(sniffer.getSmell()).getMetricNames())) {
+			} else if (!node.getMetricNames().containsAll(sniffer.getBestClassifier().getMetricNames())) {
 				System.out.println("Node with insufficient metrics: " + node);
 			} else {
 				boolean verify = ("1".equals(data.get(i)[2])) ? true : false;
 				if (new Integer(data.get(i)[0]) == developer.getId()) {
 					NodeAnalysis analysis = new NodeAnalysis(node, sniffer.getSmell(), verify);
-					developer.addAnalysis(analysis);
+					sniffer.getAnalysis().add(analysis);
 					if (true) System.out.println(analysis);
 				}
 			}
 		}
 	}
 	
-	public static Map<Integer,Developer> loadDevelopers(String developersSource) throws IOException {
+	public void loadDevelopers(String developersSource) throws IOException {
 		List<String[]> data = FileUtil.getCSVData(developersSource);
 		Map<Integer,Developer> developers = new HashMap<Integer,Developer>();
 		for (int i = 0; i < data.size(); i++) {
@@ -49,10 +58,10 @@ public class GanttAndXercesSimple {
 			String devName = data.get(i)[1];
 			developers.put(devId, new Developer(devId, devName));
 		}
-		return developers;
+		this.developers = developers;
 	}
 	
-	public static void loadPreferences(String developersPrefs, Map<Integer,Developer> developers) throws IOException {
+	public void loadPreferences(String developersPrefs) throws IOException {
 		List<String[]> data = FileUtil.getCSVData(developersPrefs);
 		for (int i = 0; i < data.size(); i++) {
 			Integer devId = new Integer(data.get(i)[0]);
@@ -60,66 +69,66 @@ public class GanttAndXercesSimple {
 			String rawRule = data.get(i)[2];
 			Smell smell = Smell.fromShortName(smellName);
 			Rule rule = Rule.fromString(smell, rawRule);
-			Developer dev = developers.get(devId);
-			dev.addRule(rule);
+			Developer dev = this.developers.get(devId);
+			SimpleSniffer sniffer = SimpleSniffer.fromSmell(smell);
+			sniffer.getClassifiers().add(rule);
+			this.snifferMap.put(dev, sniffer);
 		}
 	}
 	
-	public static void testDeveloperPreferences(Project project, Sniffer sniffer, Developer developer) throws IOException {
-		float personalizedPR = ClassifierEvaluator.getEvaluation(developer.getBestClassifier(sniffer.getSmell()), developer.getAnalysis().get(sniffer.getSmell()));
-		float initialPR = ClassifierEvaluator.getEvaluation(sniffer.getInitialRule(), developer.getAnalysis().get(sniffer.getSmell()));
+	public void testDeveloperPreferences(Project project, Sniffer sniffer, Developer developer) throws IOException {
+		float personalizedPR = ClassifierEvaluator.getEvaluation(sniffer.getBestClassifier(), sniffer.getAnalysis());
+		float initialPR = ClassifierEvaluator.getEvaluation(((SimpleSniffer)sniffer).getInitialRule(), sniffer.getAnalysis());
 		System.out.println("Dev " + developer.getId() + " :" + 
 //				developer.getBestRule(sniffer.getSmell()).toString() + 
 				" - Personalized: " + personalizedPR + " - Initial: " + initialPR + 
-				" - Analysis: " + developer.getAnalysis().get(sniffer.getSmell()).size());
+				" - Analysis: " + sniffer.getAnalysis().size());
 	}
 	
-	public static void testPreferences(Class<? extends Sniffer> SnifferClass, String analysisSource) throws IOException, InstantiationException, IllegalAccessException {
+	public void testPreferences(Class<? extends Sniffer> SnifferClass, String analysisSource) throws IOException, InstantiationException, IllegalAccessException {
 		Project project = new Project("Xerces", "path");
 		project.addNodesFromCSV("data/xerces/xerces-gc.csv", NodeType.ClassDefinition);
 		project.addNodesFromCSV("data/xerces/xerces-lpl.csv", NodeType.MethodDefinition);
 		project.addNodesFromCSV("data/xerces/xerces-lm.csv", NodeType.MethodDefinition);
 		project.addNodesFromCSV("data/xerces/xerces-fe.csv", NodeType.MethodDefinition);
 		
-		Map<Integer,Developer> developers = loadDevelopers("data/xerces/developers.txt");
 
-		for (Developer developer : developers.values()) {
+		for (Developer developer : this.developers.values()) {
 			Sniffer sniffer = SnifferClass.newInstance();
-			developer.addRule(sniffer.getInitialRule());
-			loadAnalysis(sniffer, analysisSource, project, developer);
-			loadPreferences("data/xerces/preferences-kappa.txt", developers);
+			this.loadPreferences("data/xerces/preferences-kappa.txt");
+			this.loadAnalysis(sniffer, analysisSource, project, developer);
 			testDeveloperPreferences(project, sniffer, developer);
 		}
 	}
 	
-	public static void train(Class<? extends Sniffer> SnifferClass, String analysisSource) throws IOException, InstantiationException, IllegalAccessException {
+	public void train(Class<? extends Sniffer> SnifferClass, String analysisSource) throws IOException, InstantiationException, IllegalAccessException {
 		Project project = new Project("GanttProject", "path");
 		project.addNodesFromCSV("data/gantt/gantt-gc.csv", NodeType.ClassDefinition);
 		project.addNodesFromCSV("data/gantt/gantt-lpl.csv", NodeType.MethodDefinition);
 		project.addNodesFromCSV("data/gantt/gantt-lm.csv", NodeType.MethodDefinition);
 		project.addNodesFromCSV("data/gantt/gantt-fe.csv", NodeType.MethodDefinition);
-		Map<Integer,Developer> developers = loadDevelopers("data/gantt/developers.txt");
 		
 		for (Developer developer : developers.values()) {
 			Sniffer sniffer = SnifferClass.newInstance();
-			developer.addRule(sniffer.getInitialRule());
 			loadAnalysis(sniffer, analysisSource, project, developer);
 			SmellPlatform platform = new SmellPlatform(project, developer);
 			platform.updateClassifier(sniffer);
 			
-			float personalizedPR = ClassifierEvaluator.getEvaluation(developer.getBestClassifier(sniffer.getSmell()), developer.getAnalysis().get(sniffer.getSmell()));
-			float initialPR = ClassifierEvaluator.getEvaluation(sniffer.getInitialRule(), developer.getAnalysis().get(sniffer.getSmell()));
+			float personalizedPR = ClassifierEvaluator.getEvaluation(sniffer.getBestClassifier(), sniffer.getAnalysis());
+			float initialPR = ClassifierEvaluator.getEvaluation(((SimpleSniffer)sniffer).getInitialRule(), sniffer.getAnalysis());
 			System.out.println("Dev " + developer.getId() + 
-					" :" + developer.getBestClassifier(sniffer.getSmell()).toString() + 
+					" :" + sniffer.getBestClassifier().toString() + 
 					" - Personalized: " + personalizedPR + 
 					" - Initial: " + initialPR + 
-					" - Analysis: " + developer.getAnalysis().get(sniffer.getSmell()).size());
+					" - Analysis: " + sniffer.getAnalysis().size());
 		}
 	}
 	
 	public static void main(String[] args) throws IOException, InstantiationException, IllegalAccessException {
-		train(FeatureEnvySniffer.class, "data/gantt/an-fe.csv");
-//		testPreferences(FeatureEnvySniffer.class, "data/xerces/an-fe.csv");
+		GanttAndXercesSimple experiment = new GanttAndXercesSimple();
+		
+//		experiment.train(FeatureEnvySniffer.class, "data/gantt/an-fe.csv");
+		experiment.testPreferences(FeatureEnvySniffer.class, "data/xerces/an-fe.csv");
 	}
 
 }

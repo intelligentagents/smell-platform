@@ -18,6 +18,7 @@ public class FileUtil {
 		List<String[]> lines = new ArrayList<String[]>();
 		while ((line = br.readLine()) != null) {
 			String[] cols = line.split(",");
+			if (cols.length <= 1) cols = line.split(";");
 			lines.add(cols);
 		}
 		br.close();

@@ -1,14 +1,25 @@
 package br.ufal.sapiens.refactoring.classifier.sniffer;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import br.ufal.sapiens.refactoring.analysis.NodeAnalysis;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.Rule;
+import br.ufal.sapiens.refactoring.pr.Node;
 
 public class ClassifierEvaluator {
 	
+	public static float getEvaluation(Classifier classifier, List<Node> nodes, Map<Node,NodeAnalysis> analysis) {
+		List<NodeAnalysis> analysisList = new ArrayList<NodeAnalysis>();
+		for (Node node : nodes) {
+			analysisList.add(analysis.get(node));
+		}
+		return getEvaluation(classifier, analysisList);
+	}
+	
 	public static float getEvaluation(Classifier classifier, List<NodeAnalysis> allAnalysis) {
-		return getAccuracy(classifier, allAnalysis);
+		return getPrecision(classifier, allAnalysis);
 	}
 	
 	public static float getAccuracy(Classifier classifier, List<NodeAnalysis> allAnalysis) {
@@ -34,7 +45,7 @@ public class ClassifierEvaluator {
 		return "" + precision + " / " + recall;
 	}
 	
-	public float getPrecision(Classifier classifer, List<NodeAnalysis> allAnalysis) {
+	public static float getPrecision(Classifier classifer, List<NodeAnalysis> allAnalysis) {
 		int tp = 0;
 		int fp = 0;
 		for (NodeAnalysis analysis : allAnalysis) {
@@ -47,7 +58,7 @@ public class ClassifierEvaluator {
 		return precision;
 	}
 	
-	public float getRecall(Classifier classifer, List<NodeAnalysis> allAnalysis) {
+	public static float getRecall(Classifier classifer, List<NodeAnalysis> allAnalysis) {
 		int tp = 0;
 		int fp = 0;
 		int tn = 0;
@@ -65,7 +76,14 @@ public class ClassifierEvaluator {
 		return recall;
 	}
 	
-	public float getKappa(Classifier classifer, List<NodeAnalysis> allAnalysis) {
+	public static float getFMeasure(Classifier classifer, List<NodeAnalysis> allAnalysis) {
+		float precision = getPrecision(classifer, allAnalysis);
+		float recall = getRecall(classifer, allAnalysis);
+		float fmeasure = 2 * ((precision*recall)/(precision+recall));
+		return fmeasure;
+	}
+	
+	public static float getKappa(Classifier classifer, List<NodeAnalysis> allAnalysis) {
 		int tp = 0;
 		int fp = 0;
 		int tn = 0;
@@ -79,10 +97,10 @@ public class ClassifierEvaluator {
 				else fn += 1;
 			}
 		}
-		return this.calculateKappa(tn, fn, fp, tp);
+		return calculateKappa(tn, fn, fp, tp);
 	}
 	
-	private float calculateKappa(int tn, int fn, int fp, int tp) {
+	private static float calculateKappa(int tn, int fn, int fp, int tp) {
 		float prA = (1.0f*(tn+tp)) / (fn+tn+tp+fp);
 		float accA = (1.0f * (tp + fp)) / (fn+tn+tp+fp);
 		float accB = (1.0f * (tp + fn)) / (fn+tn+tp+fp);

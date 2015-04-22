@@ -4,6 +4,7 @@ import java.util.List;
 
 import br.ufal.sapiens.refactoring.analysis.NodeAnalysis;
 import br.ufal.sapiens.refactoring.classifier.smell.Smell;
+import br.ufal.sapiens.refactoring.classifier.sniffer.Classifier;
 import br.ufal.sapiens.refactoring.classifier.sniffer.Sniffer;
 import br.ufal.sapiens.refactoring.developer.Developer;
 
@@ -30,7 +31,7 @@ public class FeatureEnvySniffer extends SimpleSniffer {
 	
 	public void updateRule(Developer developer) {
 		this.updateRule(developer);
-		Rule rule = (Rule)developer.getLastClassifier(this.getSmell());
+		Rule rule = (Rule)this.getBestClassifier();
 		Expression atfdExpression = null;
 		Expression fdpExpression = null;
 		for (Expression expression : rule.getExpressions()) {

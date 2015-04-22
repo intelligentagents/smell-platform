@@ -1,0 +1,15 @@
+1;com.android.internal.telephony.DataConnection;1
+1;com.android.internal.telephony.CallManager;1
+1;com.android.internal.telephony.DataConnectionTracker;1
+1;com.android.internal.telephony.PhoneBase;1
+1;com.android.internal.telephony.gsm.SIMRecords;1
+1;com.android.internal.telephony.IccCard;1
+1;com.android.internal.telephony.cdma.CdmaLteServiceStateTracker;1
+1;com.android.internal.telephony.cdma.CdmaServiceStateTracker;1
+1;com.android.internal.telephony.gsm.GsmServiceStateTracker;1
+1;com.android.internal.telephony.gsm.GsmDataConnectionTracker;1
+1;com.android.internal.telephony.cdma.CdmaDataConnectionTracker;1
+1;com.android.internal.telephony.cdma.sms.BearerData;1
+1;com.android.internal.telephony.test.SimulatedCommands;0
+1;com.android.internal.telephony.CommandsInterface;0
+1;com.android.internal.telephony.gsm.GSMPhone;0

@@ -8,33 +8,53 @@ import br.ufal.sapiens.refactoring.classifier.smell.Smell;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.Rule;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.RuleEvaluator;
 import br.ufal.sapiens.refactoring.developer.Developer;
-import br.ufal.sapiens.refactoring.metrics.WekaUtil;
 import br.ufal.sapiens.refactoring.pr.Project;
 import br.ufal.sapiens.refactoring.pr.Node;
+import br.ufal.sapiens.refactoring.util.WekaUtil;
 
 public abstract class Sniffer {
 	private String name;
 	private Smell smell;
-	private Classifier classifier;
+	private List<Classifier> classifiers;
+	private Classifier bestClassifier;
+	private List<NodeAnalysis> analysis;
 	
 	public Sniffer(String name, Smell smell) {
 		this.name = name;
 		this.smell = smell;
+		this.classifiers = new ArrayList<Classifier>();
+		this.analysis = new ArrayList<NodeAnalysis>();
 	}
 	
-	public Classifier getClassifier() {
-		return classifier;
+	public List<NodeAnalysis> getAnalysis() {
+		return analysis;
 	}
 
-	public void setClassifier(Classifier classifier) {
-		this.classifier = classifier;
+	public void setAnalysis(List<NodeAnalysis> analysis) {
+		this.analysis = analysis;
+	}
+	
+	public Classifier getBestClassifier() {
+		return bestClassifier;
 	}
 
-	public List<SniffedSmell> findSmells(Project project, Developer developer, Smell smell) {
+	public void setBestClassifier(Classifier bestClassifier) {
+		this.bestClassifier = bestClassifier;
+	}
+
+	public List<Classifier> getClassifiers() {
+		return this.classifiers;
+	}
+
+	public void setClassifier(List<Classifier> classifiers) {
+		this.classifiers = classifiers;
+	}
+
+	public List<SniffedSmell> findSmells(Project project) {
 		List<SniffedSmell> sniffedSmells = new ArrayList<SniffedSmell>();
-		for (Node node : project.getNodes(smell.getType()).values()) {
-			if (this.verify(developer, node)) {
-				sniffedSmells.add(new SniffedSmell(smell,
+		for (Node node : project.getNodes(this.smell.getType()).values()) {
+			if (this.verify(node)) {
+				sniffedSmells.add(new SniffedSmell(this.smell,
 						this, node));
 			}
 		}
@@ -42,12 +62,8 @@ public abstract class Sniffer {
 		return sniffedSmells;
 	}
 	
-	public abstract List<Node> filterNodesWithMetrics(Project project, Developer developer);
+	public abstract void updateClassifier();
 	
-	public abstract List<NeighbourNode> getNeighbourNodes(Project project, Developer developer, int maxNeighbours);
-	
-	public abstract void updateClassifier(Developer developer);
-
 	public String getName() {
 		return name;
 	}
@@ -63,16 +79,23 @@ public abstract class Sniffer {
 	public void setSmell(Smell smell) {
 		this.smell = smell;
 	}
+	
+	public void setBestClassifier(List<NodeAnalysis> allAnalysis) {
+		float evaluation = -1f;
+		for (Classifier classifier : this.getClassifiers()) {
+			if (ClassifierEvaluator.getEvaluation(classifier, allAnalysis) > evaluation) {
+				evaluation = ClassifierEvaluator.getEvaluation(classifier, allAnalysis);
+				this.bestClassifier = classifier;
+			}
+		}
+	}
 
-	public boolean verify(Developer developer, Node node) {
-		return developer.getLastClassifier(this.smell).verify(node);
+	public boolean verify(Node node) {
+		return this.getBestClassifier().verify(node);
 	}
 	
-	public boolean verify(Node node, Rule rule) {
-		return rule.verify(node);
+	public boolean verify(Node node, Classifier classifier) {
+		return classifier.verify(node);
 	}
-	
-	public abstract Rule getInitialRule();
-	
 	
 }

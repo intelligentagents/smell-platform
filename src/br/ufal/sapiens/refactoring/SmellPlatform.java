@@ -37,10 +37,6 @@ public class SmellPlatform {
 		return ClassifierManager.getInstance().findSmells(this.project, this.developer, sniffer);
 	}
 	
-	public List<NeighbourNode> getNeighbourNodes(Sniffer sniffer, int maxNeighbours) {
-		return ClassifierManager.getInstance().getNeighbourNodes(this.project, this.developer, sniffer, maxNeighbours);
-	}
-	
 //	public void run(Sniffer sniffer) {
 //		for (int i = 0; i < MAX_ITERACTIONS_COUNT; i++) {
 //			List<NeighbourStatement> neighbours = this.getNeighbourStatements(sniffer, MAX_NEIGHBOURS_COUNT);
@@ -58,7 +54,7 @@ public class SmellPlatform {
 //	}
 	
 	public void updateClassifier(Sniffer sniffer) throws IOException {
-		sniffer.updateClassifier(developer);
+		sniffer.updateClassifier();
 	}
 	
 }

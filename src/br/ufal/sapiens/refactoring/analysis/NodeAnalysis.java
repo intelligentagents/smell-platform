@@ -49,4 +49,15 @@ public class NodeAnalysis {
 		return this.smell.getShortName() + ":" + (this.verify ? 1 : 0) + ":" + this.node;
 	}
 	
+	@Override
+	public boolean equals(Object obj) {
+		NodeAnalysis anl = (NodeAnalysis)obj;
+		return this.node.equals(anl.getNode()) && this.smell.getName().equals(anl.getSmell().getName()) && this.verify == anl.verify;
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.getNode().hashCode();
+	}
+	
 }

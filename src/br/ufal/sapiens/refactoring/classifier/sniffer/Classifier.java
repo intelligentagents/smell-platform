@@ -38,7 +38,7 @@ public abstract class Classifier {
 	
 	public abstract boolean verify(Node node);
 	
-	public abstract Rule update(NodeAnalysis analysis);
+	public abstract Classifier update(List<NodeAnalysis> analysis);
 	
 	public abstract List<String> getMetricNames();
 	

@@ -65,6 +65,7 @@ public class Project {
 		List<Node> nodes = new ArrayList<Node>();
 		while ((line = br.readLine()) != null) {
 			String[] cols = line.split(",");
+			if (cols.length == 1) cols = line.split(";");
 			if (cols[0].startsWith("name")) {
 				headers = cols;
 				continue;
@@ -97,6 +98,10 @@ public class Project {
 			return this.methodNodes;
 		}
 		return null;
+	}
+	
+	public String getAnalysisSource(String smellShortName) {
+		return "data/icpc2015/" + this.name + "/an-" + smellShortName + ".csv";
 	}
 
 }

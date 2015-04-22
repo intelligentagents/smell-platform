@@ -28,14 +28,10 @@ public class ClassifierManager {
 	
 	public List<SniffedSmell> findSmells(Project project, Developer developer, Sniffer sniffer) {
 		List<SniffedSmell> smells = new ArrayList<SniffedSmell>();
-		smells.addAll(sniffer.findSmells(project, developer, sniffer.getSmell()));
+		smells.addAll(sniffer.findSmells(project));
 		return smells;
 	}
 	
-	public List<NeighbourNode> getNeighbourNodes(Project project, Developer developer, Sniffer sniffer, int maxNeighbours) {
-		return sniffer.getNeighbourNodes(project, developer, maxNeighbours);
-	}
-
 	public List<Sniffer> getSniffers() {
 		return sniffers;
 	}

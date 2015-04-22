@@ -12,6 +12,7 @@ import br.ufal.sapiens.refactoring.pr.Node;
 
 public class Rule extends Classifier {
 	private List<Expression> expressions = new ArrayList<Expression>();
+	private int iterations = 0;
 	
 	public Rule(String name, Smell smell) {
 		super(name, smell);
@@ -33,6 +34,14 @@ public class Rule extends Classifier {
 		this.expressions = expressions;
 	}
 	
+	public int getIterations() {
+		return iterations;
+	}
+
+	public void setIterations(int iterations) {
+		this.iterations = iterations;
+	}
+
 	public boolean verify(Node node) {
 		for (Expression expression : this.getExpressions()) {
 			if (!expression.verify(node)) {
@@ -86,6 +95,28 @@ public class Rule extends Classifier {
 			rule.getExpressions().add(Expression.fromString(part));
 		}
 		return rule;
+	}
+
+	@Override
+	public Classifier update(List<NodeAnalysis> analysis) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		Rule rule = (Rule)obj;
+		for (int i = 0; i < this.getExpressions().size(); i++) {
+			if (!this.getExpressions().get(i).equals(rule.getExpressions().get(i))) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.getExpressions().toString().hashCode();
 	}
 	
 }

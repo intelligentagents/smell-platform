@@ -9,12 +9,12 @@ import net.sourceforge.pmd.PMD;
 public class PMDRun {
 	
 	public static void main(String[] args) throws FileNotFoundException {
-		String path = "/home/hozano/apps/ganttproject-2.0.10-src/ganttproject/src";
+		String path = "/home/hozano/git/hist-comparison/tomcat";
 //		String path = "/home/hozano/apps/xerces-2_11_0/src";
 		String[] argz = new String[]{"-R", "/home/hozano/git/smell-platform/src/resources/ruleset.xml",
 				"-d", path};
 		
-		PrintStream out = new PrintStream(new FileOutputStream("data/gantt/gantt-gc2.txt"));
+		PrintStream out = new PrintStream(new FileOutputStream("data/hist-comparison/tomcat-fe-metrics.txt"));
 		System.setOut(out);
 		PMD.main(argz);
 	}

@@ -1,4 +1,4 @@
-package br.ufal.sapiens.refactoring.metrics;
+package br.ufal.sapiens.refactoring.util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,7 @@ import weka.core.FastVector;
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.neighboursearch.LinearNNSearch;
+import br.ufal.sapiens.refactoring.analysis.NodeAnalysis;
 import br.ufal.sapiens.refactoring.classifier.sniffer.NeighbourNode;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.Rule;
 import br.ufal.sapiens.refactoring.pr.Node;
@@ -16,8 +17,8 @@ import br.ufal.sapiens.refactoring.pr.Node;
 public class WekaUtil {
 	
 	public static List<NeighbourNode> getNeighbourNodes(List<Node> nodes, Rule rule, int kNeighbors) throws Exception {
-		Instances instances = createWekaInstances(new ArrayList<Node>(nodes), rule);
-		Instance instance = createWekaInstance(null, rule, instances);
+		Instances instances = createWekaInstancesFromRule(new ArrayList<Node>(nodes), rule);
+		Instance instance = createWekaInstanceFromRule(null, rule, instances);
 		LinearNNSearch nns = new LinearNNSearch(instances);
 		Instances neighboursInstaces = nns.kNearestNeighbours(instance, kNeighbors);
 
@@ -33,7 +34,51 @@ public class WekaUtil {
 		
 	}
 	
-	private static Instances createWekaInstances(List<Node> nodes, Rule rule) {
+	public static List<NeighbourNode> getNeighbourNodesFromAnalysis(List<NodeAnalysis> _nodes, Rule rule, int kNeighbors) throws Exception {
+		List<Node> nodes = new ArrayList<Node>();
+		for (NodeAnalysis node : _nodes) {
+			nodes.add(node.getNode());
+		}
+		
+		return getNeighbourNodes(nodes, rule, kNeighbors);
+	}
+	
+	public static Instances createWekaInstancesFromAnalysis(List<NodeAnalysis> nodes, List<String> metricNames) {
+		FastVector fv = new FastVector();
+//		fv.addElement(new Attribute("name", (FastVector) null));
+		for (String metricName : metricNames) {
+			fv.addElement(new Attribute(metricName));
+		}
+		FastVector fv2 = new FastVector();
+		fv2.addElement("1");
+		fv2.addElement("0");
+		
+//		fv.addElement(new Attribute("classz", (FastVector) null)); // string
+		fv.addElement(new Attribute("classz", fv2));
+		Instances instances = new Instances("TRAINING", fv, nodes.size());
+		
+		for (NodeAnalysis nodeA : nodes) {
+			instances.add(createWekaInstanceFromAnalysis(nodeA, metricNames, instances));
+		}
+		instances.setClassIndex(metricNames.size());
+		return instances;
+	}
+	
+	public static Instances createWekaInstances(List<Node> nodes, List<String> metricNames) {
+		FastVector fv = new FastVector();
+		fv.addElement(new Attribute("name", (FastVector) null));
+		for (String metricName : metricNames) {
+			fv.addElement(new Attribute(metricName));
+		}
+		Instances instances = new Instances("NNS", fv, nodes.size());
+		
+		for (Node node : nodes) {
+			instances.add(createWekaInstance(node, metricNames, instances));
+		}
+		return instances;
+	}
+	
+	public static Instances createWekaInstancesFromRule(List<Node> nodes, Rule rule) {
 		FastVector fv = new FastVector();
 		fv.addElement(new Attribute("name", (FastVector) null));
 		for (String metricName : rule.getMetricNames()) {
@@ -42,14 +87,44 @@ public class WekaUtil {
 		Instances instances = new Instances("NNS", fv, nodes.size());
 		
 		for (Node node : nodes) {
-			Instance instance = createWekaInstance(node, rule, instances);
+			Instance instance = createWekaInstanceFromRule(node, rule, instances);
 			if (instance != null)
-				instances.add(createWekaInstance(node, rule, instances));
+				instances.add(createWekaInstanceFromRule(node, rule, instances));
 		}
 		return instances;
 	}
 	
-	private static Instance createWekaInstance(Node node, Rule rule, Instances instances) {
+	public static Instance createWekaInstance(Node node, List<String> metricNames, Instances instances) {
+		int columns = metricNames.size();
+		Instance instance = new Instance(columns + 1);
+		instance.setDataset(instances);
+		
+		instance.setValue(0, node.getName());
+		for (int i = 0; i < columns; i++) {
+			Float value = node.getMetricValues().get(metricNames.get(i));
+			if (value != null)
+				instance.setValue(i+1, value);
+		}	
+		return instance;
+	}
+	
+	public static Instance createWekaInstanceFromAnalysis(NodeAnalysis node, List<String> metricNames, Instances instances) {
+		int columns = metricNames.size();
+		Instance instance = new Instance(columns + 1);
+		instance.setDataset(instances);
+		
+//		instance.setValue(0, node.getNode().getName());
+		for (int i = 0; i < columns; i++) {
+			Float value = node.getNode().getMetricValues().get(metricNames.get(i));
+			if (value != null)
+				instance.setValue(i, value);
+		}
+		String verified = node.isVerify() ? "1" : "0";
+		instance.setValue(columns, verified);
+		return instance;
+	}
+	
+	private static Instance createWekaInstanceFromRule(Node node, Rule rule, Instances instances) {
 		List<String> metricNames = rule.getMetricNames();
 		int columns = metricNames.size();
 		Instance instance = new Instance(columns + 1);
@@ -70,6 +145,8 @@ public class WekaUtil {
 		}
 		return instance;
 	}
+	
+	
 	
 //	public static List<NeighbourStatement> getNeighbourStatements(Project project, Rule rule, int kNeighbors) throws Exception {
 //		weka.core.converters.ConverterUtils.DataSource src = new weka.core.converters.ConverterUtils.DataSource(project.getPath());

@@ -52,11 +52,19 @@ public class Expression {
 		if (analysis.isVerify() != this.verify(analysis.getNode())) {
 			this.setValue(analysis.getNode().getMetricValues().get(this.getMetricName()));
 			if (analysis.isVerify()) {
-				if (Operator.GreaterThan() == this.operator) this.operator = Operator.GreaterEqualThan();
-				if (Operator.LessThan() == this.operator) this.operator = Operator.LessEqualThan();
+				if (Operator.GreaterThan().equals(this.operator)) {
+					this.operator = Operator.GreaterEqualThan();
+				}
+				if (Operator.LessThan().equals(this.operator)) {
+					this.operator = Operator.LessEqualThan();
+				}
 			} else {
-				if (Operator.GreaterEqualThan() == this.operator) this.operator = Operator.GreaterThan();
-				if (Operator.LessEqualThan() == this.operator) this.operator = Operator.LessThan();
+				if (Operator.GreaterEqualThan().equals(this.operator)) {
+					this.operator = Operator.GreaterThan();
+				}
+				if (Operator.LessEqualThan().equals(this.operator)) {
+					this.operator = Operator.LessThan();
+				}
 			}
 			
 		}
@@ -77,6 +85,19 @@ public class Expression {
 			return new Expression(parts[0].trim(), new Operator(op), new Float(parts[1]));
 		}
 		return null;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		Expression expression = (Expression)obj;
+		return this.getMetricName().equals(expression.getMetricName()) &&
+				this.getOperator().equals(expression.getOperator()) &&
+				this.getValue().equals(expression.getValue());
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.toString().hashCode();
 	}
 
 }

@@ -1,17 +1,13 @@
 package br.ufal.sapiens.refactoring.classifier.sniffer.dt;
 
-import java.util.List;
+import java.util.Arrays;
 
-import br.ufal.sapiens.refactoring.classifier.sniffer.NeighbourNode;
-import br.ufal.sapiens.refactoring.classifier.sniffer.Sniffer;
-import br.ufal.sapiens.refactoring.classifier.sniffer.simple.Rule;
-import br.ufal.sapiens.refactoring.developer.Developer;
-import br.ufal.sapiens.refactoring.pr.Node;
-import br.ufal.sapiens.refactoring.pr.Project;
+import br.ufal.sapiens.refactoring.classifier.smell.Smell;
 
-public class FeatureEnvyDTSniffer  {
+public class FeatureEnvyDTSniffer extends DTSniffer {
 
-	
-
+	public FeatureEnvyDTSniffer() {
+		super("LM DT Sniffer", Smell.FeatureEnvy(), Arrays.asList("atfd","laa","fdp"));
+	}
 
 }

@@ -1,0 +1,18 @@
+DEV 1 ---------------------------------
+org.apache.xerces.impl.xpath.regex.Token.java:225,0,1.0,0
+org.apache.xerces.parsers.DOMParserImpl.java:364,31,0.45614034,3
+org.apache.xerces.util.URI.java:841,1,0.8333333,1
+org.apache.xerces.impl.xs.traversers.XSDHandler.java:3018,0,1.0,0
+org.apache.xerces.parsers.DOMParserImpl.java:1171,1,0.0,1
+org.apache.xerces.impl.xs.traversers.XSDHandler.java:1904,2,0.0,2
+org.apache.xerces.impl.dv.xs.AbstractDateTimeDV.java:502,0,1.0,0
+org.apache.xerces.dom.EntityImpl.java:331,0,1.0,0
+org.apache.xerces.impl.xs.XMLSchemaValidator.java:630,1,0.75,1
+org.apache.xerces.impl.xs.opti.DefaultDocument.java:130,1,0.5,1
+org.apache.xerces.impl.io.UTF8Reader.java:679,1,0.8333333,1
+org.apache.xerces.impl.XML11EntityScanner.java:405,10,0.4117647,2
+org.apache.xerces.jaxp.validation.ValidatorImpl.java:101,3,0.72727275,3
+org.apache.xerces.impl.xs.traversers.XSDHandler.java:2172,19,0.5869565,9
+org.apache.xerces.util.SymbolHash.java:212,3,0.625,1
+org.apache.xerces.dom.ElementImpl.java:1055,0,1.0,0
+org.apache.xerces.impl.xs.XMLSchemaValidator.java:4085,0,1.0,0
