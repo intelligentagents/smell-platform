@@ -1,0 +1,25 @@
+Blob detection
+==============
+
+ArgoUML
+- The Oracle (http://www.ptidej.net/tools/designsmells/materials/Instances/200603%20-%20DETEX%20-%20Manual/ArgoUMLv0.19.8%20-%20Blob%20without%20UI%20by%20MAelH.xls) shows 23 smells instead of 25 as said in the paper.
+
+Azureus
+- No oracle found.
+
+GanttProject
+- The oracle (http://www.ptidej.net/tools/designsmells/materials/Instances/200908%20-%20BDTEX%20-%20QSIC%20Paper/GanttProject%20v1.10.2%20-%20Oracle%20and%20Cross-project%20Data.xls) shows only 4 smells instead of 9 as said in the paper.
+
+Log4J: OK
+
+Lucene: OK
+
+Nutch: No oracle found.
+
+PMD: The oracle (http://www.ptidej.net/tools/designsmells/materials/Instances/200603%20-%20DETEX%20-%20Manual/PMD%20v1.8%20-%20Blob%20by%20MAelH.xls) shows 3 smells instead of 4 as said in the paper.
+
+QuickUML: OK
+
+Xerces v1.0.1: The oracle (http://www.ptidej.net/tools/designsmells/materials/Instances/200603%20-%20DETEX%20-%20Manual/Xerces%20v1.0.1%20-%20Blob%20by%20MAelH.xls) shows 9 smells instead of 10 as said in the paper.
+
+Xerces v2.7.0: The oracle (http://www.ptidej.net/tools/designsmells/materials/Instances/200603%20-%20DETEX%20-%20Manual/Xerces%20v2.7.0%20-%20Blob%20by%20MAelH.xls) shows 34 smells instead of 39 as said in the paper.
