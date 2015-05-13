@@ -44,7 +44,6 @@ public class GanttAndXercesSimple {
 				if (new Integer(data.get(i)[0]) == developer.getId()) {
 					NodeAnalysis analysis = new NodeAnalysis(node, sniffer.getSmell(), verify);
 					sniffer.getAnalysis().add(analysis);
-					if (true) System.out.println(analysis);
 				}
 			}
 		}
@@ -127,7 +126,7 @@ public class GanttAndXercesSimple {
 	public static void main(String[] args) throws IOException, InstantiationException, IllegalAccessException {
 		GanttAndXercesSimple experiment = new GanttAndXercesSimple();
 		
-//		experiment.train(FeatureEnvySniffer.class, "data/gantt/an-fe.csv");
+		experiment.train(FeatureEnvySniffer.class, "data/gantt/an-fe.csv");
 		experiment.testPreferences(FeatureEnvySniffer.class, "data/xerces/an-fe.csv");
 	}
 

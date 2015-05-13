@@ -1,0 +1,16 @@
+1;com.android.sdkmanager.Main;1
+1;com.android.sdkuilib.internal.repository.UpdaterWindowImpl;1
+1;com.android.ide.eclipse.adt.internal.editors.layout.configuration.ConfigurationComposite;1
+1;com.android.ide.eclipse.adt.internal.editors.uimodel.UiElementNode;1
+1;com.android.sdklib.SdkManager;1
+1;com.android.ddmlib.testrunner.InstrumentationResultParser;1
+1;sdkmanager.libs.sdkuilib.tests.com.android.sdkuilib.internal.repository.sdkman2.PackagesDiffLogicTest;1
+1;traceview.src.com.android.traceview.TimeLineView;1
+1;ddms.libs.ddmuilib.src.com.android.ddmuilib.logcat.LogPanel;1
+1;hierarchyviewer.src.com.android.hierarchyviewer.ui.Workspace;1
+1;ddms.app.src.com.android.ddms.UIThread;0
+1;ddms.libs.ddmuilib.src.com.android.ddmuilib.NativeHeapPanel;0
+1;ddms.libs.ddmuilib.src.com.android.ddmuilib.logcat.LogCatPanel;0
+1;sdkmanager.libs.sdklib.src.com.android.sdklib.internal.avd.AvdManager;0
+1;sdkmanager.libs.sdkuilib.src.com.android.sdkuilib.internal.repository.sdkman2.PackagesPage;0
+1;com.android.ide.eclipse.adt.internal.editors.layout.gle2.LayoutCanvas;0

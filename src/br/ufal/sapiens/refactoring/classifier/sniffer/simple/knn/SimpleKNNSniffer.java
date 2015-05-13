@@ -76,10 +76,12 @@ public abstract class SimpleKNNSniffer extends Sniffer {
 		}
 		
 		Classifier newBestClassifier = this.getClassifiers().get(0);
-		float bestValue = ClassifierEvaluator.getEvaluation(newBestClassifier, this.getAnalysis());
+		Float bestValue = ClassifierEvaluator.getEvaluation(newBestClassifier, this.getAnalysis());
+		if (bestValue.isNaN()) bestValue = 0f;
 				
 		for (Classifier classifier : this.getClassifiers()) {
-			float evaluation = ClassifierEvaluator.getEvaluation(classifier, this.getAnalysis());
+			Float evaluation = ClassifierEvaluator.getEvaluation(classifier, this.getAnalysis());
+			if (evaluation.isNaN()) evaluation = 0f;
 			if (evaluation > bestValue) {
 				newBestClassifier = classifier;
 				bestValue = evaluation;

@@ -19,7 +19,7 @@ public class ClassifierEvaluator {
 	}
 	
 	public static float getEvaluation(Classifier classifier, List<NodeAnalysis> allAnalysis) {
-		return getPrecision(classifier, allAnalysis);
+		return getFMeasure(classifier, allAnalysis);
 	}
 	
 	public static float getAccuracy(Classifier classifier, List<NodeAnalysis> allAnalysis) {

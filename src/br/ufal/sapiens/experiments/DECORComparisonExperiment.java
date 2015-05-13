@@ -3,6 +3,7 @@ package br.ufal.sapiens.experiments;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -138,15 +139,35 @@ public class DECORComparisonExperiment {
 	public List<List<NodeAnalysis>> createFolds(List<NodeAnalysis> _nodes, int folds) {
 		List<NodeAnalysis> nodes = new ArrayList<NodeAnalysis>(_nodes);
 		List<List<NodeAnalysis>> foldLists = new ArrayList<List<NodeAnalysis>>();
-		int elements = _nodes.size() / folds;
 		
-		while (nodes.size() > 0) {
-			List<NodeAnalysis> foldList = new ArrayList<NodeAnalysis>();
-			while (foldList.size() < elements && nodes.size() > 0) {
-				Collections.shuffle(nodes);
-				foldList.add(nodes.remove(0));
-			}
-			foldLists.add(foldList);
+		List<NodeAnalysis> trueNodes = new ArrayList<NodeAnalysis>();
+		List<NodeAnalysis> falseNodes = new ArrayList<NodeAnalysis>();
+		
+		for (NodeAnalysis node : nodes) {
+			if (node.isVerify()) 
+				trueNodes.add(node);
+			else
+				falseNodes.add(node);
+		}
+		
+		for (int i = 0; i < folds; i++) {
+			foldLists.add(new ArrayList<NodeAnalysis>());
+		}
+		
+		int count = 0;
+		while (falseNodes.size() > 0) {
+			int index = (count%folds);
+			Collections.shuffle(falseNodes);
+			foldLists.get(index).add(falseNodes.remove(0));
+			count += 1;
+		}
+
+		count = 0;
+		while (trueNodes.size() > 0) {
+			int index = folds -1 -(count%folds);
+			Collections.shuffle(trueNodes);
+			foldLists.get(index).add(trueNodes.remove(0));
+			count += 1;
 		}
 		
 		return foldLists;
@@ -175,6 +196,16 @@ public class DECORComparisonExperiment {
 		
 		float iterations = 0;
 		
+		List<Float> aRecall = new ArrayList<Float>();
+		List<Float> aPrecision = new ArrayList<Float>();
+		List<Float> aFMeasure = new ArrayList<Float>();
+		
+		List<Float> bRecall = new ArrayList<Float>();
+		List<Float> bPrecision = new ArrayList<Float>();
+		List<Float> bFMeasure = new ArrayList<Float>();
+		
+		List<Float> iterationsList = new ArrayList<Float>();
+		
 		for (int testFold = 0; testFold < folds; testFold++) {
 			sniffer = SnifferClass.newInstance();
 			List<NodeAnalysis> trainAnalysis = new ArrayList<NodeAnalysis>();
@@ -194,25 +225,73 @@ public class DECORComparisonExperiment {
 			
 			List<NodeAnalysis> analysisToTest = new ArrayList<NodeAnalysis>(foldList.get(testFold));
 			
-			recall += ClassifierEvaluator.getRecall(((SimpleKNNSniffer) sniffer).getInitialRule(), analysisToTest);
-			precision += ClassifierEvaluator.getPrecision(((SimpleKNNSniffer) sniffer).getInitialRule(), analysisToTest);
-			fmeasure += ClassifierEvaluator.getFMeasure(((SimpleKNNSniffer) sniffer).getInitialRule(), analysisToTest);
+			recall += ClassifierEvaluator.getRecall(((SimpleKNNSniffer) sniffer).getBestClassifier(), analysisToTest);
+			precision += ClassifierEvaluator.getPrecision(((SimpleKNNSniffer) sniffer).getBestClassifier(), analysisToTest);
+			fmeasure += ClassifierEvaluator.getFMeasure(((SimpleKNNSniffer) sniffer).getBestClassifier(), analysisToTest);
+			
+			aRecall.add(ClassifierEvaluator.getRecall(((SimpleKNNSniffer) sniffer).getBestClassifier(), analysisToTest));
+			aPrecision.add(ClassifierEvaluator.getPrecision(((SimpleKNNSniffer) sniffer).getBestClassifier(), analysisToTest));
+			aFMeasure.add(ClassifierEvaluator.getFMeasure(((SimpleKNNSniffer) sniffer).getBestClassifier(), analysisToTest));
 			
 			recall2 += ClassifierEvaluator.getRecall(decor, analysisToTest);
 			precision2 += ClassifierEvaluator.getPrecision(decor, analysisToTest);
 			fmeasure2 += ClassifierEvaluator.getFMeasure(decor, analysisToTest);
 			
+			bRecall.add(ClassifierEvaluator.getRecall(decor, analysisToTest));
+			bPrecision.add(ClassifierEvaluator.getPrecision(decor, analysisToTest));
+			bFMeasure.add(ClassifierEvaluator.getFMeasure(decor, analysisToTest));
+			
 			
 			iterations += ((Rule)sniffer.getBestClassifier()).getIterations(); 
 		}
 		
-		System.out.println(developer.getId() + "\t"
-				+ recall2/folds + " / " + recall/folds +"\t"
-				+ precision2/folds + " / " + precision/folds +"\t"
-				+ fmeasure2/folds + " / " + fmeasure/folds +"\t"
-				+ iterations/folds + "\tFolds: "+ folds + " Analysis: "+ analysis.size());
+		if (hasNaN(aRecall) | hasNaN(aPrecision) | hasNaN(aFMeasure) | hasNaN(bRecall) | hasNaN(bPrecision) | hasNaN(bFMeasure)) {
+			System.out.println("----> " + project.getName() + "\t"
+					+ getAvgFromNumberList(iterationsList) + "\t"
+					+ this.countAnalysis(analysis.values(), true) + "\t"
+					+ folds + "\t"
+					+ recall/folds + "\t" + precision/folds +"\t" + fmeasure/folds + "\t"
+					+ recall2/folds + "\t" + precision2/folds +"\t" + fmeasure2/folds
+					);
+			return;
+		}
+		
+		System.out.println(project.getName() + "\t"
+				+ iterations/folds + "\t"
+				+ this.countAnalysis(analysis.values(), true) + " (" + analysis.size() +") \t"
+				+ folds + "\t"
+				+ recall/folds + "\t" + precision/folds +"\t" + fmeasure/folds + "\t"
+				+ recall2/folds + "\t" + precision2/folds +"\t" + fmeasure2/folds 
+				);
 		
 	}
+	
+	private boolean hasNaN(List<Float> numberList) {
+		for (Float float1 : numberList) {
+			if (float1.isNaN()) return true;
+		}
+		return false;
+	}	
+	
+	private Float getAvgFromNumberList(List<Float> numberList) {
+		float sum = 0;
+		int count = 0;
+		for (Float float1 : numberList) {
+			if (float1.isNaN()) continue;
+			sum += float1;
+			count += 1;
+		}
+		return sum/count;
+	}
+	
+	public int countAnalysis(Collection<NodeAnalysis> analysis, boolean verified) {
+		int count = 0;
+		for (NodeAnalysis nodeAnalysis : analysis) {
+			if (nodeAnalysis.isVerify() == verified)
+				count += 1;
+		}
+		return count;
+	}	
 	
 	private Node getNodeTest() {
 		Node node = new Node("TESTE", NodeType.MethodDefinition);
@@ -238,14 +317,14 @@ public class DECORComparisonExperiment {
 	
 	public static void main(String[] args) throws IOException,
 			InstantiationException, IllegalAccessException {
-		String projectName = "xerces";
+		String projectName = "argouml";
 		String smellName = "gc";
 		String projectPath = "data/decor-comparison/" + projectName;
 		DECORComparisonExperiment experiment = new DECORComparisonExperiment(projectPath);
 		Project project = getProject(projectPath, projectName);
 		
 		String analysisSource = "data/decor-comparison/"+projectName+"/an-"+smellName+".csv";
-		int folds = 6;
+		int folds = 10;
 		for (int i = 1; i <= 1; i++) {
 			experiment.train(GodClassKNNSniffer.class, project, analysisSource, folds, i);
 		}

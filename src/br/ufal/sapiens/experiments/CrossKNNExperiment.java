@@ -221,7 +221,7 @@ public class CrossKNNExperiment {
 		CrossKNNExperiment experiment = new CrossKNNExperiment();
 		Project trainProject = getProject("xerces");
 		Project testProject = getProject("gantt");
-		String smell = "gc";
+		String smell = "fe";
 		for (int i = 1; i <= 6; i++) {
 			experiment.train(GodClassKNNSniffer.class, trainProject, testProject, smell, i);
 		}

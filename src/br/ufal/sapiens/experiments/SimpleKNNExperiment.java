@@ -35,7 +35,7 @@ public class SimpleKNNExperiment {
 
 	public SimpleKNNExperiment() throws IOException {
 		this.snifferMap = new HashMap<Developer, SimpleSniffer>();
-		this.loadDevelopers("data/icpc2015/xerces/developers.txt");
+		this.loadDevelopers("data/ase2015/xerces/developers.txt");
 	}
 
 	public Map<Node,NodeAnalysis> loadAnalysis(Sniffer sniffer,
@@ -95,7 +95,7 @@ public class SimpleKNNExperiment {
 		float personalizedPR = ClassifierEvaluator.getEvaluation(
 				sniffer.getBestClassifier(), sniffer.getAnalysis());
 		float initialPR = ClassifierEvaluator.getEvaluation(
-				((SimpleSniffer) sniffer).getInitialRule(), sniffer.getAnalysis());
+				((SimpleKNNSniffer) sniffer).getInitialRule(), sniffer.getAnalysis());
 		System.out.println("Dev " + developer.getId()
 				+ " :"
 				+
@@ -109,18 +109,18 @@ public class SimpleKNNExperiment {
 			String analysisSource) throws IOException, InstantiationException,
 			IllegalAccessException {
 		Project project = new Project("Xerces", "path");
-		project.addNodesFromCSV("data/icpc2015/xerces/xerces-gc.csv",
+		project.addNodesFromCSV("data/ase2015/xerces/xerces-gc.csv",
 				NodeType.ClassDefinition);
-		project.addNodesFromCSV("data/icpc2015/xerces/xerces-lpl.csv",
+		project.addNodesFromCSV("data/ase2015/xerces/xerces-lpl.csv",
 				NodeType.MethodDefinition);
-		project.addNodesFromCSV("data/icpc2015/xerces/xerces-lm.csv",
+		project.addNodesFromCSV("data/ase2015/xerces/xerces-lm.csv",
 				NodeType.MethodDefinition);
-		project.addNodesFromCSV("data/icpc2015/xerces-fe.csv",
+		project.addNodesFromCSV("data/ase2015/xerces/xerces-fe.csv",
 				NodeType.MethodDefinition);
 
 		for (Developer developer : this.developers.values()) {
 			Sniffer sniffer = SnifferClass.newInstance();
-			this.loadPreferences("data/icpc2015/icpc2015/preferences-kappa.txt");
+			this.loadPreferences("data/ase2015/xerces/preferences-kappa.txt");
 			this.loadAnalysis(sniffer, analysisSource, project, developer);
 			testDeveloperPreferences(project, sniffer, developer);
 		}
@@ -169,8 +169,15 @@ public class SimpleKNNExperiment {
 		Map<Node,NodeAnalysis> analysis = loadAnalysis(sniffer, analysisSource,	project, developer);
 		
 		List<List<NodeAnalysis>> foldList = this.createFolds(new ArrayList<NodeAnalysis>(analysis.values()), folds);
-		float from = 0;
-		float to = 0;
+		float recall = 0;
+		float precision = 0;
+		float fmeasure = 0;
+		
+		float recall2 = 0;
+		float precision2 = 0;
+		float fmeasure2 = 0;
+		
+		
 		float iterations = 0;
 		
 		for (int testFold = 0; testFold < folds; testFold++) {
@@ -192,16 +199,21 @@ public class SimpleKNNExperiment {
 			
 			List<NodeAnalysis> analysisToTest = new ArrayList<NodeAnalysis>(foldList.get(testFold));
 			
-			to += ClassifierEvaluator.getEvaluation(
-					sniffer.getBestClassifier(), analysisToTest);
-			from += ClassifierEvaluator.getEvaluation(
-					((SimpleKNNSniffer) sniffer).getInitialRule(), analysisToTest);
+			recall += ClassifierEvaluator.getRecall(((SimpleKNNSniffer) sniffer).getInitialRule(), analysisToTest);
+			precision += ClassifierEvaluator.getPrecision(((SimpleKNNSniffer) sniffer).getInitialRule(), analysisToTest);
+			fmeasure += ClassifierEvaluator.getFMeasure(((SimpleKNNSniffer) sniffer).getInitialRule(), analysisToTest);
+			
+			recall2 += ClassifierEvaluator.getRecall(((SimpleKNNSniffer) sniffer).getBestClassifier(), analysisToTest);
+			precision2 += ClassifierEvaluator.getPrecision(((SimpleKNNSniffer) sniffer).getBestClassifier(), analysisToTest);
+			fmeasure2 += ClassifierEvaluator.getFMeasure(((SimpleKNNSniffer) sniffer).getBestClassifier(), analysisToTest);
+			
 			iterations += ((Rule)sniffer.getBestClassifier()).getIterations(); 
 		}
 		
 		System.out.println(developer.getId() + "\t"
-				+ from/folds + "\t"
-				+ to/folds + "\t" 
+				+ recall2/folds + " / " + recall/folds +"\t"
+				+ precision2/folds + " / " + precision/folds +"\t"
+				+ fmeasure2/folds + " / " + fmeasure/folds +"\t"
 				+ iterations/folds + "\tFolds: "+ folds + " Analysis: "+ analysis.size());
 		
 	}
@@ -215,13 +227,13 @@ public class SimpleKNNExperiment {
 	private static Project getProject(String projectName) throws IOException {
 		Project project = new Project(projectName, "path");
 		String token = projectName + "/" + projectName; 
-		project.addNodesFromCSV("data/icpc2015/"+token+"-gc.csv",
+		project.addNodesFromCSV("data/ase2015/"+token+"-gc.csv",
 				NodeType.ClassDefinition);
-		project.addNodesFromCSV("data/icpc2015/"+token+"-lpl.csv",
+		project.addNodesFromCSV("data/ase2015/"+token+"-lpl.csv",
 				NodeType.MethodDefinition);
-		project.addNodesFromCSV("data/icpc2015/"+token+"-lm.csv",
+		project.addNodesFromCSV("data/ase2015/"+token+"-lm.csv",
 				NodeType.MethodDefinition);
-		project.addNodesFromCSV("data/icpc2015/"+token+"-fe.csv",
+		project.addNodesFromCSV("data/ase2015/"+token+"-fe.csv",
 				NodeType.MethodDefinition);
 		return project;
 		
@@ -232,11 +244,11 @@ public class SimpleKNNExperiment {
 		SimpleKNNExperiment experiment = new SimpleKNNExperiment();
 		Project project = getProject("gantt");
 		String analysisSource = project.getAnalysisSource("gc");
-		int folds = 5;
+		int folds = 2;
 		for (int i = 1; i <= 6; i++) {
 			experiment.train(GodClassKNNSniffer.class, project, analysisSource, folds, i);
 		}
-//		experiment.testPreferences(LongParameterListKNNSniffer.class, "data/xerces/an-lpl.csv");
+//		experiment.testPreferences(GodClassKNNSniffer.class, "data/xerces/an-lpl.csv");
 	}
 
 }

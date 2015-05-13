@@ -1,0 +1,19 @@
+Training on Gantt
+=================
+Initial rule: God Class - Lanza & Marinecu:wmc >= 47.0 ^ atfd > 5.0 ^ tcc < 0.33333334
+Dev 1 :God Class - Lanza & Marinecu:wmc >= 47.0 ^ atfd > 5.0 ^ tcc < 0.33333334 - Precision: 0.88235295 - Before: 0.88235295
+Dev 2 :R1:wmc >= 95.0 ^ atfd > 52.0 ^ tcc < 0.061904762 - Precision: 0.8333333 - Before: 0.7222222
+Dev 3 :R1:wmc >= 191.0 ^ atfd > 249.0 ^ tcc < 0.04255319 - Precision: 0.7777778 - Before: 0.6666667
+Dev 4 :R4:wmc >= 101.0 ^ atfd > 109.0 ^ tcc < 8.163265 - Precision: 0.8235294 - Before: 0.5294118
+Dev 5 :R2:wmc >= 40.0 ^ atfd > 5.0 ^ tcc < 0.33333334 - Precision: 0.8888889 - Before: 0.7777778
+Dev 6 :R2:wmc >= 24.0 ^ atfd > 5.0 ^ tcc < 0.33333334 - Precision: 0.88235295 - Before: 0.5882353
+
+Testing on Xerces
+=================
+Initial rule: God Class - Lanza & Marinecu:wmc >= 47.0 ^ atfd > 5.0 ^ tcc < 0.33333334
+Dev 1 :R0:wmc >= 47.0 ^ atfd > 5.0 ^ tcc < 0.33333334 - Precision: 0.2 - Before: 0.2
+Dev 2 :R0:wmc >= 95.0 ^ atfd > 52.0 ^ tcc < 0.061904762 - Precision: 0.55 - Before: 0.4
+Dev 3 :R0:wmc >= 191.0 ^ atfd > 249.0 ^ tcc < 0.04255319 - Precision: 0.65 - Before: 0.25
+Dev 4 :R0:wmc >= 101.0 ^ atfd > 109.0 ^ tcc < 8.163265 - Precision: 0.9 - Before: 0.55
+Dev 5 :R0:wmc >= 40.0 ^ atfd > 5.0 ^ tcc < 0.33333334 - Precision: 0.45 - Before: 0.45
+Dev 6 :R0:wmc >= 24.0 ^ atfd > 5.0 ^ tcc < 0.33333334 - Precision: 0.36363637 - Before: 0.45454547
