@@ -1,0 +1,34 @@
+DEV 1 ---------------------------------
+name,nparam
+org.apache.xerces.impl.xs.identity.Selector.java:233,6
+org.apache.xerces.impl.xs.traversers.XSDHandler.java:2445,5
+org.apache.xerces.impl.dtd.DTDGrammar.java:740,4
+org.apache.xerces.impl.xs.opti.DefaultXMLDocumentHandler.java:92,4
+org.apache.xerces.impl.xs.XSConstraints.java:283,4
+org.apache.xerces.util.SoftReferenceSymbolTable.java:383,4
+org.apache.xerces.impl.xpath.regex.RegularExpression.java:1441,5
+org.apache.xerces.jaxp.validation.ValidatorHandlerImpl.java:418,4
+org.apache.xerces.stax.XMLEventFactoryImpl.java:106,6
+org.apache.xerces.xinclude.XIncludeHandler.java:2675,4
+org.apache.xerces.util.XMLEntityDescriptionImpl.java:50,5
+org.apache.xerces.impl.XMLNamespaceBinder.java:439,4
+org.apache.xerces.dom.DOMLocatorImpl.java:103,6
+org.apache.xerces.impl.xs.traversers.XSDHandler.java:1823,4
+org.apache.xerces.impl.xs.traversers.XSDHandler.java:2063,4
+DEV 2 ---------------------------------
+org.apache.xerces.parsers.AbstractDOMParser.java:2366,8
+org.apache.xerces.impl.xs.util.SimpleLocator.java:49,5
+org.apache.xerces.parsers.DOMParserImpl.java:1188,4
+org.apache.xerces.impl.dv.xs.QNameDV.java:86,4
+org.apache.xerces.impl.io.MalformedByteSequenceException.java:80,5
+org.apache.xerces.impl.xs.traversers.XSDHandler.java:758,4
+org.apache.xerces.impl.xs.traversers.XSDHandler.java:2350,5
+org.apache.xerces.impl.xs.traversers.XSDHandler.java:3777,5
+org.apache.xerces.impl.dtd.XMLDTDDescription.java:57,5
+org.apache.xerces.impl.xpath.regex.RegularExpression.java:1804,5
+org.apache.xerces.xinclude.XIncludeHandler.java:826,4
+org.apache.xerces.parsers.AbstractXMLDocumentParser.java:539,4
+org.apache.xerces.parsers.AbstractSAXParser.java:323,4
+org.apache.xerces.impl.xs.models.CMNodeFactory.java:98,6
+org.apache.xerces.impl.dtd.XMLDTDValidator.java:1685,4
+org.apache.xerces.impl.xs.traversers.XSDHandler.java:2029,4

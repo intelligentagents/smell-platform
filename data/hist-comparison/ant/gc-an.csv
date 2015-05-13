@@ -13,7 +13,6 @@
 1;org.apache.tools.ant.taskdefs.optional.ejb.WebsphereDeploymentTool;0
 1;org.apache.tools.ant.taskdefs.optional.ejb.JonasDeploymentTool;0
 1;org.apache.tools.ant.taskdefs.Exec;0
-1;org.apache.tools.ant.taskdefs.javadoc.Javadoc;0
 1;org.apache.tools.ant.taskdefs.Property;0
 1;org.apache.tools.ant.taskdefs.optional.vss.MSVSS;0
 1;org.apache.tools.ant.taskdefs.optional.junit.JUnitTask;0

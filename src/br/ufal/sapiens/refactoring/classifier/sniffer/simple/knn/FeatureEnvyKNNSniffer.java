@@ -27,8 +27,8 @@ public class FeatureEnvyKNNSniffer extends SimpleKNNSniffer {
 		return rule;
 	}
 	
-	public void updateRule(Developer developer) {
-		this.updateRule(developer);
+	public void updateClassifier() {
+		super.updateClassifier();
 		Rule rule = (Rule)this.getBestClassifier();
 		Expression atfdExpression = null;
 		Expression fdpExpression = null;
