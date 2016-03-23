@@ -10,10 +10,13 @@
 
   <!-- Now we'll customize a rule's property value -->
   <!-- rule ref="rulesets/java/codesize.xml/ExcessiveMethodLength"/-->
-  <!-- rule ref="/home/hozano/git/smell-platform/src/resources/smells.xml/TccAndAtfdRule" / -->
+  <!--rule ref="/home/hozano/git/smell-platform/src/resources/smells.xml/IVMCMetricRule" /-->
+  <!--rule ref="/home/hozano/git/smell-platform/src/resources/smells.xml/UnusedField" /-->
+  <rule ref="/home/hozano/git/smell-platform/src/resources/smells.xml/CommentSizeRule" />
+  <!--rule ref="/home/hozano/git/smell-platform/src/resources/smells.xml/TccAndAtfdRule" /-->
   <!-- rule ref="/home/hozano/git/smell-platform/src/resources/smells.xml/GodClassRule"/ -->
   <!-- rule ref="/home/hozano/git/smell-platform/src/resources/smells.xml/MLOCRule"/ -->
   <!-- ref="/home/hozano/git/smell-platform/src/resources/smells.xml/NOPARAMRule"/ -->
-  <rule ref="/home/hozano/git/smell-platform/src/resources/smells.xml/FeatureEnvyRule" />
+  <!-- rule ref="/home/hozano/git/smell-platform/src/resources/smells.xml/FeatureEnvyRule" /-->
 
 </ruleset>

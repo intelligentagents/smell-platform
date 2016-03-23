@@ -16,9 +16,7 @@ import br.ufal.sapiens.refactoring.classifier.smell.Smell;
 import br.ufal.sapiens.refactoring.classifier.sniffer.Classifier;
 import br.ufal.sapiens.refactoring.classifier.sniffer.ClassifierEvaluator;
 import br.ufal.sapiens.refactoring.classifier.sniffer.FileClassifier;
-import br.ufal.sapiens.refactoring.classifier.sniffer.SniffedSmell;
 import br.ufal.sapiens.refactoring.classifier.sniffer.Sniffer;
-import br.ufal.sapiens.refactoring.classifier.sniffer.TrueClassifier;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.Rule;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.SimpleSniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.FeatureEnvyKNNSniffer;
@@ -33,16 +31,14 @@ import br.ufal.sapiens.refactoring.pr.Project;
 import br.ufal.sapiens.refactoring.util.FileUtil;
 import br.ufal.sapiens.refactoring.util.SimpleLogger;
 
-public class HISTComparisonExperiment {
+public class SMURFComparisonExperiment {
 
 	private Map<Developer, SimpleSniffer> snifferMap;
 	private Map<Integer, Developer> developers;
-	private String projectPath;
 
-	public HISTComparisonExperiment(String projectPath) throws IOException {
+	public SMURFComparisonExperiment() throws IOException {
 		this.snifferMap = new HashMap<Developer, SimpleSniffer>();
-		this.projectPath = projectPath;
-		this.loadDevelopers("data/hist-comparison/developers.txt");
+		this.loadDevelopers("data/ase2015/xerces/developers.txt");
 	}
 
 	public Map<Node,NodeAnalysis> loadAnalysis(Sniffer sniffer,
@@ -55,7 +51,7 @@ public class HISTComparisonExperiment {
 		for (int i = 0; i < data.size(); i++) {
 			Node node = project.getNodeFromName(data.get(i)[1]);
 			if (node == null) {
-				System.out.println("Node not found: " + data.get(i)[1]);
+				//System.out.println("Node not found: " + data.get(i)[1]);
 			} else if (!node.getMetricNames().containsAll(
 					sniffer.getBestClassifier().getMetricNames())) {
 				System.out.println("Node with insufficient metrics: " + node);
@@ -112,13 +108,23 @@ public class HISTComparisonExperiment {
 				+ sniffer.getAnalysis().size());
 	}
 
-	public void testPreferences(Class<? extends Sniffer> SnifferClass, Project project,
+	public void testPreferences(Class<? extends Sniffer> SnifferClass,
 			String analysisSource) throws IOException, InstantiationException,
 			IllegalAccessException {
+		Project project = new Project("Xerces", "path");
+		project.addNodesFromCSV("data/ase2015/xerces/xerces-gc.csv",
+				NodeType.ClassDefinition);
+		project.addNodesFromCSV("data/ase2015/xerces/xerces-lpl.csv",
+				NodeType.MethodDefinition);
+		project.addNodesFromCSV("data/ase2015/xerces/xerces-lm.csv",
+				NodeType.MethodDefinition);
+		project.addNodesFromCSV("data/ase2015/xerces/xerces-fe.csv",
+				NodeType.MethodDefinition);
+
 		for (Developer developer : this.developers.values()) {
 			Sniffer sniffer = SnifferClass.newInstance();
-//			this.loadPreferences("data/hist-comparison/icpc2015/preferences-kappa.txt");
-			if (null != analysisSource) this.loadAnalysis(sniffer, analysisSource, project, developer);
+			this.loadPreferences("data/ase2015/xerces/preferences-kappa.txt");
+			this.loadAnalysis(sniffer, analysisSource, project, developer);
 			testDeveloperPreferences(project, sniffer, developer);
 		}
 	}
@@ -173,118 +179,6 @@ public class HISTComparisonExperiment {
 		
 		return foldLists;
 	}
-
-	public void train(Class<? extends SimpleKNNSniffer> SnifferClass, Project project,
-			String analysisSource, int folds, int devId, String fileToCompare) throws Exception {
-		
-		Developer developer = this.developers.get(devId);
-		
-		SimpleLogger.log("Iniciando análise para developer: " + developer.getId());
-		SimpleKNNSniffer sniffer = SnifferClass.newInstance();
-		SimpleLogger.log("Regra Inicial: " + sniffer.getBestClassifier());
-		Map<Node,NodeAnalysis> analysis = loadAnalysis(sniffer, analysisSource,	project, developer);
-		
-		List<List<NodeAnalysis>> foldList = this.createFolds(new ArrayList<NodeAnalysis>(analysis.values()), folds);
-		float recall = 0;
-		float precision = 0;
-		float fmeasure = 0;
-		
-		Classifier hist = new FileClassifier("HIST", sniffer.getSmell(), fileToCompare);
-		float recall2 = 0;
-		float precision2 = 0;
-		float fmeasure2 = 0;
-		
-		List<Float> aRecall = new ArrayList<Float>();
-		List<Float> aPrecision = new ArrayList<Float>();
-		List<Float> aFMeasure = new ArrayList<Float>();
-		
-		List<Float> bRecall = new ArrayList<Float>();
-		List<Float> bPrecision = new ArrayList<Float>();
-		List<Float> bFMeasure = new ArrayList<Float>();
-		
-		List<Float> iterationsList = new ArrayList<Float>();
-		
-		float iterations = 0;
-		
-		for (int testFold = 0; testFold < folds; testFold++) {
-			sniffer = SnifferClass.newInstance();
-			List<NodeAnalysis> trainAnalysis = new ArrayList<NodeAnalysis>();
-			for (int trainFold = 0; trainFold < folds; trainFold++) {
-				if (trainFold == testFold) {
-					continue;
-				}
-				trainAnalysis.addAll(foldList.get(trainFold));
-			}
-			
-			while (trainAnalysis.size() > 0) {
-				NodeAnalysis nodeAnl = sniffer.getDirectionNeighbourNodesFromAnalysis(trainAnalysis, 1).get(0);
-				trainAnalysis.remove(nodeAnl);
-				SimpleLogger.log("Adicionando Analise: "+ sniffer.verify(nodeAnl.getNode()) + "-" + nodeAnl.isVerify() + " - " + nodeAnl.getNode().getMetricValues());
-				sniffer.addAnalysis(nodeAnl);
-			}
-			
-			List<NodeAnalysis> analysisToTest = new ArrayList<NodeAnalysis>(foldList.get(testFold));
-			
-			recall += ClassifierEvaluator.getRecall(((SimpleKNNSniffer) sniffer).getBestClassifier(), analysisToTest);
-			precision += ClassifierEvaluator.getPrecision(((SimpleKNNSniffer) sniffer).getBestClassifier(), analysisToTest);
-			fmeasure += ClassifierEvaluator.getFMeasure(((SimpleKNNSniffer) sniffer).getBestClassifier(), analysisToTest);
-			
-			aRecall.add(ClassifierEvaluator.getRecall(((SimpleKNNSniffer) sniffer).getBestClassifier(), analysisToTest));
-			aPrecision.add(ClassifierEvaluator.getPrecision(((SimpleKNNSniffer) sniffer).getBestClassifier(), analysisToTest));
-			aFMeasure.add(ClassifierEvaluator.getFMeasure(((SimpleKNNSniffer) sniffer).getBestClassifier(), analysisToTest));
-			
-			recall2 += ClassifierEvaluator.getRecall(hist, analysisToTest);
-			precision2 += ClassifierEvaluator.getPrecision(hist, analysisToTest);
-			fmeasure2 += ClassifierEvaluator.getFMeasure(hist, analysisToTest);
-			
-			bRecall.add(ClassifierEvaluator.getRecall(hist, analysisToTest));
-			bPrecision.add(ClassifierEvaluator.getPrecision(hist, analysisToTest));
-			bFMeasure.add(ClassifierEvaluator.getFMeasure(hist, analysisToTest));
-			
-			
-			iterations += ((Rule)sniffer.getBestClassifier()).getIterations(); 
-		}
-		
-		System.out.println(bPrecision + " - " + bFMeasure);
-		System.out.println(precision/folds + " - " + fmeasure/folds );
-		if (hasNaN(aRecall) | hasNaN(aPrecision) | hasNaN(aFMeasure) | hasNaN(bRecall) | hasNaN(bPrecision) | hasNaN(bFMeasure)) {
-			System.out.println("----> " + project.getName() + "\t"
-					+ getAvgFromNumberList(iterationsList) + "\t"
-					+ this.countAnalysis(analysis.values(), true) + "\t"
-					+ folds + "\t"
-					+ recall/folds + "\t" + precision/folds +"\t" + fmeasure/folds +"\t"
-					+ recall2/folds + "\t" + precision2/folds +"\t" + fmeasure2/folds
-					);
-			return;
-		}
-		
-		System.out.println(project.getName() + "\t"
-				+ iterations/folds + "\t"
-				+ this.countAnalysis(analysis.values(), true) + " (" + analysis.size() +") \t"
-				+ folds + "\t"
-				+ recall/folds + "\t" + precision/folds +"\t" + fmeasure/folds + "\t"
-				+ recall2/folds + "\t" + precision2/folds +"\t" + fmeasure2/folds 
-				);
-		
-	}
-	
-	private boolean hasNaN(List<Float> numberList) {
-		for (Float float1 : numberList) {
-			if (float1.isNaN()) return true;
-		}
-		return false;
-	}	
-	
-	private Float getAvgFromNumberList(List<Float> numberList) {
-		float sum = 0;
-		int count = 0;
-		for (Float float1 : numberList) {
-			if (float1.isNaN()) continue;
-			sum += float1;
-			count += 1;
-		}
-		return sum/count;
-	}
 	
 	public int countAnalysis(Collection<NodeAnalysis> analysis, boolean verified) {
 		int count = 0;
@@ -293,7 +187,61 @@ public class HISTComparisonExperiment {
 				count += 1;
 		}
 		return count;
-	}	
+	}
+	
+	public void train(Class<? extends SimpleKNNSniffer> SnifferClass, Project project,
+			String analysisToTrain, Project project2, String aanalysisToTest, int iteration, String fileToCompare) throws Exception {
+		
+		Developer developer = this.developers.get(1);
+
+		SimpleLogger.log("Iniciando análise para developer: " + developer.getId());
+		SimpleKNNSniffer sniffer = SnifferClass.newInstance();
+		SimpleLogger.log("Regra Inicial: " + sniffer.getBestClassifier());
+		Map<Node,NodeAnalysis> analysis = loadAnalysis(sniffer, analysisToTrain, project, developer);
+		Map<Node,NodeAnalysis> testAnalysis = loadAnalysis(sniffer, aanalysisToTest, project2, developer);
+
+		float recall = 0;
+		float precision = 0;
+		float fmeasure = 0;
+		
+		float recall2 = 0;
+		float precision2 = 0;
+		float fmeasure2 = 0;
+		
+		
+		float iterations = 0;
+		
+		sniffer = SnifferClass.newInstance();
+		List<NodeAnalysis> trainAnalysis = new ArrayList<NodeAnalysis>(analysis.values());
+		
+		while (trainAnalysis.size() > 0) {
+			NodeAnalysis nodeAnl = sniffer.getDirectionNeighbourNodesFromAnalysis(trainAnalysis, 1).get(0);
+			trainAnalysis.remove(nodeAnl);
+			SimpleLogger.log("Adicionando Analise: "+ sniffer.verify(nodeAnl.getNode()) + "-" + nodeAnl.isVerify() + " - " + nodeAnl.getNode().getMetricValues());
+			sniffer.addAnalysis(nodeAnl);
+		}
+		
+		List<NodeAnalysis> analysisToTest = new ArrayList<NodeAnalysis>(testAnalysis.values());
+		
+		recall += ClassifierEvaluator.getRecall(((SimpleKNNSniffer) sniffer).getBestClassifier(), analysisToTest);
+		precision += ClassifierEvaluator.getPrecision(((SimpleKNNSniffer) sniffer).getBestClassifier(), analysisToTest);
+		fmeasure += ClassifierEvaluator.getFMeasure(((SimpleKNNSniffer) sniffer).getBestClassifier(), analysisToTest);
+		
+		Classifier smurf = new FileClassifier("SMURF", sniffer.getSmell(), fileToCompare);
+		recall2 += ClassifierEvaluator.getRecall(smurf, analysisToTest);
+		precision2 += ClassifierEvaluator.getPrecision(smurf, analysisToTest);
+		fmeasure2 += ClassifierEvaluator.getFMeasure(smurf, analysisToTest);
+		
+		iterations += ((Rule)sniffer.getBestClassifier()).getIterations();
+		
+		System.out.println(iteration + "\t"
+				+ iterations + "\t"
+				+ this.countAnalysis(analysis.values(), true) + " (" + analysis.size() +") \t"
+				+ recall + "\t" + precision +"\t" + fmeasure +"\t"
+				+ recall2 + "\t" + precision2 +"\t" + fmeasure2
+				);
+		
+	}
 	
 	private Node getNodeTest() {
 		Node node = new Node("TESTE", NodeType.MethodDefinition);
@@ -301,35 +249,39 @@ public class HISTComparisonExperiment {
 		return node;
 	}
 	
-	private static Project getProject(String projectPath, String projectName) throws IOException {
+	private static Project getProject(String projectName) throws IOException {
 		Project project = new Project(projectName, "path");
-		String token = projectPath + "/";
-		project.addNodesFromCSV(token+"gc-metrics.csv",
+		project.addNodesFromCSV("data/smurf-comparison/"+projectName+"/gc-metrics.csv",
 				NodeType.ClassDefinition);
-//		project.addNodesFromCSV(token+"-lpl-metrics.csv",
+//		project.addNodesFromCSV("data/smurf-comparison/"+token+"-lpl.csv",
 //				NodeType.MethodDefinition);
-//		project.addNodesFromCSV(token+"-lm-metrics.csv",
+//		project.addNodesFromCSV("data/smurf-comparison/"+token+"-lm.csv",
 //				NodeType.MethodDefinition);
-//		project.addNodesFromCSV(token+"-fe-metrics.csv",
+//		project.addNodesFromCSV("data/smurf-comparison/"+token+"-fe.csv",
 //				NodeType.MethodDefinition);
-		
 		return project;
 		
 	}
 	
-	public static void main(String[] args) throws Exception {
-		String projectName = "tool-base";
-		String smellName = "fe";
-		String projectPath = "data/hist-comparison/" + projectName;
-		HISTComparisonExperiment experiment = new HISTComparisonExperiment(projectPath);
-		Project project = getProject(projectPath, projectName);
-		
-		String analysisSource = "data/hist-comparison/" + projectName + "/"+ smellName + "-an.csv";
-		String fileToCompare = "data/hist-comparison/" + projectName + "/"+ smellName + "-an-hist.csv";
-		int folds = 2;
-		for (int i = 1; i <= 1; i++) {
-			experiment.train(FeatureEnvyKNNSniffer.class, project, analysisSource, folds, i, fileToCompare);
-		}
+	public static String getAnalysisSource(String projectName, String fileName) {
+		return "data/smurf-comparison/" + projectName + "/" + fileName;
 	}
-	
+
+	public static void main(String[] args) throws Exception {
+		for (int i = 1; i <= 10; i++) {
+			SMURFComparisonExperiment experiment = new SMURFComparisonExperiment();
+			String projectName = "xerces";
+			String train = "gc-an-" + i + "-2.csv";
+			String test = "gc-an-" + i + "-0.csv";
+			Project project = getProject(projectName);
+			Project project2 = getProject(projectName);
+			String smell = "gc";
+			String analysisToTrain = getAnalysisSource(projectName, train);
+			String analysisToTest = getAnalysisSource(projectName, test);
+			String smurfAnalysisFile = "data/smurf-comparison/" + projectName + "/gc-an-smurf.csv";
+			experiment.train(GodClassKNNSniffer.class, project, analysisToTrain, project2, analysisToTest, i, smurfAnalysisFile);
+		}
+//		experiment.testPreferences(GodClassKNNSniffer.class, "data/xerces/an-lpl.csv");
+	}
+
 }

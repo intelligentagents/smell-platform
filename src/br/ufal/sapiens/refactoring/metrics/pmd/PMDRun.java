@@ -9,13 +9,13 @@ import net.sourceforge.pmd.PMD;
 public class PMDRun {
 	
 	public static void main(String[] args) throws FileNotFoundException {
-		String path = "/home/hozano/git/hist-comparison/base";
+		String path = "/home/hozano/apps/xerces-2_11_0/src";
 //		String path = "/home/hozano/apps/xerces-2_11_0/src";
 		String[] argz = new String[]{"-R", "/home/hozano/git/smell-platform/src/resources/ruleset.xml",
 				"-d", path};
 		
-		PrintStream out = new PrintStream(new FileOutputStream("data/hist-comparison/base-gc-metrics222.txt"));
-		System.setOut(out);
+		//PrintStream out = new PrintStream(new FileOutputStream("data/hist-comparison/base-gc-metrics222.txt"));
+		//System.setOut(out);
 		PMD.main(argz);
 	}
 

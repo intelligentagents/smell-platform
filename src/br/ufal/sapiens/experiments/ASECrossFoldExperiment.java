@@ -326,8 +326,8 @@ public class ASECrossFoldExperiment {
 			InstantiationException, IllegalAccessException {
 		ASECrossFoldExperiment experiment = new ASECrossFoldExperiment();
 		Project project = getProject("xerces");
-		String analysisSource = project.getAnalysisSource("gc");
-		int folds = 2;
+		String analysisSource = project.getAnalysisSource("lm");
+		int folds = 4;
 		for (int i = 1; i <= 6; i++) {
 			experiment.train(GodClassKNNSniffer.class, project, analysisSource, folds, i);
 		}
