@@ -45,12 +45,20 @@ public class Smell {
 		return new Smell("Long Method", NodeType.MethodDefinition, "LM");
 	}
 	
+	public static Smell DataClass() {
+		return new Smell("Data Class", NodeType.ClassDefinition, "DCl");
+	}
+	
 	public static Smell LongParameterList() {
 		return new Smell("Long Parameter List", NodeType.MethodDefinition, "LPL");
 	}
 	
 	public static Smell FeatureEnvy() {
 		return new Smell("Feature Envy", NodeType.MethodDefinition, "FE");
+	}
+	
+	public static Smell PrimitiveObsession() {
+		return new Smell("Primitive Obsession", NodeType.ClassDefinition, "PO");
 	}
 	
 	public static Smell fromShortName(String shortName){
@@ -62,6 +70,8 @@ public class Smell {
 			return LongParameterList();
 		else if ("LM".equals(shortName))
 			return LongMethod();
+		else if ("DCl".equals(shortName))
+			return DataClass();
 		else
 			return null;
 	}

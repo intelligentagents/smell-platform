@@ -1,5 +1,7 @@
 package br.ufal.sapiens.refactoring.classifier.sniffer.simple;
 
+import java.util.List;
+
 import br.ufal.sapiens.refactoring.analysis.NodeAnalysis;
 import br.ufal.sapiens.refactoring.pr.Node;
 

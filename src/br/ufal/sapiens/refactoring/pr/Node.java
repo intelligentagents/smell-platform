@@ -51,7 +51,14 @@ public class Node {
 
 	public void addMetricValues(String[] names, String[] values) {
 		for (int i = 0; i < names.length; i++) {
-			this.addMetricValue(names[i], Float.parseFloat(values[i]));
+			Float f = 0f;
+			try {
+				f = Float.parseFloat(values[i]);
+			} catch (Exception e) {
+				continue;
+			}
+			
+			this.addMetricValue(names[i], f);
 		}
 	}
 

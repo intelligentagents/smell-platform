@@ -14,6 +14,7 @@ import br.ufal.sapiens.refactoring.pr.Node;
 public abstract class Classifier {
 	private String name;
 	private Smell smell;
+	private boolean disjunction = false;
 	
 	public Classifier(String name, Smell smell) {
 		this.name = name;
@@ -34,6 +35,14 @@ public abstract class Classifier {
 
 	public void setSmell(Smell smell) {
 		this.smell = smell;
+	}
+	
+	public boolean isDisjunction() {
+		return this.disjunction;
+	}
+	
+	public void setDisjunction(boolean disjunction) {
+		this.disjunction = disjunction;
 	}
 	
 	public abstract boolean verify(Node node);

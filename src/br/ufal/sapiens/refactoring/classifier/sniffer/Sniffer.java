@@ -16,7 +16,7 @@ public abstract class Sniffer {
 	private String name;
 	private Smell smell;
 	private List<Classifier> classifiers;
-	private Classifier bestClassifier;
+	public Classifier bestClassifier;
 	private List<NodeAnalysis> analysis;
 	
 	public Sniffer(String name, Smell smell) {

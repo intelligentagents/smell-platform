@@ -1,0 +1,12 @@
+1,Glauber
+9,Marcus
+13,Daniel
+15,Jose Alisson
+16,Marcos Paulo
+61,Alezy
+62,Andre Almeida
+66,Kleinner
+84,Everton
+94,Willian
+102,Durval
+103,Davy

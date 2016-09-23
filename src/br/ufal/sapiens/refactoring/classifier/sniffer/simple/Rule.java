@@ -42,13 +42,22 @@ public class Rule extends Classifier {
 		this.iterations = iterations;
 	}
 
-	public boolean verify(Node node) {
+	public boolean verify(Node node) {		
 		for (Expression expression : this.getExpressions()) {
 			if (!expression.verify(node)) {
 				return false;
 			}
 		}
 		return true;
+	}
+	
+	public boolean verifyOR(Node node) {
+		for (Expression expression : this.getExpressions()) {
+			if (expression.verify(node)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public List<String> getMetricNames() {
@@ -69,11 +78,12 @@ public class Rule extends Classifier {
 	
 	@Override
 	public String toString() {
-		String result = this.getName() + ":";
+		String result = "";
 		int i = 0;
 		for (Expression expression : this.getExpressions()) {
 			if (i != 0)
-				result += " ^ "; 
+				if (this.isDisjunction()) result += " v ";
+				else result += " ^ ";
 			result += expression.toString();
 			i++;
 		}
@@ -81,7 +91,9 @@ public class Rule extends Classifier {
 	}
 	
 	public Rule update(NodeAnalysis analysis) {
+		boolean expected = analysis.isVerify();
 		Rule newRule = new Rule(this);
+		
 		for (Expression expression : newRule.getExpressions()) {
 			expression.updateExpression(analysis);
 		}
@@ -106,6 +118,7 @@ public class Rule extends Classifier {
 	@Override
 	public boolean equals(Object obj) {
 		Rule rule = (Rule)obj;
+		if (this.getExpressions().size() != rule.getExpressions().size()) return false;
 		for (int i = 0; i < this.getExpressions().size(); i++) {
 			if (!this.getExpressions().get(i).equals(rule.getExpressions().get(i))) {
 				return false;
