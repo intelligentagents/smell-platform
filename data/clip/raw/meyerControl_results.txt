@@ -1,0 +1,40 @@
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\controller\MVCController.java:12:	MVCController::Class::NOAM:0, NONAM:2, NOPA_ALL:0, NOPA:0, PRIMITIVES:0, CONSTANTS:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\controller\MVCController.java:12:	MVCController::GC::WMC:2, ATFD:0, TCC:0.0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\controller\MVCController.java:15:	MVCController.index::FE::ATFD:0, LAA:1.0, FDP:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\controller\MVCController.java:15:	MVCController.index::LoD::Calls:0, Creation:0, Access:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\controller\MVCController.java:21:	MVCController.helloTest::FE::ATFD:0, LAA:1.0, FDP:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\controller\MVCController.java:21:	MVCController.helloTest::LoD::Calls:0, Creation:0, Access:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\model\Counter.java:9:	Counter::Class::NOAM:0, NONAM:2, NOPA_ALL:0, NOPA:0, PRIMITIVES:1, CONSTANTS:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\model\Counter.java:9:	Counter::GC::WMC:7, ATFD:3, TCC:1.0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\model\Counter.java:24:	Counter.equals::FE::ATFD:4, LAA:0.5, FDP:3
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\model\Counter.java:24:	Counter.equals::LoD::Calls:0, Creation:0, Access:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\model\Counter.java:36:	Counter.hashCode::FE::ATFD:0, LAA:1.0, FDP:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\model\Counter.java:36:	Counter.hashCode::LoD::Calls:0, Creation:0, Access:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\model\Device.java:11:	Device::Class::NOAM:0, NONAM:2, NOPA_ALL:0, NOPA:0, PRIMITIVES:3, CONSTANTS:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\model\Device.java:11:	Device::GC::WMC:21, ATFD:12, TCC:1.0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\model\Device.java:38:	Device.equals::FE::ATFD:8, LAA:0.5, FDP:3
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\model\Device.java:38:	Device.equals::LoD::Calls:0, Creation:0, Access:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\model\Device.java:57:	Device.hashCode::FE::ATFD:0, LAA:1.0, FDP:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\model\Device.java:57:	Device.hashCode::LoD::Calls:0, Creation:0, Access:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\model\Manufacturer.java:9:	Manufacturer::Class::NOAM:0, NONAM:2, NOPA_ALL:0, NOPA:0, PRIMITIVES:2, CONSTANTS:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\model\Manufacturer.java:9:	Manufacturer::GC::WMC:10, ATFD:5, TCC:1.0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\model\Manufacturer.java:22:	Manufacturer.equals::FE::ATFD:4, LAA:0.5, FDP:3
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\model\Manufacturer.java:22:	Manufacturer.equals::LoD::Calls:0, Creation:0, Access:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\model\Manufacturer.java:34:	Manufacturer.hashCode::FE::ATFD:0, LAA:1.0, FDP:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\model\Manufacturer.java:34:	Manufacturer.hashCode::LoD::Calls:0, Creation:0, Access:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\repository\DeviceRepository.java:10:	DeviceRepository::Class::NOAM:0, NONAM:4, NOPA_ALL:0, NOPA:0, PRIMITIVES:0, CONSTANTS:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\repository\DeviceRepository.java:10:	DeviceRepository::GC::WMC:4, ATFD:0, TCC:0.0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\repository\DeviceRepository.java:12:	DeviceRepository.listDevices::FE::ATFD:0, LAA:1.0, FDP:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\repository\DeviceRepository.java:12:	DeviceRepository.listDevices::LoD::Calls:0, Creation:0, Access:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\repository\DeviceRepository.java:16:	DeviceRepository.listDevicesByStatus::FE::ATFD:0, LAA:1.0, FDP:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\repository\DeviceRepository.java:16:	DeviceRepository.listDevicesByStatus::LoD::Calls:0, Creation:0, Access:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\repository\DeviceRepository.java:20:	DeviceRepository.alterDeviceStatus::FE::ATFD:0, LAA:1.0, FDP:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\repository\DeviceRepository.java:20:	DeviceRepository.alterDeviceStatus::LoD::Calls:0, Creation:0, Access:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\repository\DeviceRepository.java:24:	DeviceRepository.updateDevice::FE::ATFD:0, LAA:1.0, FDP:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\repository\DeviceRepository.java:24:	DeviceRepository.updateDevice::LoD::Calls:0, Creation:0, Access:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\util\UtilConstants.java:6:	UtilConstants::Class::NOAM:0, NONAM:0, NOPA_ALL:0, NOPA:0, PRIMITIVES:0, CONSTANTS:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\util\UtilConstants.java:6:	UtilConstants::GC::WMC:0, ATFD:0, TCC:0.0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\util\mongo\MeyerCollections.java:9:	MeyerCollections::Class::NOAM:0, NONAM:1, NOPA_ALL:0, NOPA:0, PRIMITIVES:0, CONSTANTS:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\util\mongo\MeyerCollections.java:9:	MeyerCollections::GC::WMC:1, ATFD:0, TCC:0.0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\util\mongo\MeyerCollections.java:11:	MeyerCollections.devices::FE::ATFD:0, LAA:1.0, FDP:0
+E:\Projetos_Clip\meyer-control\src\main\java\br\com\meyer\util\mongo\MeyerCollections.java:11:	MeyerCollections.devices::LoD::Calls:1, Creation:0, Access:0

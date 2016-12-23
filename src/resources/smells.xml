@@ -105,4 +105,22 @@
 		  </properties>
     </rule>
     
+    <rule name="AccessorClassGenerationRule2"
+          message="AccessorClassGenerationRule2"
+          class="net.sourceforge.pmd.lang.java.rule.design.AccessorClassGenerationRule">
+      <description>
+      God Class Calculator
+      </description>
+        <priority>2</priority>
+    </rule>
+    
+    <rule name="ClassMetricsCalculator"
+          message="ClassMetricsCalculator"
+          class="br.ufal.sapiens.refactoring.metrics.pmd.ClassMetricsCalculator">
+      <description>
+      MethodMetrics Calculator
+      </description>
+        <priority>2</priority>
+    </rule>
+    
 </ruleset>

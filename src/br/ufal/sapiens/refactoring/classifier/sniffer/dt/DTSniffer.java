@@ -8,6 +8,7 @@ import br.ufal.sapiens.refactoring.classifier.smell.Smell;
 import br.ufal.sapiens.refactoring.classifier.sniffer.Classifier;
 import br.ufal.sapiens.refactoring.classifier.sniffer.NeighbourNode;
 import br.ufal.sapiens.refactoring.classifier.sniffer.Sniffer;
+import br.ufal.sapiens.refactoring.classifier.sniffer.weka.WekaJ48Classifier;
 import br.ufal.sapiens.refactoring.developer.Developer;
 import br.ufal.sapiens.refactoring.pr.Node;
 import br.ufal.sapiens.refactoring.pr.Project;
@@ -32,8 +33,8 @@ public class DTSniffer extends Sniffer {
 //			this.getClassifiers().add(classifier);
 //			this.setBestClassifier(analysis);
 //		} else {
-			J48Classifier classifier = new J48Classifier(this.getSmell().getName(), this.getSmell(), this.metricNames);
-			classifier = (J48Classifier)classifier.update(analysis);
+			WekaJ48Classifier classifier = new WekaJ48Classifier(this.getSmell().getName(), this.getSmell());
+			classifier = (WekaJ48Classifier)classifier.update(analysis);
 			this.getClassifiers().add(classifier);
 			this.setBestClassifier(classifier);
 //		}

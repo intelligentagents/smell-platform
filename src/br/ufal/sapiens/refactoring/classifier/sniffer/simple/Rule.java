@@ -42,7 +42,7 @@ public class Rule extends Classifier {
 		this.iterations = iterations;
 	}
 
-	public boolean verify(Node node) {		
+	public Boolean verify(Node node) {		
 		for (Expression expression : this.getExpressions()) {
 			if (!expression.verify(node)) {
 				return false;

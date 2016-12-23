@@ -284,24 +284,6 @@ public class Heuristic1Experiment {
 		return fmeasure;
 	}
 	
-	private boolean hasNaN(List<Float> numberList) {
-		for (Float float1 : numberList) {
-			if (float1.isNaN()) return true;
-		}
-		return false;
-	}
-	
-	private Float getAvgFromNumberList(List<Float> numberList) {
-		float sum = 0;
-		int count = 0;
-		for (Float float1 : numberList) {
-			if (float1.isNaN()) continue;
-			sum += float1;
-			count += 1;
-		}
-		return sum/count;
-	}
-	
 	private Node getNodeTest() {
 		Node node = new Node("TESTE", NodeType.MethodDefinition);
 		node.addMetricValue("mloc", 102f);

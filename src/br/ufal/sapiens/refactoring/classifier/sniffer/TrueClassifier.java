@@ -13,7 +13,7 @@ public class TrueClassifier extends Classifier {
 	}
 
 	@Override
-	public boolean verify(Node node) {
+	public Boolean verify(Node node) {
 		// TODO Auto-generated method stub
 		return true;
 	}

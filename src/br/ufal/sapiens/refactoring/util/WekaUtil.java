@@ -3,7 +3,11 @@ package br.ufal.sapiens.refactoring.util;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
+import weka.classifiers.Evaluation;
+import weka.classifiers.rules.JRip;
+import weka.classifiers.trees.J48;
 import weka.core.Attribute;
 import weka.core.FastVector;
 import weka.core.Instance;
@@ -12,6 +16,7 @@ import weka.core.neighboursearch.LinearNNSearch;
 import br.ufal.sapiens.refactoring.analysis.NodeAnalysis;
 import br.ufal.sapiens.refactoring.classifier.sniffer.NeighbourNode;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.Rule;
+import br.ufal.sapiens.refactoring.classifier.sniffer.weka.WekaJ48Classifier;
 import br.ufal.sapiens.refactoring.pr.Node;
 
 public class WekaUtil {
@@ -70,11 +75,17 @@ public class WekaUtil {
 		for (String metricName : metricNames) {
 			fv.addElement(new Attribute(metricName));
 		}
+		FastVector fv2 = new FastVector();
+		fv2.addElement("1");
+		fv2.addElement("0");
+		fv.addElement(new Attribute("classz", fv2));
+		
 		Instances instances = new Instances("NNS", fv, nodes.size());
 		
 		for (Node node : nodes) {
 			instances.add(createWekaInstance(node, metricNames, instances));
 		}
+		instances.setClassIndex(metricNames.size());
 		return instances;
 	}
 	
@@ -146,6 +157,36 @@ public class WekaUtil {
 		return instance;
 	}
 	
+	public static Instances createWekaInstance(Node node) {
+		List<String> metricNames = node.getMetricNames();
+		FastVector fv = new FastVector();
+//		fv.addElement(new Attribute("name", (FastVector) null));
+		for (String metricName : metricNames) {
+			fv.addElement(new Attribute(metricName));
+		}
+		FastVector fv2 = new FastVector();
+		fv2.addElement("1");
+		fv2.addElement("0");
+		fv.addElement(new Attribute("classz", fv2));
+		Instances instances = new Instances("TRAINING", fv, 1);
+		
+		int columns = metricNames.size();
+		Instance instance = new Instance(columns + 1);
+		
+		for (int i = 0; i < columns; i++) {
+			Float value = node.getMetricValues().get(metricNames.get(i));
+			if (value != null)
+				instance.setValue(i+1, value);
+		}
+		
+		Instances dataUnlabeled = new Instances("TestInstances", fv, 0);
+		dataUnlabeled.add(instance);
+		dataUnlabeled.setClassIndex(dataUnlabeled.numAttributes() - 1);        
+//		double classif = ibk.classifyInstance(dataUnlabeled.firstInstance());
+		
+		return dataUnlabeled;
+	}
+	
 	
 	
 //	public static List<NeighbourStatement> getNeighbourStatements(Project project, Rule rule, int kNeighbors) throws Exception {
@@ -201,7 +242,25 @@ public class WekaUtil {
 		return null;
 	}
 	
-	public static void main(String[] args) throws Exception {
+	public static Instances createWekaInstancesFromAnalysis(List<NodeAnalysis> anls) {
+		Instances instances = WekaUtil.createWekaInstancesFromAnalysis(anls, anls.get(0).getNode().getMetricNames());
+		return instances;
+	}
+	
+	public static void applyMLAlgorithm(Instances instances) {
+		J48 j48 = new J48();
+		try {
+			j48.setUnpruned(false);
+			Evaluation eval = new Evaluation(instances);
+			eval.crossValidateModel(j48, instances, 5, new Random(1));
+			j48.buildClassifier(instances);
+			System.out.println(eval.fMeasure(1));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+//	public static void main(String[] args) throws Exception {
 //		Project project = Project.fromCSV("Gantt", "/home/hozano/git/smells/papers/ictai2014/experiment/observer/dados/pmd-gantt.csv");
 //		Sniffer sniffer = new GodClassSniffer();
 //		List<NeighbourStatement> statements = WekaUtil.getNeighbourStatements(project, sniffer.getRule(), 5, );
@@ -210,7 +269,7 @@ public class WekaUtil {
 //		}
 //		
 		
-	}
+//	}
 
 
 }

@@ -45,7 +45,7 @@ public abstract class Classifier {
 		this.disjunction = disjunction;
 	}
 	
-	public abstract boolean verify(Node node);
+	public abstract Boolean verify(Node node);
 	
 	public abstract Classifier update(List<NodeAnalysis> analysis);
 	

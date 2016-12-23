@@ -1,0 +1,9 @@
+select d.id, e.name, e.position, a.status
+from core_developer d, core_entity e, core_analysis a, core_case c, core_case_entities ce
+where a.experiment_id=11 and a.smell_id = 14 and a.developer_id = d.id and a.case_id = c.id and ce.case_id=c.id and ce.entity_id=e.id and a.status <> -1 and d.id <> 79
+order by d.id;
+
+God Class=1
+Data Class=14
+Long Method=3
+Feature Envy=2

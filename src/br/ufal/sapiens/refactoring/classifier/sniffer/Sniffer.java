@@ -94,7 +94,7 @@ public abstract class Sniffer {
 		return this.getBestClassifier().verify(node);
 	}
 	
-	public boolean verify(Node node, Classifier classifier) {
+	public boolean verify(Node node, Classifier classifier) throws Exception  {
 		return classifier.verify(node);
 	}
 	

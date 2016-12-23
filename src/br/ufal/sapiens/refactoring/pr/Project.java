@@ -50,7 +50,7 @@ public class Project {
 		return null;
 	}
 	
-	private Node getOrCreateNode(String name, NodeType nodeType) {
+	public Node getOrCreateNode(String name, NodeType nodeType) {
 		Map<String,Node> nodes = getNodes(nodeType);
 		if (nodes.containsKey(name)) {
 			return nodes.get(name);
@@ -80,6 +80,12 @@ public class Project {
 	}
 
 	private void addNodes(List<Node> nodes, NodeType nodeType) {
+		for (Node node : nodes) {
+			this.addNode(node);
+		}
+	}
+	
+	public void addNodes(List<Node> nodes) {
 		for (Node node : nodes) {
 			this.addNode(node);
 		}

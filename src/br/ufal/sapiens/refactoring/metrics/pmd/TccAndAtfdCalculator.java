@@ -61,11 +61,19 @@ public class TccAndAtfdCalculator extends AbstractJavaRule {
     private int wmcCounter;
     /** The Access To Foreign Data metric. */
     private int atfdCounter;
+    
+    private int CFNAMMCounter; // Call for not accessor/mutator methods
 
     /** Collects for each method of the current class, which local attributes are accessed. */
     private Map<String, Set<String>> methodAttributeAccess;
     /** The name of the current method. */
     private String currentMethodName;
+    private String className = "";
+    
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
+    	this.className = node.getType().toString();
+    	return super.visit(node, data);
+    }
     
     
     /**
@@ -77,6 +85,7 @@ public class TccAndAtfdCalculator extends AbstractJavaRule {
     public Object visit(ASTCompilationUnit node, Object data) {
         wmcCounter = 0;
         atfdCounter = 0;
+        CFNAMMCounter = 0;
         methodAttributeAccess = new HashMap<String, Set<String>>();
         
         Object result = super.visit(node, data);
@@ -99,9 +108,11 @@ public class TccAndAtfdCalculator extends AbstractJavaRule {
             StringBuilder sb = new StringBuilder();
             sb.append(getMessage());
             sb.append("")
+            	.append(this.className).append(" , ")
                 .append(wmcCounter).append(",")
                 .append(atfdCounter).append(",")
-                .append(tcc);
+                .append(tcc).append(",")
+                .append(CFNAMMCounter);
             
             RuleContext ctx = (RuleContext)data;
             ctx.getReport().addRuleViolation(new JavaRuleViolation(this, ctx, node, sb.toString()));
@@ -179,7 +190,10 @@ public class TccAndAtfdCalculator extends AbstractJavaRule {
             if (isAttributeAccess(node)
                 || (isMethodCall(node) && isForeignGetterSetterCall(node))) {
                 atfdCounter++;
+            } else {
+            	CFNAMMCounter++;
             }
+            
         } else {
             if (currentMethodName != null) {
                 Set<String> methodAccess = methodAttributeAccess.get(currentMethodName);

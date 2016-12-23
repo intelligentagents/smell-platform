@@ -9,6 +9,7 @@ import java.util.Set;
 import net.sourceforge.pmd.RuleContext;
 import net.sourceforge.pmd.lang.java.ast.ASTAllocationExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTClassOrInterfaceDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
@@ -66,6 +67,8 @@ public class GodClassRule extends AbstractJavaRule {
     private int wmcCounter;
     /** The Access To Foreign Data metric. */
     private int atfdCounter;
+    
+    private int CFNAMMCounter; // Call for not accessor/mutator methods
 
     /** Collects for each method of the current class, which local attributes are accessed. */
     private Map<String, Set<String>> methodAttributeAccess;
@@ -79,9 +82,10 @@ public class GodClassRule extends AbstractJavaRule {
      * the metrics are evaluated against fixed thresholds.
      */
     @Override
-    public Object visit(ASTCompilationUnit node, Object data) {
+    public Object visit(ASTClassOrInterfaceDeclaration node, Object data) {
         wmcCounter = 0;
         atfdCounter = 0;
+        CFNAMMCounter = 0;
         methodAttributeAccess = new HashMap<String, Set<String>>();
         
         Object result = super.visit(node, data);
@@ -96,16 +100,18 @@ public class GodClassRule extends AbstractJavaRule {
 //            .append("TCC=").append(tcc);
 //        System.out.println(debug.toString());
 
-        if (wmcCounter >= WMC_VERY_HIGH
-            && atfdCounter > FEW_THRESHOLD
-            && tcc < ONE_THIRD_THRESHOLD) {
+        if (true) {
+//        if (wmcCounter >= WMC_VERY_HIGH
+//            && atfdCounter > FEW_THRESHOLD
+//            && tcc < ONE_THIRD_THRESHOLD) {
 
             StringBuilder sb = new StringBuilder();
-            sb.append(getMessage());
-            sb.append(" (")
-                .append("WMC=").append(wmcCounter).append(", ")
-                .append("ATFD=").append(atfdCounter).append(", ")
-                .append("TCC=").append(tcc).append(')');
+            sb.append(node.getImage());
+            sb.append("::GC::");
+            sb.append("WMC:").append(wmcCounter).append(", ")
+                .append("ATFD:").append(atfdCounter).append(", ")
+                .append("TCC:").append(tcc).append(", ")
+                .append("CFNAMM:").append(CFNAMMCounter);
             
             RuleContext ctx = (RuleContext)data;
             ctx.getReport().addRuleViolation(new JavaRuleViolation(this, ctx, node, sb.toString()));
@@ -183,6 +189,8 @@ public class GodClassRule extends AbstractJavaRule {
             if (isAttributeAccess(node)
                 || (isMethodCall(node) && isForeignGetterSetterCall(node))) {
                 atfdCounter++;
+            } else {
+            	CFNAMMCounter++;
             }
         } else {
             if (currentMethodName != null) {

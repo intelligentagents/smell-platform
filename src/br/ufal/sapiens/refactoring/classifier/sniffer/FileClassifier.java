@@ -32,7 +32,7 @@ public class FileClassifier extends Classifier {
 	}
 
 	@Override
-	public boolean verify(Node node) {
+	public Boolean verify(Node node) {
 		return this.detectedSmells.contains(node.getName());
 	}
 

@@ -19,27 +19,37 @@ public class ClassifierEvaluator {
 	}
 	
 	public static float getEvaluation(Classifier classifier, List<NodeAnalysis> allAnalysis) {
-		return getFMeasure(classifier, allAnalysis);
+		return getAccuracy(classifier, allAnalysis);
 	}
 	
-	public static float getAccuracy(Classifier classifier, List<NodeAnalysis> allAnalysis) {
+	public static Float getAccuracy(Classifier classifier, List<NodeAnalysis> allAnalysis) {
 		int tp = 0;
 		int fp = 0;
 		int tn = 0;
 		int fn = 0;
-		for (NodeAnalysis analysis : allAnalysis) {
-			if (classifier.verify(analysis.getNode())) {
-				if (analysis.isVerify()) tp += 1;
-				else fp += 1;
-			} else {
-				if (!analysis.isVerify()) tn += 1;
-				else fn += 1;
+		try {
+			for (NodeAnalysis analysis : allAnalysis) {
+				Boolean result = classifier.verify(analysis.getNode());
+				if (result == null) {
+					return Float.NaN;
+				}
+				if (result) {
+					if (analysis.isVerify()) tp += 1;
+					else fp += 1;
+				} else {
+					if (!analysis.isVerify()) tn += 1;
+					else fn += 1;
+				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Float.NaN;
 		}
+		
 		return (1.0f*(tp + tn)) / (tp + fp + tn + fn);
 	}
 	
-	public String getPrecisionRecall(Classifier classifer, List<NodeAnalysis> allAnalysis) {
+	public String getPrecisionRecall(Classifier classifer, List<NodeAnalysis> allAnalysis)  throws Exception {
 		float precision = this.getPrecision(classifer, allAnalysis);
 		float recall = this.getRecall(classifer, allAnalysis);
 		return "" + precision + " / " + recall;
@@ -83,7 +93,7 @@ public class ClassifierEvaluator {
 		return fmeasure;
 	}
 	
-	public static float getKappa(Classifier classifer, List<NodeAnalysis> allAnalysis) {
+	public static float getKappa(Classifier classifer, List<NodeAnalysis> allAnalysis) throws Exception  {
 		int tp = 0;
 		int fp = 0;
 		int tn = 0;
@@ -109,5 +119,6 @@ public class ClassifierEvaluator {
 		float prE = accA*accB + negA*negB;
 		return (prA - prE) / (1.0f - prE);
 	}
+	
 
 }
