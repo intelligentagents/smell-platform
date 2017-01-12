@@ -1,0 +1,32 @@
+select d.id, e.name, e.position, a.status
+from core_developer d, core_entity e, core_analysis a, core_case c, core_case_entities ce, core_smell s
+where s.slug='SS' and a.experiment_id=12 and a.smell_id = s.id and a.developer_id = d.id and a.case_id = c.id and ce.case_id=c.id and ce.entity_id=e.id and a.status <> -1
+order by d.id;
+
+select d.id, c.id as case_id, a.status
+from core_developer d, core_analysis a, core_case c, core_smell s
+where s.slug='SS' and a.experiment_id=12 and a.smell_id = s.id and a.developer_id = d.id and a.case_id = c.id and a.status <> -1
+order by d.id, c.id;
+
+select distinct d.id, d.name
+from core_developer d, core_analysis a, core_case c, core_smell s
+where s.slug='SS' and a.experiment_id=12 and a.smell_id = s.id and a.developer_id = d.id and a.case_id = c.id and a.status <> -1
+order by d.id;
+
+id	slug
+1	GC
+2	FE
+3	LM
+4	LPL
+5	Dup
+6	DCm
+7	PO
+8	SS
+9	SG
+10	TF
+11	MC
+12	MM
+13	II
+14	DCl
+15	RB
+16	Com

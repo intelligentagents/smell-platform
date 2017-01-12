@@ -61,6 +61,30 @@ public class Smell {
 		return new Smell("Primitive Obsession", NodeType.ClassDefinition, "PO");
 	}
 	
+	public static Smell SwitchStatement() {
+		return new Smell("Switch Statement", NodeType.StatementDefinition, "SS");
+	}
+	
+	public static Smell SpeculativeGenerality() {
+		return new Smell("Speculative Generality", NodeType.ClassDefinition, "SG");
+	}
+	
+	public static Smell MessageChains() {
+		return new Smell("Message Chains", NodeType.StatementDefinition, "MC");
+	}
+	
+	public static Smell MiddleMan() {
+		return new Smell("Middle Man", NodeType.ClassDefinition, "MM");
+	}
+	
+	public static Smell InappropriateIntimacy() {
+		return new Smell("Inappropriate Intimacy", NodeType.ClassDefinition, "II");
+	}
+	
+	public static Smell RefusedBequest() {
+		return new Smell("Refused Bequest", NodeType.ClassDefinition, "RB");
+	}
+	
 	public static Smell fromShortName(String shortName){
 		if ("FE".equals(shortName))
 			return FeatureEnvy();

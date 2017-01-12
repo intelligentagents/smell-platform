@@ -1,0 +1,16 @@
+name,CountInput,mloc,CountLineBlank,LOC,CountLineCodeDecl,CountLineCodeExe,CountLineComment,CountOutput,CountSemicolon,CountStmt,CountStmtDecl,CountStmtExe,CYCLO,CyclomaticModified,CyclomaticStrict,Essential,MaxNesting
+net.sourceforge.ganttproject.GanttProject.java:1218,21,194,10,153,20,138,35,66,84,101,21,80,1,1,1,1,0
+net.sourceforge.ganttproject.gui.options.LnFSettingsPanel.java:77,13,168,21,122,16,114,25,28,92,99,21,78,2,2,2,1,0
+net.sourceforge.ganttproject.ResourceTreeTable.java:159,11,159,22,97,15,81,40,44,57,74,25,49,4,4,4,1,0
+net.sourceforge.ganttproject.GanttTreeTable.java:381,5,147,23,96,8,76,28,37,40,58,19,39,1,1,1,1,0
+net.sourceforge.ganttproject.io.GanttCSVExport.java:254,21,114,13,99,25,77,4,28,50,86,29,57,36,36,36,1,3
+net.sourceforge.ganttproject.task.TaskProperties.java:41,12,112,1,98,12,80,13,24,58,84,14,70,26,26,27,1,6
+net.sourceforge.ganttproject.chart.TaskRendererImpl.java:962,9,93,3,78,18,65,12,34,39,52,17,35,14,14,20,5,6
+net.sourceforge.ganttproject.gui.GanttDialogCustomColumn.java:194,26,81,4,72,9,56,6,32,53,57,9,48,1,1,1,1,0
+net.sourceforge.ganttproject.gui.GanttTaskPropertiesBean.java:627,20,81,31,48,3,44,2,25,36,39,3,36,2,2,2,1,0
+net.sourceforge.ganttproject.GanttTree2.java:1286,3,82,14,50,12,41,18,5,32,40,14,26,2,2,2,1,0
+net.sourceforge.ganttproject.gui.GanttTaskPropertiesBean.java:883,22,67,21,40,1,33,6,31,26,34,2,32,8,8,8,4,3
+net.sourceforge.ganttproject.GanttTree2.java:2090,9,61,10,39,8,32,13,26,23,30,8,22,8,8,8,1,2
+net.sourceforge.ganttproject.gui.ResourceDialogCustomColumn.java:271,10,57,2,49,7,43,8,18,31,38,7,31,11,7,11,1,3
+net.sourceforge.ganttproject.gui.previousState.GanttDialogCompareToPreviousState.java:47,9,46,3,41,7,34,2,19,16,27,5,22,11,11,11,1,4
+net.sourceforge.ganttproject.GPTreeTableBase.java:72,5,43,1,42,9,31,0,23,24,33,12,21,9,9,10,6,6
