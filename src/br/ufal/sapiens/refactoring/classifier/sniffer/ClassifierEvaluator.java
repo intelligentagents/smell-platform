@@ -19,7 +19,30 @@ public class ClassifierEvaluator {
 	}
 	
 	public static float getEvaluation(Classifier classifier, List<NodeAnalysis> allAnalysis) {
-		return getAccuracy(classifier, allAnalysis);
+		return getFMeasure(classifier, allAnalysis);
+	}
+	
+	public static List<Integer> getConfusionMatrix(Classifier classifier, List<NodeAnalysis> allAnalysis) {
+		List<Integer> result = new ArrayList<Integer>();
+		int tp = 0;
+		int fp = 0;
+		int tn = 0;
+		int fn = 0;
+		for (NodeAnalysis analysis : allAnalysis) {
+			Boolean expect = classifier.verify(analysis.getNode());
+			if (expect) {
+				if (analysis.isVerify()) tp += 1;
+				else fp += 1;
+			} else {
+				if (!analysis.isVerify()) tn += 1;
+				else fn += 1;
+			}
+		}
+		result.add(tp);
+		result.add(tn);
+		result.add(fp);
+		result.add(fn);
+		return result;
 	}
 	
 	public static Float getAccuracy(Classifier classifier, List<NodeAnalysis> allAnalysis) {

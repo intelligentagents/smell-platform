@@ -62,7 +62,7 @@ public class Smell {
 	}
 	
 	public static Smell SwitchStatement() {
-		return new Smell("Switch Statement", NodeType.StatementDefinition, "SS");
+		return new Smell("Switch Statement", NodeType.MethodDefinition, "SS");
 	}
 	
 	public static Smell SpeculativeGenerality() {
@@ -70,7 +70,7 @@ public class Smell {
 	}
 	
 	public static Smell MessageChains() {
-		return new Smell("Message Chains", NodeType.StatementDefinition, "MC");
+		return new Smell("Message Chains", NodeType.MethodDefinition, "MC");
 	}
 	
 	public static Smell MiddleMan() {

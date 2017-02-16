@@ -33,7 +33,7 @@ public class DataClassHeuristicSniffer extends SimpleHeuristicSniffer {
 		rule3.getExpressions().add(exp32);
 		
 		Rule rule4 = new Rule("DCl - CountClassCoupled(CBO)", this.getSmell());
-		Expression exp4 = new Expression("CBO", Operator.GreaterEqualThan(),
+		Expression exp4 = new Expression("CountClassCoupled", Operator.GreaterEqualThan(),
 				7 * 1.0f);
 		rule4.getExpressions().add(exp4);
 		

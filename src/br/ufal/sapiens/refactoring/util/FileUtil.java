@@ -36,7 +36,6 @@ public class FileUtil {
 	public static String getNodeTypeAsString(NodeType nType) {
 		if (nType == NodeType.ClassDefinition) return "Class";
 		if (nType == NodeType.MethodDefinition) return "Method";
-		if (nType == NodeType.AttributeDefinition) return "Attribute";
 		return null;
 	}
 	

@@ -8,13 +8,30 @@ import java.util.List;
 public class EvaluationList {
 	
 	private List<Float> list;
+	private List<List<Integer>> matrixList; // TP, TN, FP, FN
 	
 	public EvaluationList() {
 		this.list = new ArrayList<Float>();
+		this.matrixList = new ArrayList<List<Integer>>();
 	}
 	
 	public void add(Float value) {
 		this.list.add(value);
+	}
+	
+	public void addMatrix(List<Integer> value) {
+		this.matrixList.add(value);
+	}
+	
+	public int[] sumMatrix() {
+		int tp=0, tn=0, fp=0, fn = 0;
+		for (List<Integer> aList : this.matrixList) {
+			tp += aList.get(0);
+			tn += aList.get(1);
+			fp += aList.get(2);
+			fn += aList.get(3);
+		}
+		return new int[]{tp, tn, fp, fn};
 	}
 	
 	public Float getMedian() {

@@ -264,7 +264,7 @@ public class CHBRulesExperiment {
 	
 	public static void main(String[] args) throws IOException,
 			InstantiationException, IllegalAccessException {
-//		SimpleHeuristicSniffer sniffer = new GodClassHeuristicSniffer();
+		SimpleHeuristicSniffer sniffer = new GodClassHeuristicSniffer();
 //		SimpleHeuristicSniffer sniffer = new DataClassHeuristicSniffer();
 //		SimpleHeuristicSniffer sniffer = new LongMethodHeuristicSniffer();
 //		SimpleHeuristicSniffer sniffer = new FeatureEnvyHeuristicSniffer();
@@ -272,7 +272,7 @@ public class CHBRulesExperiment {
 //		SimpleHeuristicSniffer sniffer = new SpeculativeGeneralityHeuristicSniffer();
 //		SimpleHeuristicSniffer sniffer = new MessageChainsHeuristicSniffer();
 //		SimpleHeuristicSniffer sniffer = new MiddleManHeuristicSniffer();
-		SimpleHeuristicSniffer sniffer = new InappropriateIntimacyHeuristicSniffer();
+//		SimpleHeuristicSniffer sniffer = new InappropriateIntimacyHeuristicSniffer();
 //		SimpleHeuristicSniffer sniffer = new RefusedBequestHeuristicSniffer();
 		
 		String smell = sniffer.getSmell().getShortName().toLowerCase();

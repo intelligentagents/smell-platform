@@ -55,6 +55,14 @@ public abstract class SimpleHeuristicSniffer extends Sniffer {
 		this.loadRules();
 	}
 	
+	public void clearRules() {
+		this.initialRules = new HashMap<Integer,Rule>();
+		this.ruleMap = new HashMap<Integer,List<Rule>>();
+		this.setClassifier(new ArrayList<Classifier>());
+		this.setAnalysis(new ArrayList<NodeAnalysis>());
+		this.bestClassifier = null;
+	}
+	
 	public int getHeuristicCount() {
 		return this.ruleMap.size();
 	}

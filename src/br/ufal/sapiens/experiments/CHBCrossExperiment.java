@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,7 +15,6 @@ import br.ufal.sapiens.refactoring.classifier.smell.Smell;
 import br.ufal.sapiens.refactoring.classifier.sniffer.ClassifierEvaluator;
 import br.ufal.sapiens.refactoring.classifier.sniffer.EvaluationList;
 import br.ufal.sapiens.refactoring.classifier.sniffer.Sniffer;
-import br.ufal.sapiens.refactoring.classifier.sniffer.simple.FeatureEnvySniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.Rule;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.SimpleSniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.SimpleKNNSniffer;
@@ -24,8 +22,12 @@ import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.heuristic.DataC
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.heuristic.FeatureEnvyHeuristicSniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.heuristic.GodClassHeuristicSniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.heuristic.LongMethodHeuristicSniffer;
+import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.heuristic.MessageChainsHeuristicSniffer;
+import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.heuristic.MiddleManHeuristicSniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.heuristic.PrimitiveObsessionHeuristicSniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.heuristic.SimpleHeuristicSniffer;
+import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.heuristic.SpeculativeGeneralityHeuristicSniffer;
+import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.heuristic.SwitchStatementHeuristicSniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.weka.WekaJ48Classifier;
 import br.ufal.sapiens.refactoring.classifier.sniffer.weka.WekaJRipClassifier;
 import br.ufal.sapiens.refactoring.classifier.sniffer.weka.WekaLibSVMClassifier;
@@ -39,16 +41,16 @@ import br.ufal.sapiens.refactoring.pr.Project;
 import br.ufal.sapiens.refactoring.util.FileUtil;
 import br.ufal.sapiens.refactoring.util.SimpleLogger;
 
-public class ICPCCrossExperiment {
+public class CHBCrossExperiment {
 
 	private Map<Developer, SimpleSniffer> snifferMap;
 	private Map<Integer, Developer> developers;
 	private String project;
 
-	public ICPCCrossExperiment(String smell, String project) throws IOException {
+	public CHBCrossExperiment(String smell, String project) throws IOException {
 		this.snifferMap = new HashMap<Developer, SimpleSniffer>();
 		this.project = project;
-		this.loadDevelopers("data/heuristic1/"+project+"/developers-" + smell + ".txt");
+		this.loadDevelopers("data/chb2017/"+project+"/developers-" + smell + ".txt");
 	}
 
 	public Map<Node,NodeAnalysis> loadAnalysis(Sniffer sniffer,
@@ -66,7 +68,7 @@ public class ICPCCrossExperiment {
 				for (Rule rule : ((SimpleHeuristicSniffer)sniffer).getInitialRules().values()) {
 					if (!node.getMetricNames().containsAll(
 							rule.getMetricNames())) {
-						System.out.println("Node with insufficient metrics: " + node);
+//						System.out.println("Node with insufficient metrics: " + node);
 					}
 				}
 				boolean verify = ("1".equals(data.get(i)[2])) ? true : false;
@@ -91,18 +93,17 @@ public class ICPCCrossExperiment {
 		this.developers = developers;
 	}
 
-	public void loadPreferences(String developersPrefs) throws IOException {
-		List<String[]> data = FileUtil.getCSVData(developersPrefs);
+	public static void loadRules(SimpleHeuristicSniffer sniffer, String initialRules) throws IOException {
+		List<String[]> data = FileUtil.getCSVData(initialRules);
 		for (int i = 0; i < data.size(); i++) {
-			Integer devId = new Integer(data.get(i)[0]);
-			String smellName = data.get(i)[1];
+			String slug = data.get(i)[0];
+			if (!sniffer.getSmell().getShortName().equalsIgnoreCase(slug)) continue;
+			
+			Integer ruleId = new Integer(data.get(i)[1]);
 			String rawRule = data.get(i)[2];
-			Smell smell = Smell.fromShortName(smellName);
-			Rule rule = Rule.fromString(smell, rawRule);
-			Developer dev = this.developers.get(devId);
-			SimpleSniffer sniffer = SimpleSniffer.fromSmell(smell);
-			sniffer.getClassifiers().add(rule);
-			this.snifferMap.put(dev, sniffer);
+			Rule rule = Rule.fromString(sniffer.getSmell(), rawRule);
+			sniffer.addRule(rule, ruleId);
+			if (ruleId == 1) sniffer.setBestClassifier(rule);
 		}
 	}
 	
@@ -118,12 +119,6 @@ public class ICPCCrossExperiment {
 		br.close();
 		return map;
 	}
-	
-	public int getHeuristicFromDeveloper(Integer devID, String smell) throws IOException {
-		Map<Integer,Integer> data = this.getHeuristicsMap("data/heuristic1/preferences-"+smell+".txt");
-		return data.get(devID);
-	}
-
 	public void testDeveloperPreferences(Project project, Sniffer sniffer,
 			Developer developer) throws IOException {
 		float personalizedPR = ClassifierEvaluator.getEvaluation(
@@ -139,27 +134,6 @@ public class ICPCCrossExperiment {
 				+ sniffer.getAnalysis().size());
 	}
 
-	public void testPreferences(Class<? extends Sniffer> SnifferClass,
-			String analysisSource) throws IOException, InstantiationException,
-			IllegalAccessException {
-		Project project = new Project("Xerces", "path");
-		project.addNodesFromCSV("data/heuristic1/xerces/xerces-gc.csv",
-				NodeType.ClassDefinition);
-		project.addNodesFromCSV("data/heuristic1/xerces/xerces-lpl.csv",
-				NodeType.MethodDefinition);
-		project.addNodesFromCSV("data/heuristic1/xerces/xerces-lm.csv",
-				NodeType.MethodDefinition);
-		project.addNodesFromCSV("data/heuristic1/xerces/xerces-fe.csv",
-				NodeType.MethodDefinition);
-
-		for (Developer developer : this.developers.values()) {
-			Sniffer sniffer = SnifferClass.newInstance();
-			this.loadPreferences("data/ase2015/xerces/preferences-kappa.txt");
-			this.loadAnalysis(sniffer, analysisSource, project, developer);
-			testDeveloperPreferences(project, sniffer, developer);
-		}
-	}
-	
 	public void test(int devId, Sniffer sniffer, List<Node> nodes, Map<Node,NodeAnalysis> analysis) {
 		float personalizedPR = ClassifierEvaluator.getEvaluation(
 				sniffer.getBestClassifier(), new ArrayList<NodeAnalysis>(analysis.values()));
@@ -263,26 +237,12 @@ public class ICPCCrossExperiment {
 			
 			List<NodeAnalysis> analysisToTest = new ArrayList<NodeAnalysis>(foldList.get(testFold));
 			
-//			accuracyJ48.add(ClassifierEvaluator.getAccuracy(j48, analysisToTest));
-//			accuracyJRip.add(ClassifierEvaluator.getAccuracy(jRip, analysisToTest));
-//			accuracyRF.add(ClassifierEvaluator.getAccuracy(rf, analysisToTest));
-//			accuracySMO.add(ClassifierEvaluator.getAccuracy(smo, analysisToTest));
-//			accuracyNB.add(ClassifierEvaluator.getAccuracy(nb, analysisToTest));
-//			accuracySVM.add(ClassifierEvaluator.getAccuracy(svm, analysisToTest));
-			
-			accuracyJ48.add(ClassifierEvaluator.getFMeasure(j48, analysisToTest));
-			accuracyJRip.add(ClassifierEvaluator.getFMeasure(jRip, analysisToTest));
-			accuracyRF.add(ClassifierEvaluator.getFMeasure(rf, analysisToTest));
-			accuracySMO.add(ClassifierEvaluator.getFMeasure(smo, analysisToTest));
-			accuracyNB.add(ClassifierEvaluator.getFMeasure(nb, analysisToTest));
-			accuracySVM.add(ClassifierEvaluator.getFMeasure(svm, analysisToTest));
-			
-			accuracyJ48.addMatrix(ClassifierEvaluator.getConfusionMatrix(j48, analysisToTest));
-			accuracyJRip.addMatrix(ClassifierEvaluator.getConfusionMatrix(jRip, analysisToTest));
-			accuracyRF.addMatrix(ClassifierEvaluator.getConfusionMatrix(rf, analysisToTest));
-			accuracySMO.addMatrix(ClassifierEvaluator.getConfusionMatrix(smo, analysisToTest));
-			accuracyNB.addMatrix(ClassifierEvaluator.getConfusionMatrix(nb, analysisToTest));
-			accuracySVM.addMatrix(ClassifierEvaluator.getConfusionMatrix(svm, analysisToTest));
+			accuracyJ48.add(ClassifierEvaluator.getAccuracy(j48, analysisToTest));
+			accuracyJRip.add(ClassifierEvaluator.getAccuracy(jRip, analysisToTest));
+			accuracyRF.add(ClassifierEvaluator.getAccuracy(rf, analysisToTest));
+			accuracySMO.add(ClassifierEvaluator.getAccuracy(smo, analysisToTest));
+			accuracyNB.add(ClassifierEvaluator.getAccuracy(nb, analysisToTest));
+			accuracySVM.add(ClassifierEvaluator.getAccuracy(svm, analysisToTest));
 			
 			while (trainAnalysis.size() > 0) {
 				NodeAnalysis nodeAnl = sniffer.getDirectionNeighbourNodesFromAnalysis(trainAnalysis, 1).get(0);
@@ -291,33 +251,21 @@ public class ICPCCrossExperiment {
 				sniffer.addAnalysis(nodeAnl);
 			}
 			
-//			accuracy.add(ClassifierEvaluator.getAccuracy(sniffer.getBestClassifier(), analysisToTest));
-			accuracy.add(ClassifierEvaluator.getFMeasure(sniffer.getBestClassifier(), analysisToTest));
-			accuracy.addMatrix(ClassifierEvaluator.getConfusionMatrix(sniffer.getBestClassifier(), analysisToTest));
+			accuracy.add(ClassifierEvaluator.getAccuracy(sniffer.getBestClassifier(), analysisToTest));
 			iterations += ((Rule)sniffer.getBestClassifier()).getIterations();
 		}
 		
 		String result = developer.getId() + "\t"
-				+ accuracyJ48.getAverage() +"\t"
-				+ accuracyJRip.getAverage() +"\t"
-				+ accuracyRF.getAverage() +"\t"
-				+ accuracySMO.getAverage() +"\t"
-				+ accuracyNB.getAverage() +"\t"
-				+ accuracySVM.getAverage() +"\t"
+				+ accuracyJ48.getMedian() +"\t"
+				+ accuracyJRip.getMedian() +"\t"
+				+ accuracyRF.getMedian() +"\t"
+				+ accuracySMO.getMedian() +"\t"
+				+ accuracyNB.getMedian() +"\t"
+				+ accuracySVM.getMedian() +"\t"
 				+ accuracy.getAverage() +"\t"
-				+ iterations/folds + "\tFolds: "+ folds + " Smell: "+ sniffer.getSmell().getShortName().toUpperCase();
+				+ "Folds: "+ folds + " Smell: "+ sniffer.getSmell().getShortName().toUpperCase();
 		
-		String result2 = developer.getId()
-				+ Arrays.toString(accuracyJ48.sumMatrix()) +"\t"
-				+ Arrays.toString(accuracyJRip.sumMatrix()) +"\t"
-				+ Arrays.toString(accuracyRF.sumMatrix()) +"\t"
-				+ Arrays.toString(accuracySMO.sumMatrix()) +"\t"
-				+ Arrays.toString(accuracyNB.sumMatrix()) +"\t"
-				+ Arrays.toString(accuracySVM.sumMatrix()) +"\t"
-				+ Arrays.toString(accuracy.sumMatrix()) +"\t"
-				+ iterations/folds + "\tFolds: "+ folds + " Smell: "+ sniffer.getSmell().getShortName().toUpperCase();
-		
-		return result2;
+		return result;
 		
 //		System.out.println(developer.getId() + "\t"
 //				+ accuracyJ48/folds +"\t"
@@ -332,38 +280,46 @@ public class ICPCCrossExperiment {
 	
 	private static Project getProject(String projectName, Smell smell) throws IOException {
 		Project project = new Project(projectName, "path");
-		project.addNodesFromCSV("data/heuristic1/"+projectName+"/"+projectName+"-" + smell.getShortName().toLowerCase() + ".csv",
+		project.addNodesFromCSV("data/chb2017/"+projectName+"/"+projectName+"-" + smell.getShortName().toLowerCase() + ".csv",
 				smell.getType());
 		return project;
 	}
 	
 	public static void main(String[] args) throws IOException,
 			InstantiationException, IllegalAccessException {
-//		SimpleHeuristicSniffer sniffer = new GodClassHeuristicSniffer();
-		SimpleHeuristicSniffer sniffer = new LongMethodHeuristicSniffer();
+		SimpleHeuristicSniffer sniffer = new GodClassHeuristicSniffer();
 //		SimpleHeuristicSniffer sniffer = new DataClassHeuristicSniffer();
-//		SimpleHeuristicSniffer sniffer = new PrimitiveObsessionHeuristicSniffer();
+//		SimpleHeuristicSniffer sniffer = new LongMethodHeuristicSniffer();
 //		SimpleHeuristicSniffer sniffer = new FeatureEnvyHeuristicSniffer();
+//		SimpleHeuristicSniffer sniffer = new SwitchStatementHeuristicSniffer();
+//		SimpleHeuristicSniffer sniffer = new SpeculativeGeneralityHeuristicSniffer();
+//		SimpleHeuristicSniffer sniffer = new MessageChainsHeuristicSniffer();
+//		SimpleHeuristicSniffer sniffer = new MiddleManHeuristicSniffer();
+//		SimpleHeuristicSniffer sniffer = new PrimitiveObsessionHeuristicSniffer();
+//		SimpleHeuristicSniffer sniffer = new InappropriateIntimacyHeuristicSniffer();
+//		SimpleHeuristicSniffer sniffer = new RefusedBequestHeuristicSniffer();
+		
 		String smell = sniffer.getSmell().getShortName().toLowerCase();
 		String projectName = "custom";
-		ICPCCrossExperiment experiment = new ICPCCrossExperiment(smell, projectName);
+		CHBCrossExperiment experiment = new CHBCrossExperiment(smell, projectName);
 		Project project = getProject(projectName, sniffer.getSmell());
-		String analysisSource = "data/heuristic1/"+projectName+"/an-"+ smell + ".csv";
+		String analysisSource = "data/chb2017/"+projectName+"/an-"+ smell + ".csv";
+		
+		sniffer.clearRules();
+		loadRules(sniffer, "data/chb2017/"+projectName+"/rules.txt");
 		
 		String result = "";
-
-		for (Developer developer : experiment.developers.values()) {
-//			if (developer.getId() == 9) {
-			Map<Node,NodeAnalysis> trainAnalysis = experiment.loadAnalysis(sniffer, analysisSource, project, developer);
-//				List<NodeAnalysis> anls = new ArrayList<NodeAnalysis>(trainAnalysis.values());
-//				Instances instances = WekaUtil.createWekaInstancesFromAnalysis(anls);
-//				System.out.println(instances);
-//				WekaUtil.applyMLAlgorithm(instances);
-//				break;}
-			result += experiment.train(sniffer, trainAnalysis, developer, 5);
-			result += "\n";
-//			}
+		int repetition = 10;
+		
+		for (int i = 0; i < repetition; i++) {
+			for (Developer developer : experiment.developers.values()) {
+				Map<Node,NodeAnalysis> trainAnalysis = experiment.loadAnalysis(sniffer, analysisSource, project, developer);
+				result += experiment.train(sniffer, trainAnalysis, developer, 5);
+				result += "\n";
+			}
+			result += "\n\n";
 		}
+
 		System.out.println(result);
 	}
 

@@ -31,7 +31,7 @@ public class GodClassHeuristicSniffer extends SimpleHeuristicSniffer {
 		rule3.getExpressions().add(exp32);
 		
 		Rule rule4 = new Rule("GC - WMC, ATFD, TCC", this.getSmell());
-		Expression exp41 = new Expression("WMC", Operator.GreaterEqualThan(), 47*1.0f);
+		Expression exp41 = new Expression("SumCyclomatic", Operator.GreaterEqualThan(), 47*1.0f);
 		Expression exp42 = new Expression("ATFD", Operator.GreaterThan(), 5*1.0f);
 		Expression exp43 = new Expression("TCC", Operator.LessThan(), (1.0f/3.0f));
 		rule4.getExpressions().add(exp41);
