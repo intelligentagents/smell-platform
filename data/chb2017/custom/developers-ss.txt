@@ -1,10 +1,10 @@
 2,Lucas Amorim
-7,Caio Barbosa
+12,asdf
 25,Elder Cirilo
 28,Leonardo Fernandes
-31,Mário André
 32,Iago Barboza
-69,Rodrigo Paes
 96,Luciano Sampaio
 106,Alan Pereira
 107,Alfredo Lima
+140,asdf
+141,asdf

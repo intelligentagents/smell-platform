@@ -1,0 +1,16 @@
+name,params,CountInput,CountLine,CountLineBlank,CountLineCode,CountLineCodeDecl,CountLineCodeExe,CountLineComment,CountOutput,CountPath,CountSemicolon,CountStmt,CountStmtDecl,CountStmtExe,Cyclomatic,CyclomaticModified,CyclomaticStrict,Essential,MaxNesting,RatioCommentToCode
+net.sourceforge.ganttproject.chart.RegularFrameOffsetBuilder.java:37,9,11,14,0,14,4,9,0,10,1,9,10,1,9,1,1,1,1,0,0
+net.sourceforge.ganttproject.chart.SkewedFrameOffsetBuilder.java:32,7,8,11,0,11,3,7,0,8,1,7,8,1,7,1,1,1,1,0,0
+net.sourceforge.ganttproject.GanttTree2.java:1793,7,11,42,4,38,5,31,1,14,7,17,24,3,21,10,10,10,1,2,0.03
+net.sourceforge.ganttproject.gui.taskproperties.CommonPanel.java:45,7,15,14,2,12,3,8,0,4,1,7,8,1,7,1,1,1,1,0,0
+net.sourceforge.ganttproject.task.algorithm.CriticalPathAlgorithmImpl.java:70,7,9,11,0,11,1,8,0,8,2,7,9,1,8,2,2,2,1,1,0
+net.sourceforge.ganttproject.chart.RenderedChartImage.java:78,6,11,13,1,11,3,9,1,8,1,9,10,3,7,1,1,1,1,0,0.09
+net.sourceforge.ganttproject.export.ExportFileWizardImpl.java:55,6,13,25,0,25,4,18,0,23,6,17,21,3,18,5,5,5,1,2,0
+net.sourceforge.ganttproject.gui.taskproperties.CommonPanel.java:62,6,11,17,0,16,3,12,1,2,1,12,13,1,12,1,1,1,1,0,0.06
+net.sourceforge.ganttproject.io.TaskSaver.java:130,6,6,3,0,3,1,1,0,1,1,1,2,1,1,1,1,1,1,0,0
+net.sourceforge.ganttproject.task.algorithm.AlgorithmCollection.java:21,6,7,15,0,15,7,7,0,8,1,7,8,1,7,1,1,1,1,0,0
+net.sourceforge.ganttproject.time.gregorian.GregorianCalendar.java:83,6,2,9,0,3,1,1,6,1,1,1,2,1,1,1,1,1,1,0,2
+net.sourceforge.ganttproject.action.CalculateCriticalPathAction.java:33,5,6,11,2,9,2,6,0,8,1,6,7,1,6,1,1,1,1,0,0
+net.sourceforge.ganttproject.chart.ChartModelBase.java:628,5,9,3,0,3,1,1,0,2,1,1,2,1,1,1,1,1,1,0,0
+net.sourceforge.ganttproject.GanttGraphicArea.java:186,5,10,77,13,57,6,44,7,29,1,29,39,9,30,1,1,1,1,0,0.12
+net.sourceforge.ganttproject.GanttTask.java:50,5,8,15,0,10,3,7,5,9,1,7,8,2,6,1,1,1,1,0,0.5

@@ -27,7 +27,7 @@ public abstract class SimpleHeuristicSniffer extends Sniffer {
 		super(name,smell);
 		this.ruleMap = new HashMap<Integer,List<Rule>>();
 		this.initialRules = new HashMap<Integer,Rule>();
-		this.loadRules();
+//		this.loadRules();
 	}
 	
 	public abstract void loadRules();
@@ -277,9 +277,9 @@ public abstract class SimpleHeuristicSniffer extends Sniffer {
 		}
 		this.getRuleMap().get(heuristicID).add(rule);
 		
-		if (!this.initialRules.keySet().contains(heuristicID)) {
-			this.initialRules.put(heuristicID, rule);
-		}
+//		if (!this.initialRules.keySet().contains(heuristicID)) {
+//			this.initialRules.put(heuristicID, rule);
+//		}
 		
 	}
 	

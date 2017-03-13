@@ -34,6 +34,23 @@ public class EvaluationList {
 		return new int[]{tp, tn, fp, fn};
 	}
 	
+	public String printMatrixValues(List<Integer> aList) {
+		return aList.get(0) + "\t" + aList.get(1) + "\t" + aList.get(2) + "\t" + aList.get(3);
+	}
+	
+	public String printMatrixes() {
+		String result = "";
+		for (List<Integer> aList : this.matrixList) {
+			result += this.printMatrixValues(aList) + "\t";
+		}
+		return result;
+	}
+	
+	public String printSumMatrix() {
+		int[] sum = this.sumMatrix();
+		return sum[0] + "\t" + sum[1] + "\t" + sum[2] + "\t" + sum[3];
+	}
+	
 	public Float getMedian() {
 		List<Float> values = new ArrayList<Float>();
 		for (Float value : this.list) {
