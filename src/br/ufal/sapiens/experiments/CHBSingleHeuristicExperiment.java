@@ -43,13 +43,13 @@ import br.ufal.sapiens.refactoring.pr.Project;
 import br.ufal.sapiens.refactoring.util.FileUtil;
 import br.ufal.sapiens.refactoring.util.SimpleLogger;
 
-public class CHBCrossExperiment {
+public class CHBSingleHeuristicExperiment {
 
 	private Map<Developer, SimpleSniffer> snifferMap;
 	private Map<Integer, Developer> developers;
 	private String project;
 
-	public CHBCrossExperiment(String smell, String project) throws IOException {
+	public CHBSingleHeuristicExperiment(String smell, String project) throws IOException {
 		this.snifferMap = new HashMap<Developer, SimpleSniffer>();
 		this.project = project;
 		this.loadDevelopers("data/chb2017/"+project+"/developers-" + smell + ".txt");
@@ -101,6 +101,33 @@ public class CHBCrossExperiment {
 			Rule rule = Rule.fromString(sniffer.getSmell(), rawRule);
 			sniffer.addRule(rule, ruleId);
 			if (ruleId == 1) sniffer.setBestClassifier(rule);
+		}
+	}
+	
+	public static int countRules(SimpleHeuristicSniffer sniffer, String initialRules) throws IOException {
+		int result = 0;
+		List<String[]> data = FileUtil.getCSVData(initialRules);
+		for (int i = 0; i < data.size(); i++) {
+			String slug = data.get(i)[0];
+			if (!sniffer.getSmell().getShortName().equalsIgnoreCase(slug)) continue;
+			result++;
+		}
+		return result;
+	}
+	
+	public static void loadRule(SimpleHeuristicSniffer sniffer, String initialRules, int _ruleId) throws IOException {
+		List<String[]> data = FileUtil.getCSVData(initialRules);
+		for (int i = 0; i < data.size(); i++) {
+			String slug = data.get(i)[0];
+			if (!sniffer.getSmell().getShortName().equalsIgnoreCase(slug)) continue;
+			
+			Integer ruleId = new Integer(data.get(i)[1]);
+			String rawRule = data.get(i)[2];
+			if (ruleId.equals(new Integer(_ruleId))) {
+				Rule rule = Rule.fromString(sniffer.getSmell(), rawRule);
+				sniffer.addRule(rule, ruleId);
+				sniffer.setBestClassifier(rule);
+			}
 		}
 	}
 	
@@ -191,22 +218,17 @@ public class CHBCrossExperiment {
 		return count;
 	}
 	
-	public String train(SimpleHeuristicSniffer sniffer, String rulesSource, Map<Node,NodeAnalysis> analysisToTrain, Developer developer, int folds) throws IOException, InstantiationException,
+	public String train(Class<? extends SimpleHeuristicSniffer> snifferClass, String rulesSource, Map<Node,NodeAnalysis> analysisToTrain, Developer developer, int folds) throws IOException, InstantiationException,
 			IllegalAccessException {
-		
-		SimpleLogger.log("Iniciando análise para developer: " + developer.getId());
-		SimpleLogger.log("Regra Inicial: " + sniffer.getBestClassifier());
-
+		int nRules = countRules(snifferClass.newInstance(), rulesSource);
 		List<List<NodeAnalysis>> foldList = this.createFolds(new ArrayList<NodeAnalysis>(analysisToTrain.values()), folds);
 		EvaluationList accuracy = new EvaluationList();
-		float iterations = 0;
 		
-		EvaluationList accuracyJ48 = new EvaluationList();
-		EvaluationList accuracyJRip = new EvaluationList();
-		EvaluationList accuracyRF = new EvaluationList();
-		EvaluationList accuracySMO = new EvaluationList();
-		EvaluationList accuracyNB = new EvaluationList();
-		EvaluationList accuracySVM = new EvaluationList();
+		List<EvaluationList> accuracy1 = new ArrayList<EvaluationList>();
+		for (int i = 0; i < nRules; i++) {
+			accuracy1.add(new EvaluationList());
+		}
+		
 		
 		for (int testFold = 0; testFold < folds; testFold++) {
 			List<NodeAnalysis> trainAnalysis = new ArrayList<NodeAnalysis>();
@@ -217,31 +239,24 @@ public class CHBCrossExperiment {
 				trainAnalysis.addAll(foldList.get(trainFold));
 			}
 			
+			List<NodeAnalysis> analysisToTest = new ArrayList<NodeAnalysis>(foldList.get(testFold));
+			
+			SimpleHeuristicSniffer sniffer = snifferClass.newInstance();
 			sniffer.clearRules();
 			loadRules(sniffer, rulesSource);
 			
-			WekaJ48Classifier j48 = new WekaJ48Classifier("J48", sniffer.getSmell()); //Pruned
-			WekaJRipClassifier jRip = new WekaJRipClassifier("JRip", sniffer.getSmell());
-			WekaRandomForestClassifier rf = new WekaRandomForestClassifier("RF", sniffer.getSmell());
-			WekaSMOClassifier smo = new WekaSMOClassifier("SMO", sniffer.getSmell()); //PolyKernel
-			WekaNaiveBayesClassifier nb = new WekaNaiveBayesClassifier("NB", sniffer.getSmell());
-			WekaLibSVMClassifier svm = new WekaLibSVMClassifier("SVM", sniffer.getSmell()); // C-SVC, Kernel Radial (RBF)
-			
-			j48.update(trainAnalysis);
-			jRip.update(trainAnalysis);
-			rf.update(trainAnalysis);
-			smo.update(trainAnalysis);
-			nb.update(trainAnalysis);
-			svm.update(trainAnalysis);
-			
-			List<NodeAnalysis> analysisToTest = new ArrayList<NodeAnalysis>(foldList.get(testFold));
-			
-			accuracyJ48.addMatrix(ClassifierEvaluator.getConfusionMatrix(j48, analysisToTest));
-			accuracyJRip.addMatrix(ClassifierEvaluator.getConfusionMatrix(jRip, analysisToTest));
-			accuracyRF.addMatrix(ClassifierEvaluator.getConfusionMatrix(rf, analysisToTest));
-			accuracySMO.addMatrix(ClassifierEvaluator.getConfusionMatrix(smo, analysisToTest));
-			accuracyNB.addMatrix(ClassifierEvaluator.getConfusionMatrix(nb, analysisToTest));
-			accuracySVM.addMatrix(ClassifierEvaluator.getConfusionMatrix(svm, analysisToTest));
+			for (int i = 0; i < sniffer.getRuleMap().size(); i++) {
+				List<NodeAnalysis> trainAnalysis1 = new ArrayList<NodeAnalysis>(trainAnalysis);
+				SimpleHeuristicSniffer sniffer1 = snifferClass.newInstance();
+				sniffer1.clearRules();
+				loadRule(sniffer1, rulesSource, i+1);
+				while (trainAnalysis1.size() > 0) {
+					NodeAnalysis nodeAnl = sniffer1.getDirectionNeighbourNodesFromAnalysis(trainAnalysis1, 1).get(0);
+					trainAnalysis1.remove(nodeAnl);
+					sniffer1.addAnalysis(nodeAnl);
+				}
+				accuracy1.get(i).addMatrix(ClassifierEvaluator.getConfusionMatrix(sniffer1.getBestClassifier(), analysisToTest));
+			}
 			
 			while (trainAnalysis.size() > 0) {
 				NodeAnalysis nodeAnl = sniffer.getDirectionNeighbourNodesFromAnalysis(trainAnalysis, 1).get(0);
@@ -251,30 +266,16 @@ public class CHBCrossExperiment {
 			}
 			
 			accuracy.addMatrix(ClassifierEvaluator.getConfusionMatrix(sniffer.getBestClassifier(), analysisToTest));
-			iterations += ((Rule)sniffer.getBestClassifier()).getIterations();
 		}
 		
-		String result = developer.getId() + "\t"
-				+ accuracyJ48.printSumMatrix() +"\t"
-				+ accuracyJRip.printSumMatrix() +"\t"
-				+ accuracyRF.printSumMatrix() +"\t"
-				+ accuracySMO.printSumMatrix() +"\t"
-				+ accuracyNB.printSumMatrix() +"\t"
-				+ accuracySVM.printSumMatrix() +"\t"
-				+ accuracy.printSumMatrix() +"\t"
-				+ iterations/folds + "\tFolds: "+ folds + " Smell: "+ sniffer.getSmell().getShortName().toUpperCase();
+		String result = developer.getId() + "\t" + accuracy.printSumMatrix() + "\t";
+		for (int i = 0; i < nRules; i++) {
+			result += accuracy1.get(i).printSumMatrix() +"\t";
+		}
+		result += "\tFolds: "+ folds + " Smell: "+ snifferClass.newInstance().getSmell().getShortName().toUpperCase();
 		
 		return result;
 		
-//		System.out.println(developer.getId() + "\t"
-//				+ accuracyJ48/folds +"\t"
-//				+ accuracyJRip/folds +"\t"
-//				+ accuracyRF/folds +"\t"
-//				+ accuracySMO/folds +"\t"
-//				+ accuracyNB/folds +"\t"
-//				+ accuracySVM/folds +"\t"
-//				+ accuracy/folds +"\t"
-//				+ iterations/folds + "\tFolds: "+ folds + " Smell: "+ sniffer.getSmell().getShortName().toUpperCase());
 	}
 	
 	private static Project getProject(String projectName, Smell smell) throws IOException {
@@ -288,20 +289,20 @@ public class CHBCrossExperiment {
 	
 	public static void main(String[] args) throws IOException,
 			InstantiationException, IllegalAccessException {
-//		SimpleHeuristicSniffer sniffer = new GodClassHeuristicSniffer();
-		SimpleHeuristicSniffer sniffer = new DataClassHeuristicSniffer();		
-//		SimpleHeuristicSniffer sniffer = new FeatureEnvyHeuristicSniffer();		
-//		SimpleHeuristicSniffer sniffer = new LongMethodHeuristicSniffer();
-//		SimpleHeuristicSniffer sniffer = new LongParameterListHeuristicSniffer();
-//		SimpleHeuristicSniffer sniffer = new SwitchStatementHeuristicSniffer();
-//		SimpleHeuristicSniffer sniffer = new MessageChainsHeuristicSniffer();
-//		SimpleHeuristicSniffer sniffer = new MiddleManHeuristicSniffer();
-//		SimpleHeuristicSniffer sniffer = new PrimitiveObsessionHeuristicSniffer();
+		Class<? extends SimpleHeuristicSniffer> sniffer = GodClassHeuristicSniffer.class;
+//		Class<? extends SimpleHeuristicSniffer> sniffer = DataClassHeuristicSniffer.class;
+//		Class<? extends SimpleHeuristicSniffer> sniffer = FeatureEnvyHeuristicSniffer.class;
+//		Class<? extends SimpleHeuristicSniffer> sniffer = LongMethodHeuristicSniffer.class;
+//		Class<? extends SimpleHeuristicSniffer> sniffer = LongParameterListHeuristicSniffer.class;
+//		Class<? extends SimpleHeuristicSniffer> sniffer = SwitchStatementHeuristicSniffer.class;
+//		Class<? extends SimpleHeuristicSniffer> sniffer = MessageChainsHeuristicSniffer.class;
+//		Class<? extends SimpleHeuristicSniffer> sniffer = MiddleManHeuristicSniffer.class;
+//		Class<? extends SimpleHeuristicSniffer> sniffer = PrimitiveObsessionHeuristicSniffer.class;
 		
-		String smell = sniffer.getSmell().getShortName().toLowerCase();
+		String smell = sniffer.newInstance().getSmell().getShortName().toLowerCase();
 		String projectName = "custom";
-		CHBCrossExperiment experiment = new CHBCrossExperiment(smell, projectName);
-		Project project = getProject(projectName, sniffer.getSmell());
+		CHBSingleHeuristicExperiment experiment = new CHBSingleHeuristicExperiment(smell, projectName);
+		Project project = getProject(projectName, sniffer.newInstance().getSmell());
 		String analysisSource = "data/chb2017/"+projectName+"/an-all.csv";
 		String rulesSource = "data/chb2017/"+projectName+"/rules.txt";
 		
@@ -310,7 +311,7 @@ public class CHBCrossExperiment {
 		
 		for (int i = 0; i < repetition; i++) {
 			for (Developer developer : experiment.developers.values()) {
-				Map<Node,NodeAnalysis> trainAnalysis = experiment.loadAnalysis(sniffer, analysisSource, project, developer);
+				Map<Node,NodeAnalysis> trainAnalysis = experiment.loadAnalysis(sniffer.newInstance(), analysisSource, project, developer);
 				result += experiment.train(sniffer, rulesSource, trainAnalysis, developer, 5);
 				result += "\n";
 			}

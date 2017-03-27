@@ -278,9 +278,10 @@ public class CHBLearningExperiment {
 //		SimpleHeuristicSniffer sniffer = new LongMethodHeuristicSniffer();
 //		SimpleHeuristicSniffer sniffer = new LongParameterListHeuristicSniffer();
 //		SimpleHeuristicSniffer sniffer = new SwitchStatementHeuristicSniffer();
-//		SimpleHeuristicSniffer sniffer = new MessageChainsHeuristicSniffer();
-		SimpleHeuristicSniffer sniffer = new MiddleManHeuristicSniffer();
-//		SimpleHeuristicSniffer sniffer = new PrimitiveObsessionHeuristicSniffer();
+//		SimpleHeuristicSniffer sniffer = new MiddleManHeuristicSniffer();
+//		SimpleHeuristicSniffer sniffer = new PrimitiveObsessionHeuristicSniffer();		
+		SimpleHeuristicSniffer sniffer = new MessageChainsHeuristicSniffer();
+
 		
 		List<List<EvaluationList>> result = new ArrayList<List<EvaluationList>>();
 		for (int i = 0; i < 14; i++) {

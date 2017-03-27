@@ -11,8 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import weka.classifiers.rules.JRip;
-import weka.classifiers.trees.J48;
 import br.ufal.sapiens.refactoring.analysis.NodeAnalysis;
 import br.ufal.sapiens.refactoring.classifier.smell.Smell;
 import br.ufal.sapiens.refactoring.classifier.sniffer.ClassifierEvaluator;
@@ -24,12 +22,11 @@ import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.SimpleKNNSniffe
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.heuristic.DataClassHeuristicSniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.heuristic.FeatureEnvyHeuristicSniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.heuristic.GodClassHeuristicSniffer;
-import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.heuristic.InappropriateIntimacyHeuristicSniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.heuristic.LongMethodHeuristicSniffer;
+import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.heuristic.LongParameterListHeuristicSniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.heuristic.MessageChainsHeuristicSniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.heuristic.MiddleManHeuristicSniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.heuristic.PrimitiveObsessionHeuristicSniffer;
-import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.heuristic.RefusedBequestHeuristicSniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.heuristic.SimpleHeuristicSniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.heuristic.SpeculativeGeneralityHeuristicSniffer;
 import br.ufal.sapiens.refactoring.classifier.sniffer.simple.knn.heuristic.SwitchStatementHeuristicSniffer;
@@ -46,13 +43,13 @@ import br.ufal.sapiens.refactoring.pr.Project;
 import br.ufal.sapiens.refactoring.util.FileUtil;
 import br.ufal.sapiens.refactoring.util.SimpleLogger;
 
-public class CHBRulesExperiment {
+public class CHBSnippetOrderExperiment {
 
 	private Map<Developer, SimpleSniffer> snifferMap;
 	private Map<Integer, Developer> developers;
 	private String project;
 
-	public CHBRulesExperiment(String smell, String project) throws IOException {
+	public CHBSnippetOrderExperiment(String smell, String project) throws IOException {
 		this.snifferMap = new HashMap<Developer, SimpleSniffer>();
 		this.project = project;
 		this.loadDevelopers("data/chb2017/"+project+"/developers-" + smell + ".txt");
@@ -66,18 +63,13 @@ public class CHBRulesExperiment {
 		// sniffer.getInitialRule().toString());
 		Map<Node,NodeAnalysis> analysisMap = new HashMap<Node,NodeAnalysis>();
 		for (int i = 0; i < data.size(); i++) {
-			Node node = project.getNodeFromName(data.get(i)[1]);
+			if (!data.get(i)[0].equalsIgnoreCase(sniffer.getSmell().getShortName())) continue;
+			Node node = project.getNodeFromName(data.get(i)[2]);
 			if (node == null) {
-				System.out.println("Node not found: " + data.get(i)[1]);
+				System.out.println("Node not found: " + data.get(i)[2]);
 			} else {
-				for (Rule rule : ((SimpleHeuristicSniffer)sniffer).getInitialRules().values()) {
-					if (!node.getMetricNames().containsAll(
-							rule.getMetricNames())) {
-//						System.out.println("Node with insufficient metrics: " + node);
-					}
-				}
-				boolean verify = ("1".equals(data.get(i)[2])) ? true : false;
-				if (new Integer(data.get(i)[0]) == developer.getId()) {
+				boolean verify = ("1".equals(data.get(i)[3])) ? true : false;
+				if (new Integer(data.get(i)[1]) == developer.getId()) {
 					NodeAnalysis analysis = new NodeAnalysis(node,
 							sniffer.getSmell(), verify);
 					analysisMap.put(analysis.getNode(), analysis);
@@ -98,18 +90,17 @@ public class CHBRulesExperiment {
 		this.developers = developers;
 	}
 
-	public void loadPreferences(String developersPrefs) throws IOException {
-		List<String[]> data = FileUtil.getCSVData(developersPrefs);
+	public static void loadRules(SimpleHeuristicSniffer sniffer, String initialRules) throws IOException {
+		List<String[]> data = FileUtil.getCSVData(initialRules);
 		for (int i = 0; i < data.size(); i++) {
-			Integer devId = new Integer(data.get(i)[0]);
-			String smellName = data.get(i)[1];
+			String slug = data.get(i)[0];
+			if (!sniffer.getSmell().getShortName().equalsIgnoreCase(slug)) continue;
+			
+			Integer ruleId = new Integer(data.get(i)[1]);
 			String rawRule = data.get(i)[2];
-			Smell smell = Smell.fromShortName(smellName);
-			Rule rule = Rule.fromString(smell, rawRule);
-			Developer dev = this.developers.get(devId);
-			SimpleSniffer sniffer = SimpleSniffer.fromSmell(smell);
-			sniffer.getClassifiers().add(rule);
-			this.snifferMap.put(dev, sniffer);
+			Rule rule = Rule.fromString(sniffer.getSmell(), rawRule);
+			sniffer.addRule(rule, ruleId);
+			if (ruleId == 1) sniffer.setBestClassifier(rule);
 		}
 	}
 	
@@ -200,59 +191,59 @@ public class CHBRulesExperiment {
 		return count;
 	}
 	
-	public String train(SimpleHeuristicSniffer sniffer, Map<Node,NodeAnalysis> analysisToTrain, Developer developer) throws IOException, InstantiationException,
+	public String train(SimpleHeuristicSniffer sniffer1, SimpleHeuristicSniffer sniffer2, String sourceRules, Map<Node,NodeAnalysis> analysisToTrain, Developer developer, int folds) throws IOException, InstantiationException,
 			IllegalAccessException {
 		
 		SimpleLogger.log("Iniciando análise para developer: " + developer.getId());
-		SimpleLogger.log("Regra Inicial: " + sniffer.getBestClassifier());
+		SimpleLogger.log("Regra Inicial: " + sniffer1.getBestClassifier());
 
-		EvaluationList accuracy = new EvaluationList();
-		float iterations = 0;
+		List<List<NodeAnalysis>> foldList = this.createFolds(new ArrayList<NodeAnalysis>(analysisToTrain.values()), folds);
+		EvaluationList accuracy1 = new EvaluationList();
+		EvaluationList accuracy2 = new EvaluationList();
+		float iterations1 = 0;
+		float iterations2 = 0;
 		
-		EvaluationList accuracyJ48 = new EvaluationList();
-		EvaluationList accuracyJRip = new EvaluationList();
-		
-		List<NodeAnalysis> trainAnalysis = new ArrayList<NodeAnalysis>(analysisToTrain.values());
-		
+		for (int testFold = 0; testFold < folds; testFold++) {
+			List<NodeAnalysis> trainAnalysis1 = new ArrayList<NodeAnalysis>();
+			for (int trainFold = 0; trainFold < folds; trainFold++) {
+				if (trainFold == testFold) {
+					continue;
+				}
+				trainAnalysis1.addAll(foldList.get(trainFold));
+			}
+			List<NodeAnalysis> trainAnalysis2 = new ArrayList<NodeAnalysis>(trainAnalysis1);
 			
-		WekaJ48Classifier j48 = new WekaJ48Classifier("J48", sniffer.getSmell()); //Pruned
-		WekaJRipClassifier jRip = new WekaJRipClassifier("JRip", sniffer.getSmell());
-		
-		j48.update(trainAnalysis);
-		jRip.update(trainAnalysis);
-		
-		
-		accuracyJ48.add(ClassifierEvaluator.getAccuracy(j48, trainAnalysis));
-		accuracyJRip.add(ClassifierEvaluator.getAccuracy(jRip, trainAnalysis));
-
-		String j48Rule = "";
-		String jRipRule = "";
-		try {
-			j48Rule = ((J48)j48.getClassifier()).toString();
-			jRipRule = ((JRip)jRip.getClassifier()).toString();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			List<NodeAnalysis> analysisToTest = new ArrayList<NodeAnalysis>(foldList.get(testFold));
+			
+			sniffer1.clearRules();
+			sniffer2.clearRules();
+			loadRules(sniffer1, sourceRules);
+			loadRules(sniffer2, sourceRules);
+			
+			while (trainAnalysis1.size() > 0) {
+				NodeAnalysis nodeAnl = sniffer1.getDirectionNeighbourNodesFromAnalysis(trainAnalysis1, 1).get(0);
+				trainAnalysis1.remove(nodeAnl);
+				sniffer1.addAnalysis(nodeAnl);
+			}
+			accuracy1.addMatrix(ClassifierEvaluator.getConfusionMatrix(sniffer1.getBestClassifier(), analysisToTest));
+			iterations1 += ((Rule)sniffer1.getBestClassifier()).getIterations();
+			
+			while (trainAnalysis2.size() > 0) {
+				NodeAnalysis nodeAnl = trainAnalysis2.get(0);
+				trainAnalysis2.remove(nodeAnl);
+				sniffer2.addAnalysis(nodeAnl);
+			}
+			accuracy2.addMatrix(ClassifierEvaluator.getConfusionMatrix(sniffer2.getBestClassifier(), analysisToTest));
+			iterations2 += ((Rule)sniffer2.getBestClassifier()).getIterations();
 		}
-			
-		String result = ">>>>>>>>>>>>>>>>>>>>>> Smell: "+ sniffer.getSmell().getShortName().toUpperCase() 
-				+ " Developer: " + developer.getId() 
-				+ "\nAccuracy J48: " + accuracyJ48.getAverage() + "\n"
-				+ j48Rule + "\n"
-				+ "\nAccuracy JRip: " + accuracyJRip.getAverage() +"\n"
-				+ jRipRule;
+		
+		String result = developer.getId() + "\t"
+				+ accuracy1.printSumMatrix() +"\t"
+				+ iterations1/folds + "\t"
+				+ accuracy2.printSumMatrix() +"\t"
+				+ iterations2/folds + "\tFolds: "+ folds + " Smell: "+ sniffer2.getSmell().getShortName().toUpperCase() + "\t";
 		
 		return result;
-		
-//		System.out.println(developer.getId() + "\t"
-//				+ accuracyJ48/folds +"\t"
-//				+ accuracyJRip/folds +"\t"
-//				+ accuracyRF/folds +"\t"
-//				+ accuracySMO/folds +"\t"
-//				+ accuracyNB/folds +"\t"
-//				+ accuracySVM/folds +"\t"
-//				+ accuracy/folds +"\t"
-//				+ iterations/folds + "\tFolds: "+ folds + " Smell: "+ sniffer.getSmell().getShortName().toUpperCase());
 	}
 	
 	private static Project getProject(String projectName, Smell smell) throws IOException {
@@ -262,34 +253,39 @@ public class CHBRulesExperiment {
 		return project;
 	}
 	
+	
+	
 	public static void main(String[] args) throws IOException,
 			InstantiationException, IllegalAccessException {
-		SimpleHeuristicSniffer sniffer = new GodClassHeuristicSniffer();
-//		SimpleHeuristicSniffer sniffer = new DataClassHeuristicSniffer();
+		SimpleHeuristicSniffer sniffer1 = new GodClassHeuristicSniffer();
+		SimpleHeuristicSniffer sniffer2 = new GodClassHeuristicSniffer();
+//		SimpleHeuristicSniffer sniffer = new DataClassHeuristicSniffer();		
+//		SimpleHeuristicSniffer sniffer = new FeatureEnvyHeuristicSniffer();		
 //		SimpleHeuristicSniffer sniffer = new LongMethodHeuristicSniffer();
-//		SimpleHeuristicSniffer sniffer = new FeatureEnvyHeuristicSniffer();
+//		SimpleHeuristicSniffer sniffer = new LongParameterListHeuristicSniffer();
 //		SimpleHeuristicSniffer sniffer = new SwitchStatementHeuristicSniffer();
-//		SimpleHeuristicSniffer sniffer = new SpeculativeGeneralityHeuristicSniffer();
 //		SimpleHeuristicSniffer sniffer = new MessageChainsHeuristicSniffer();
 //		SimpleHeuristicSniffer sniffer = new MiddleManHeuristicSniffer();
-//		SimpleHeuristicSniffer sniffer = new InappropriateIntimacyHeuristicSniffer();
-//		SimpleHeuristicSniffer sniffer = new RefusedBequestHeuristicSniffer();
+//		SimpleHeuristicSniffer sniffer = new PrimitiveObsessionHeuristicSniffer();
 		
-		String smell = sniffer.getSmell().getShortName().toLowerCase();
+		String smell = sniffer1.getSmell().getShortName().toLowerCase();
 		String projectName = "custom";
-		CHBRulesExperiment experiment = new CHBRulesExperiment(smell, projectName);
-		Project project = getProject(projectName, sniffer.getSmell());
-		String analysisSource = "data/chb2017/"+projectName+"/an-"+ smell + ".csv";
+		CHBSnippetOrderExperiment experiment = new CHBSnippetOrderExperiment(smell, projectName);
+		Project project = getProject(projectName, sniffer1.getSmell());
+		String analysisSource = "data/chb2017/"+projectName+"/an-all.csv";
 		
 		String result = "";
+		int repetition = 10;
+		String sourceRules = "data/chb2017/"+projectName+"/rules.txt";
 		
-		for (Developer developer : experiment.developers.values()) {
-			Map<Node,NodeAnalysis> trainAnalysis = experiment.loadAnalysis(sniffer, analysisSource, project, developer);
-			result += experiment.train(sniffer, trainAnalysis, developer);
-			result += "\n";
+		for (int i = 0; i < repetition; i++) {
+			for (Developer developer : experiment.developers.values()) {
+				Map<Node,NodeAnalysis> trainAnalysis = experiment.loadAnalysis(sniffer1, analysisSource, project, developer);
+				result += experiment.train(sniffer1, sniffer2, sourceRules, trainAnalysis, developer, 5);
+				result += "\n";
+			}
+			result += "\n\n";
 		}
-		result += "\n\n";
-
 
 		System.out.println(result);
 	}

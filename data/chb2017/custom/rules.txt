@@ -1,17 +1,17 @@
-GC,1,WMC>47.0^ATFD>=5.0^TCC<0.33333334,Lanza:2005
-GC,2,WMCNAMM>=48,ArcelliFontana2015
-GC,3,CountLine>150
-GC,4,PercentLackOfCohesion<78^CountLine>500
-FE,1,ATFD>5.0^LAA<0.33333^FDP<=5,Lanza:2005
+GC,1,CountLine>150
+GC,2,PercentLackOfCohesion<78^CountLine>500
+GC,3,WMC>47.0^ATFD>=5.0^TCC<0.33333334,Lanza:2005
+GC,4,WMCNAMM>=48,ArcelliFontana2015
+FE,1,ATFD>=9,ArcelliFontana2015
 FE,2,ATFD>4^LAA<0.458^NOA<=16,ArcelliFontana2015
 FE,3,ATFD>=5^LAA<0.3125,ArcelliFontana2015
-FE,4,ATFD>=9,ArcelliFontana2015
-FE,5,FDP<=3^NMO<=1,ArcelliFontana2015
-DCl,1,WOC<0.33333^WMC<47^NOAP+NOAM>5,Lanza:2005
+FE,4,FDP<=3^NMO<=1,ArcelliFontana2015
+FE,5,ATFD>5.0^LAA<0.33333^FDP<=5,Lanza:2005
+DCl,1,AMW<=1^NOPVA>=3,ArcelliFontana2015
 DCl,2,NOAM>2^WMCNAMM<=21^NIM<=30,ArcelliFontana2015
 DCl,3,WOC<0.35^NOAM>=4^RFC<=41,ArcelliFontana2015
 DCl,4,CFNAMM<=0^NOAM>=3,ArcelliFontana2015
-DCl,5,AMW<=1^NOPVA>=3,ArcelliFontana2015
+DCl,5,WOC<0.33333^WMC<47^NOAP+NOAM>5,Lanza:2005
 LM,1,mloc>=80,BUSCAR
 LM,2,mloc>=80^CYCLO>=8,ArcelliFontana201
 LPL,1,params>6,Mantyla2006
@@ -19,7 +19,7 @@ LPL,2,params>6^Cyclomatic>5,Fontana2013
 SS,1,branches>3,JSONSE
 SS,2,branches>3^Cyclomatic>10,Crespo et al.
 MC,1,chains>3,Bavota
-MC,2,chains>=3^MeMCL>=5.8,SmellsLikeTeenSpirit
+MC,2,chains>=3^Cyclomatic>=10,BUSCAR
 PO,1,Primitives>=2,github-project
 PO,2,CountDeclInstanceVariable>10^VAVG
 MM,1,NFM>2^ForwardMethodRatio>0.5,Jancke2010
